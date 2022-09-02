@@ -1,11 +1,5 @@
 #####################################################
 #                                                   #
-#              libsir make recipes                  #
-#                                                   #
-#       https://github.com/ryanlederman/sir         #
-#                                                   #
-#                                                   #
-# Note:                                             #
 #  Set the environment variable 'SIR_DEBUG' to 1    #
 #  in order to cause the compiler flags to include  #
 #  debug flags.                                     #
@@ -29,10 +23,9 @@ endif
 LIBS = -pthread
 
 ifeq ($(SIR_DEBUG),1)
-	CFLAGS   = -Wpedantic -std=c11 -I. -g -O0 -DNDEBUG -fPIC -DSIR_SELFLOG
-	@echo warning: SIR_DEBUG=1, using -g.
+	CFLAGS   = -Wall -Wextra -Wpedantic -std=c11 -I. -g -O0 -DNDEBUG -fPIC -DSIR_SELFLOG -flto=auto
 else
-	CFLAGS   = -Wpedantic -std=c11 -I. -DNDEBUG -fPIC -O3
+	CFLAGS   = -Wall -Wextra -Wpedantic -std=c11 -I. -DNDEBUG -fPIC -O3 -flto=auto
 endif
 
 ifeq ($(OS),Windows_NT)
@@ -40,7 +33,7 @@ ifeq ($(OS),Windows_NT)
 endif
 
 # link with static library, not shared
-LDFLAGS = $(LIBS) -L$(LIBDIR) -lsir_s
+LDFLAGS = -Wl,-flto=auto $(LIBS) -L$(LIBDIR) -lsir_s
 
 # translation units
 TUS := $(wildcard ./*.c)
