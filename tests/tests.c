@@ -1,4 +1,6 @@
 /*
+ * scspell-id: e076319a-2b0e-11ed-836b-80ee73e9b8e7
+ *
  * Copyright (c) 2018 Ryan M. Lederman
  * Copyright (c) 2022 Jeffrey H. Johnson <trnsz@pobox.com>
  *
@@ -46,9 +48,9 @@ static const sir_test sir_tests[] = {
 };
 
 static const char *arg_wait
-  = "--wait";   /* wait for key press before exiting.              */
+  = "--wait";  /* Wait for key press before exiting.              */
 static const char *arg_perf
-  = "--perf";   /* run performance test instead of standard tests. */
+  = "--perf";  /* Run performance test instead of standard tests. */
 
 int
 main(int argc, char **argv)
@@ -126,7 +128,7 @@ sirtest_exceedmaxsize(void)
     0
   };
 
-  memset(toobig, 'a', SIR_MAXMESSAGE - 99);
+  (void)memset(toobig, 'a', SIR_MAXMESSAGE - 99);
 
   pass &= sir_info(toobig);
 
@@ -153,7 +155,7 @@ sirtest_filecachesanity(void)
       char path[SIR_MAXPATH] = {
         0
       };
-      snprintf(path, SIR_MAXPATH, "test-%lu.log", n);
+      (void)snprintf(path, SIR_MAXPATH, "test-%lu.log", n);
       rmfile(path);
       ids[n] = sir_addfile(path, SIRL_ALL, ( n % 2 ) ? odd : even);
       pass &= NULL != ids[n] && sir_info("test %u", n);
@@ -161,15 +163,15 @@ sirtest_filecachesanity(void)
 
   pass &= sir_info("test test test");
 
-  // this one should fail; max files already added
+  /* This one should fail; max files already added */
   pass &= NULL == sir_addfile("should-fail.log", SIRL_ALL, SIRO_MSGONLY);
 
   sir_info("test test test");
 
-  // now remove previously added files in a different order
+  /* Now remove previously added files in a different order */
   int removeorder[SIR_MAXFILES];
 
-  memset(removeorder, -1, sizeof ( removeorder ));
+  (void)memset(removeorder, -1, sizeof ( removeorder ));
 
   long processed = 0;
 
@@ -218,7 +220,7 @@ sirtest_filecachesanity(void)
       char path[SIR_MAXPATH] = {
         0
       };
-      snprintf(path, SIR_MAXPATH, "test-%lu.log", n);
+      (void)snprintf(path, SIR_MAXPATH, "test-%lu.log", n);
       rmfile(path);
     }
 
@@ -422,7 +424,7 @@ sirtest_failremovebadfile(void)
 bool
 sirtest_rollandarchivefile(void)
 {
-  /* roll size minus 1KB so we can write until it maxes. */
+  /* Roll size minus 1KB so we can write until it maxes. */
   const long deltasize               = 1024;
   const long fillsize                = SIR_FROLLSIZE - deltasize;
   const sirchar_t *const logfilename = "rollandarchive";
@@ -476,7 +478,7 @@ sirtest_rollandarchivefile(void)
 
   if (pass &= NULL != fileid)
     {
-      /* write an (approximately) known quantity until we should have rolled */
+      /* Write an (approximately) known quantity until we should have rolled */
       size_t written = 0;
       size_t linesize = strlen(line);
 
@@ -558,7 +560,7 @@ sirtest_errorsanity(void)
   for (size_t n = 0; n < ( sizeof ( errors ) / sizeof ( errors[0] )); n++)
     {
       _sir_seterror(_sir_mkerror(errors[n].code));
-      memset(message, 0, SIR_MAXERROR);
+      (void)memset(message, 0, SIR_MAXERROR);
       uint16_t err /* = err */ = sir_geterror(message);
       (void)err;
       pass &= errors[n].code == err && *message != '\0';
@@ -821,7 +823,7 @@ sirtest_mthread_race(void)
   for (size_t n = 0; n < NUM_THREADS; n++)
     {
       char *path = (char *)calloc(SIR_MAXPATH, sizeof ( char ));
-      snprintf(path, SIR_MAXPATH, "%lu.log", n);
+      (void)snprintf(path, SIR_MAXPATH, "%lu.log", n);
 
 #ifndef _WIN32
       int create
@@ -840,7 +842,7 @@ sirtest_mthread_race(void)
 
 #ifdef _GNU_SOURCE
       char thrd_name[SIR_MAXPID];
-      snprintf(thrd_name, SIR_MAXPID, "%lu", n);
+      (void)snprintf(thrd_name, SIR_MAXPID, "%lu", n);
       create = pthread_setname_np(thrds[n], thrd_name);
       if (0 != create)
         {
@@ -882,7 +884,7 @@ sirtest_thread(void *arg)
   char mypath[SIR_MAXPATH + 16] = {
     0
   };
-  strncpy(mypath, (const char *)arg, SIR_MAXPATH - 1);
+  (void)strncpy(mypath, (const char *)arg, SIR_MAXPATH - 1);
   free(arg);
 
   rmfile(mypath);

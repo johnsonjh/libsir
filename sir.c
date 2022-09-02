@@ -1,4 +1,6 @@
 /*
+ * scspell-id: d6ad8321-2b0d-11ed-9408-80ee73e9b8e7
+ *
  * Copyright (c) 2018 Ryan M. Lederman
  * Copyright (c) 2022 Jeffrey H. Johnson <trnsz@pobox.com>
  *
@@ -86,10 +88,8 @@ sir_sysloglevels(sir_levels levels)
     &levels, NULL
   };
   return _sir_writeinit(&data, _sir_sysloglevels);
-
 #else /* ifndef SIR_NO_SYSLOG */
   return false;
-
 #endif /* ifndef SIR_NO_SYSLOG */
 }
 

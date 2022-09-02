@@ -1,4 +1,6 @@
 /*
+ * scspell-id: 0c8622d6-2b0e-11ed-90cd-80ee73e9b8e7
+ *
  * Copyright (c) 2018 Ryan M. Lederman
  * Copyright (c) 2022 Jeffrey H. Johnson <trnsz@pobox.com>
  *
@@ -42,7 +44,7 @@ _sir_addfile(const sirchar_t *path, sir_levels levels, sir_options opts)
           _sir_defaultopts   (&opts,   sir_file_def_opts);
 
           sirfileid_t r = _sir_fcache_add(sfc, path, levels, opts);
-          _sir_unlocksection(_SIRM_FILECACHE);
+          (void)_sir_unlocksection(_SIRM_FILECACHE);
           return r;
         }
     }
@@ -108,7 +110,7 @@ _sirfile_create(const sirchar_t *path, sir_levels levels, sir_options opts)
 
           if (_sir_validptr(sf->path))
             {
-              strncpy(sf->path, path, pathLen);
+              (void)strncpy(sf->path, path, pathLen);
 
               sf->levels = levels;
               sf->opts   = opts;
@@ -183,7 +185,7 @@ _sirfile_write(sirfile *sf, const sirchar_t *output)
               sirchar_t header[SIR_MAXMESSAGE] = {
                 0
               };
-              snprintf(header, SIR_MAXMESSAGE, SIR_FHROLLED, newpath);
+              (void)snprintf(header, SIR_MAXMESSAGE, SIR_FHROLLED, newpath);
               rolled = _sirfile_writeheader(sf, header);
             }
 
@@ -357,7 +359,7 @@ _sirfile_archive(sirfile *sf, const sirchar_t *newpath)
   if (_sirfile_validate(sf) && _sir_validstr(newpath))
     {
 #ifdef _WIN32
-      /* apparently need to close the old file first on windows. */
+      /* Need to close the old file first on windows. */
       _sirfile_close(sf);
 #endif /* ifdef _WIN32 */
       if (0 != rename(sf->path, newpath))
@@ -405,7 +407,7 @@ _sirfile_splitpath(sirfile *sf, sirchar_t **name, sirchar_t **ext)
           if (namesize < SIR_MAXPATH)
             {
               *name = (sirchar_t *)calloc(namesize + 1, sizeof ( sirchar_t ));
-              strncpy(*name, sf->path, namesize);
+              (void)strncpy(*name, sf->path, namesize);
             }
 
           *ext = strdup(lastfullstop);
@@ -490,7 +492,7 @@ _sir_fcache_add(sirfcache *sfc, const sirchar_t *path, sir_levels levels,
 
           if (!_sir_bittest(sf->opts, SIRO_NOHDR))
             {
-              _sirfile_writeheader(sf, SIR_FHBEGIN);
+              (void)_sirfile_writeheader(sf, SIR_FHBEGIN);
             }
 
           return &sf->id;
@@ -608,7 +610,7 @@ _sir_fcache_destroy(sirfcache *sfc)
           sfc->count--;
         }
 
-      memset(sfc, 0, sizeof ( sirfcache ));
+      (void)memset(sfc, 0, sizeof ( sirfcache ));
       return true;
     }
 
@@ -669,7 +671,7 @@ _sir_fcache_dispatch(sirfcache *sfc, sir_level level, siroutput *output,
 
       if (*dispatched > 0)
         {
-          _sir_fflush_all();
+          (void)_sir_fflush_all();
         }
 
       return r && ( *dispatched == *wanted );

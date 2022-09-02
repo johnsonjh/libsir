@@ -1,4 +1,6 @@
 /*
+ * scspell-id: 468f4e6a-2b0e-11ed-888e-80ee73e9b8e7
+ *
  * Copyright (c) 2018 Ryan M. Lederman
  * Copyright (c) 2022 Jeffrey H. Johnson <trnsz@pobox.com>
  *

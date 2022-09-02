@@ -1,4 +1,6 @@
 /*
+ * scspell-id: 397945c3-2b0e-11ed-a96a-80ee73e9b8e7
+ *
  * Copyright (c) 2018 Ryan M. Lederman
  * Copyright (c) 2022 Jeffrey H. Johnson <trnsz@pobox.com>
  *
@@ -27,107 +29,149 @@
 # include "sirerrors.h"
 # include "sirhelpers.h"
 
-/** Evaluates whether or not libsir has been initialized. */
+/* Evaluates whether or not libsir has been initialized. */
+
 bool _sir_sanity(void);
 
-/** Validates the configuration passed to ::sir_init. */
+/* Validates the configuration passed to sir_init. */
+
 bool _sir_options_sanity(const sirinit *si);
 
-/** Initializes libsir. */
+/* Initializes libsir. */
+
 bool _sir_init(sirinit *si);
 
-/** Updates levels for \a stdout. */
+/* Updates levels for stdout. */
+
 void _sir_stdoutlevels(sirinit *si, sir_update_data *data);
 
-/** Updates options for \a stdout. */
+/* Updates options for stdout. */
+
 void _sir_stdoutopts(sirinit *si, sir_update_data *data);
 
-/** Updates levels for \a stderr. */
+/* Updates levels for stderr. */
+
 void _sir_stderrlevels(sirinit *si, sir_update_data *data);
 
-/** Updates options for \a stderr. */
+/* Updates options for stderr. */
+
 void _sir_stderropts(sirinit *si, sir_update_data *data);
 
-/** Updates levels for \a syslog. */
+/* Updates levels for syslog. */
+
 void _sir_sysloglevels(sirinit *si, sir_update_data *data);
 
-/** Updates levels/options in the global init structure. */
+/* Updates levels/options in the global init structure. */
+
 typedef void (*sirinit_update) (sirinit *, sir_update_data *);
 
-/** Updates levels/options in the global init structure. */
+/* Updates levels/options in the global init structure. */
+
 bool _sir_writeinit(sir_update_data *data, sirinit_update update);
 
-/** Locks a protected section. */
+/* Locks a protected section. */
+
 void *_sir_locksection(sir_mutex_id mid);
 
-/** Unlocks a protected section. */
+/* Unlocks a protected section. */
+
 bool _sir_unlocksection(sir_mutex_id mid);
 
-/** Maps a ::sir_mutex_id to a ::sirmutex_t and protected section. */
+/* Maps a sir_mutex_id to a sirmutex_t and protected section. */
+
 bool _sir_mapmutexid(sir_mutex_id mid, sirmutex_t **m, void **section);
 
-/** Frees allocated resources. */
+/* Frees allocated resources. */
+
 bool _sir_cleanup(void);
 
 # ifndef _WIN32
-/** Initializes a specific mutex. */
+
+/* Initializes a specific mutex. */
+
 void _sir_initmutex_si_once(void);
-/** Initializes a specific mutex. */
+
+/* Initializes a specific mutex. */
+
 void _sir_initmutex_fc_once(void);
-/** Initializes a specific mutex. */
+
+/* Initializes a specific mutex. */
+
 void _sir_initmutex_ts_once(void);
+
 # else  /* ifndef _WIN32 */
-/** Initializes a specific mutex. */
+
+/* Initializes a specific mutex. */
+
 BOOL CALLBACK _sir_initmutex_si_once(PINIT_ONCE ponce, PVOID param,
                                      PVOID *ctx);
-/** Initializes a specific mutex. */
+
+/* Initializes a specific mutex. */
+
 BOOL CALLBACK _sir_initmutex_fc_once(PINIT_ONCE ponce, PVOID param,
                                      PVOID *ctx);
-/** Initializes a specific mutex. */
+
+/* Initializes a specific mutex. */
+
 BOOL CALLBACK _sir_initmutex_ts_once(PINIT_ONCE ponce, PVOID param,
                                      PVOID *ctx);
 # endif /* ifndef _WIN32 */
 
-/** Initializes a specific mutex. */
+/* Initializes a specific mutex. */
+
 void _sir_initmutex(sirmutex_t *mutex);
 
-/** Executes only one time. */
+/* Executes only one time. */
+
 void _sir_once(sironce_t *once, sir_once_fn func);
 
-/** Core output formatting. */
+/* Core output formatting. */
+
 bool _sir_logv(sir_level level, const sirchar_t *format, va_list args);
 
-/** Output dispatching. */
+/* Output dispatching. */
+
 bool _sir_dispatch(sirinit *si, sir_level level, siroutput *output);
 
-/** Specific destination formatting. */
+/* Specific destination formatting. */
+
 const sirchar_t *_sir_format(bool styling, sir_options opts,
                              siroutput *output);
 
 # ifndef SIR_NO_SYSLOG
-/** Maps a ::sir_level to a \a syslog level. */
+
+/* Maps a sir_level to a syslog level. */
+
 int _sir_syslog_maplevel(sir_level level);
+
 # endif /* ifndef SIR_NO_SYSLOG */
 
-/** Retrieves a buffer from a ::sirbuf. */
+/* Retrieves a buffer from a sirbuf. */
+
 sirchar_t *_sirbuf_get(sirbuf *buf, size_t idx);
 
-/** Converts a ::sir_level to its human-readable form. */
+/* Converts a sir_level to its human-readable form. */
+
 const sirchar_t *_sir_levelstr(sir_level level);
 
-/** Retrieves the current local time w/ optional milliseconds. */
-bool _sir_getlocaltime(time_t *tbuf, long *nsecbuf);
+/* Retrieves the current local time w/ optional milliseconds. */
 
-/** Formats the current time as a string. */
+bool _sir_getlocaltime(time_t *tbuf, long long *nsecbuf);
+
+/* Formats the current time as a string. */
+
 bool _sir_formattime(time_t now, sirchar_t *buffer, const sirchar_t *format);
 
-/** Returns the current process identifier. */
+/* Returns the current process identifier. */
+
 pid_t _sir_getpid(void);
 
-/** Returns the current thread identifier. */
+/* Returns the current thread identifier. */
+
 pid_t _sir_gettid(void);
 
-/** Returns the current thread's name. */
+/* Returns the current thread's name. */
+
 bool _sir_getthreadname(char name[SIR_MAXPID]);
 
 #endif /* !_SIR_INTERNAL_H_INCLUDED */

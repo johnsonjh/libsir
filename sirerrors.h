@@ -1,4 +1,6 @@
 /*
+ * scspell-id: 061962a7-2b0e-11ed-bba7-80ee73e9b8e7
+ *
  * Copyright (c) 2018 Ryan M. Lederman
  * Copyright (c) 2022 Jeffrey H. Johnson <trnsz@pobox.com>
  *
@@ -32,6 +34,7 @@
  */
 
 /* Error codes. */
+
 enum
 {
   SIR_E_NOERROR   = 0,    /* The operation completed successfully    */
@@ -93,6 +96,7 @@ void __sir_setoserror(int, const sirchar_t *, const sirchar_t *,
   __sir_setoserror(err, msg, __func__, __FILE__, __LINE__)
 
 /* Handle a C library error. */
+
 void __sir_handleerr(int code, const sirchar_t *func, const sirchar_t *file,
                      uint32_t line);
 # define _sir_handleerr(code) \
@@ -114,10 +118,13 @@ void __sir_handlewin32err(DWORD code, const sirchar_t *func,
 # endif /* ifdef _WIN32 */
 
 /* Returns information about the last error that occurred. */
+
 sirerror_t _sir_geterror(sirchar_t message[SIR_MAXERROR - 1]);
 
 # ifdef SIR_SELFLOG
-/* Log an internal message to \a stderr. */
+
+/* Log an internal message to stderr. */
+
 void _sir_selflog(const sirchar_t *format, ...);
 # else /* ifdef SIR_SELFLOG */
 #  define _sir_selflog(format, ...) ((void)( 0 ))

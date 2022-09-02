@@ -1,4 +1,6 @@
 /*
+ * scspell-id: 006ad2b6-2b0e-11ed-98a7-80ee73e9b8e7
+ *
  * Copyright (c) 2018 Ryan M. Lederman
  * Copyright (c) 2022 Jeffrey H. Johnson <trnsz@pobox.com>
  *
@@ -24,6 +26,7 @@
 #include "sirerrors.h"
 
 /* Per-thread error data */
+
 static thread_local sir_thread_err sir_te
   = {
   _SIR_E_NOERROR, 0, { 0 }, { SIR_UNKNOWN, SIR_UNKNOWN, 0 }
@@ -53,7 +56,7 @@ __sir_setoserror(int code, const sirchar_t *message, const sirchar_t *func,
 
   if (_sir_validstrnofail(message))
     {
-      strncpy(sir_te.os_errmsg, message, SIR_MAXERROR - 2);
+      (void)strncpy(sir_te.os_errmsg, message, SIR_MAXERROR - 2);
     }
 
   __sir_seterror(_SIR_E_PLATFORM, func, file, line);
@@ -78,7 +81,7 @@ __sir_handleerr(int code, const sirchar_t *func, const sirchar_t *file,
       char *tmp   = strerror_r(code, message, SIR_MAXERROR - 1);
       if (tmp != message)
         {
-          strncpy(message, tmp, strnlen(tmp, SIR_MAXERROR - 1));
+          (void)strncpy(message, tmp, strnlen(tmp, SIR_MAXERROR - 1));
         }
 
 # endif /* if _POSIX_C_SOURCE >= 200112L && !defined( _GNU_SOURCE ) */
@@ -166,7 +169,7 @@ _sir_geterror(sirchar_t message[SIR_MAXERROR - 1])
               if (_sir_validptr(final))
                 {
                   alloc = true;
-                  snprintf(
+                  (void)snprintf(
                     final,
                     SIR_MAXERROR + 1,
                     sir_errors[n].msg,
@@ -200,7 +203,7 @@ _sir_geterror(sirchar_t message[SIR_MAXERROR - 1])
         }
     }
 
-  assert(false && sir_te.lasterror);
+  /* assert(false && sir_te.lasterror); */
   return _SIR_E_UNKNOWN;
 }
 

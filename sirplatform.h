@@ -1,4 +1,6 @@
 /*
+ * scspell-id: 4c52662b-2b0e-11ed-a804-80ee73e9b8e7
+ *
  * Copyright (c) 2018 Ryan M. Lederman
  * Copyright (c) 2022 Jeffrey H. Johnson <trnsz@pobox.com>
  *
@@ -39,6 +41,9 @@
 #  ifndef _DEFAULT_SOURCE
 #   define _DEFAULT_SOURCE 1
 #  endif /* ifndef _DEFAULT_SOURCE */
+#  ifndef _ALL_SOURCE
+#   define _ALL_SOURCE 1
+#  endif /* ifndef _DEFAULT_SOURCE */
 # endif /* if defined( __APPLE__ ) && defined( __MACH__ ) */
 
 # include <assert.h>
@@ -76,15 +81,19 @@
 #  endif /* if _POSIX_TIMERS > 0 */
 
 /* The mutex type. */
+
 typedef pthread_mutex_t sirmutex_t;
 
 /* The one-time type. */
+
 typedef pthread_once_t sironce_t;
 
 /* The one-time execution function type. */
+
 typedef void (*sir_once_fn) (void);
 
 /* The one-time initializer. */
+
 #  define SIR_ONCE_INIT PTHREAD_ONCE_INIT
 # else /* ifndef _WIN32 */
 #  define WIN32_LEAN_AND_MEAN
@@ -99,18 +108,23 @@ typedef void (*sir_once_fn) (void);
 #  define SIR_MSEC_WIN32
 
 /* The mutex type. */
+
 typedef HANDLE sirmutex_t;
 
 /* The one-time type. */
+
 typedef INIT_ONCE sironce_t;
 
 /* Process/thread ID. */
+
 typedef int pid_t;
 
 /* The one-time execution function type. */
+
 typedef BOOL ( CALLBACK *sir_once_fn ) (PINIT_ONCE, PVOID, PVOID *);
 
 /* The one-time initializer. */
+
 #  define SIR_ONCE_INIT INIT_ONCE_STATIC_INIT
 # endif /* ifndef _WIN32 */
 
@@ -119,7 +133,8 @@ typedef BOOL ( CALLBACK *sir_once_fn ) (PINIT_ONCE, PVOID, PVOID *);
 #   define thread_local _Thread_local
 #  elif defined( _WIN32 )
 #   define thread_local __declspec( thread )
-#  elif defined( __GNUC__ )
+#  elif defined( __GNUC__ ) || defined(__xlc__) || defined(__xlC__) || \
+      defined(__SUNPRO_C) || defined(__SUNPRO_CC) || defined(__SUNPRO_C_COMPAT)
 #   define thread_local __thread
 #  else /* if __STDC_VERSION__ >= 201112 && !defined( __STDC_NO_THREADS__ ) */
 #   error "Unable to configure thread_local!"

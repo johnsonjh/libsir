@@ -1,4 +1,6 @@
 /*
+ * scspell-id: c6e3a71f-2b0e-11ed-938c-80ee73e9b8e7
+ *
  * Copyright (c) 2018 Ryan M. Lederman
  * Copyright (c) 2022 Jeffrey H. Johnson <trnsz@pobox.com>
  *
@@ -26,7 +28,8 @@
 
 # include "sirtypes.h"
 
-/** Overrides for level <> text style mappings (::sir_settextstyle). */
+/* Overrides for level <> text style mappings (sir_settextstyle). */
+
 static sir_style_map sir_override_styles[SIR_NUMLEVELS] = {
   { SIRL_DEBUG,  SIRS_INVALID },
   { SIRL_INFO,   SIRS_INVALID },
@@ -38,7 +41,8 @@ static sir_style_map sir_override_styles[SIR_NUMLEVELS] = {
   { SIRL_EMERG,  SIRS_INVALID },
 };
 
-/** mapping of ::sir_textstyle <> platform values. */
+/* Mapping of sir_textstyle <> platform values. */
+
 static const sir_style_priv_map sir_priv_map[] = {
 # ifndef _WIN32
   { SIRS_NONE,                                                                0 },
@@ -121,27 +125,32 @@ static const sir_style_priv_map sir_priv_map[] = {
 # endif /* ifndef _WIN32 */
 };
 
-/** Validates a ::sir_textstyle and splits it into its component parts. */
+/* Validates a sir_textstyle and splits it into its component parts. */
+
 bool _sir_validstyle(sir_textstyle style, uint32_t *pattr, uint32_t *pfg,
                      uint32_t *pbg);
 
 /*
- * Retrieves the override ::sir_textstyle for a ::sir_level  if one is set.
+ * Retrieves the override sir_textstyle for a sir_level  if one is set.
  * Otherwise, returns the default text style for that level.
  */
 
 sir_textstyle _sir_gettextstyle(sir_level level);
 
-/** Retrieves the default ::sir_textstyle for a ::sir_level. */
+/* Retrieves the default sir_textstyle for a sir_level. */
+
 sir_textstyle _sir_getdefstyle(const sir_style_map *map, sir_level level);
 
-/** Sets the ::sir_textstyle for a ::sir_level. */
+/* Sets the sir_textstyle for a sir_level. */
+
 bool _sir_settextstyle(sir_level level, sir_textstyle style);
 
-/** Resets all override ::sir_textstyle. */
+/* Resets all override sir_textstyle. */
+
 bool _sir_resettextstyles(void);
 
-/** Retrieves the platform value for a component part of a ::sir_textstyle. */
+/* Retrieves the platform value for a component part of a sir_textstyle. */
+
 uint16_t _sir_getprivstyle(uint32_t cat);
 
 /*

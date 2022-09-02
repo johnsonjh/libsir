@@ -1,4 +1,6 @@
 /*
+ * scspell-id: 1d4896a0-2b0e-11ed-9a9f-80ee73e9b8e7
+ *
  * Copyright (c) 2018 Ryan M. Lederman
  * Copyright (c) 2022 Jeffrey H. Johnson <trnsz@pobox.com>
  *
@@ -55,7 +57,7 @@ bool sir_init(sirinit *si);
  * -----          | --------
  * `SIRL_NONE`    | No levels.
  * `SIRL_ALL`     | All levels.
- * `SIRL_DEFAULT` | Revert to the default (@ref sirdefaults.h).
+ * `SIRL_DEFAULT` | Revert to the default.
  * `SIRL_*`       | Register for each level set.
  *
  * retval true  = Levels were updated successfully.
@@ -73,7 +75,7 @@ bool sir_stdoutlevels(sir_levels levels);
  * Value          | Behavior
  * -----          | --------
  * `0`            | Include all available data.
- * `SIRO_DEFAULT` | Revert to the default (@ref sirdefaults.h).
+ * `SIRO_DEFAULT` | Revert to the default.
  * `SIRO_*`       | Apply each option set.
  *
  * retval true  = Options were updated successfully.
@@ -91,17 +93,17 @@ bool sir_stdoutopts(sir_options opts);
  * -----          | --------
  * `SIRL_NONE`    | No levels.
  * `SIRL_ALL`     | All levels.
- * `SIRL_DEFAULT` | Revert to the default (@ref sirdefaults.h).
+ * `SIRL_DEFAULT` | Revert to the default.
  * `SIRL_*`       | Register for each level set.
  *
- * @retval true  = Levels were updated successfully.
- * @retval false = An error occurred while trying to update levels.
+ * retval true  = Levels were updated successfully.
+ * retval false = An error occurred while trying to update levels.
  */
 
 bool sir_stderrlevels(sir_levels levels);
 
 /*
- * Sets formatting options for \a stderr.
+ * Sets formatting options for stderr.
  *
  * Sets the sir_option mask that controls the content of messages
  * sent to this destination.
@@ -109,7 +111,7 @@ bool sir_stderrlevels(sir_levels levels);
  * Value          | Behavior
  * -----          | --------
  * `0`            | Include all available data.
- * `SIRO_DEFAULT` | Revert to the default (@ref sirdefaults.h).
+ * `SIRO_DEFAULT` | Revert to the default.
  * `SIRO_*`       | Apply each option set.
  *
  * retval true  = Options were updated successfully.
@@ -130,7 +132,7 @@ bool sir_stderropts(sir_options opts);
  * -----          | --------
  * `SIRL_NONE`    | No levels.
  * `SIRL_ALL`     | All levels.
- * `SIRL_DEFAULT` | Revert to the default (@ref sirdefaults.h).
+ * `SIRL_DEFAULT` | Revert to the default.
  * `SIRL_*`       | Register for each level set.
  *
  * retval true  = Levels were updated successfully.
@@ -148,11 +150,11 @@ bool sir_sysloglevels(sir_levels levels);
  * -----          | --------
  * `SIRL_NONE`    | No levels.
  * `SIRL_ALL`     | All levels.
- * `SIRL_DEFAULT` | Revert to the default (@ref sirdefaults.h).
+ * `SIRL_DEFAULT` | Revert to the default.
  * `SIRL_*`       | Register for each level set.
  *
- * @retval true Levels were updated successfully.
- * @retval false An error occurred while trying to update levels.
+ * retval true Levels were updated successfully.
+ * retval false An error occurred while trying to update levels.
  */
 
 bool sir_filelevels(sirfileid_t id, sir_levels levels);
@@ -166,7 +168,7 @@ bool sir_filelevels(sirfileid_t id, sir_levels levels);
  * Value          | Behavior
  * -----          | --------
  * `0`            | Include all available data.
- * `SIRO_DEFAULT` | Revert to the default (@ref sirdefaults.h).
+ * `SIRO_DEFAULT` | Revert to the default.
  * `SIRO_*`       | Apply each option set.
  *
  * retval true  = Options were updated successfully.
@@ -218,187 +220,73 @@ uint16_t sir_geterror(sirchar_t message[SIR_MAXERROR - 1]);
 
 /*
  * Log a formatted debug-level message.
- *
- * This function maps internally to the logging level SIRL_DEBUG.
- *
- * retval true  = All destinations for this level were successfully processed.
- * retval false = One or more destinations were not successfully processed.
  */
 
 bool sir_debug(const sirchar_t *format, ...);
 
 /*
  * Log a formatted informational message.
- *
- * This function maps internally to the logging level SIRL_INFO.
- *
- * retval true  = All destinations for this level were successfully processed.
- * retval false = One or more destinations were not successfully processed.
  */
 
 bool sir_info(const sirchar_t *format, ...);
 
-/**
- * @brief Log a formatted notice message.
- *
- * This function maps internally to the logging level ::SIRL_NOTICE.
- *
- * @param format A printf-style format string.
- * @param ... \a (variadic) Additional arguments whose types correspond to
- * the format specifier at the same index in \p format.
- *
- * @return boolean
- * @retval true All destinations registered for this level were successfully
- * processed.
- * @retval false One or more destinations were not successfully processed.
+/*
+ * Log a formatted notice message.
  */
 
 bool sir_notice(const sirchar_t *format, ...);
 
-/**
- * @brief Log a formatted warning message.
- *
- * This function maps internally to the logging level ::SIRL_WARN.
- *
- * @param format A printf-style format string.
- * @param ... \a (variadic) Additional arguments whose types correspond to
- * the format specifier at the same index in \p format.
- *
- * @return boolean
- * @retval true All destinations registered for this level were successfully
- * processed.
- * @retval false One or more destinations were not successfully processed.
+/*
+ * Log a formatted warning message.
  */
 
 bool sir_warn(const sirchar_t *format, ...);
 
-/**
- * @brief Log a formatted error message.
- *
- * This function maps internally to the logging level ::SIRL_ERROR.
- *
- * @param format A printf-style format string.
- * @param ... \a (variadic) Additional arguments whose types correspond to
- * the format specifier at the same index in \p format.
- *
- * @return boolean
- * @retval true All destinations registered for this level were successfully
- * processed.
- * @retval false One or more destinations were not successfully processed.
+/*
+ * Log a formatted error message.
  */
 
 bool sir_error(const sirchar_t *format, ...);
 
-/**
- * @brief Log a formatted critical error message.
- *
- * This function maps internally to the logging level ::SIRL_CRIT.
- *
- * @param format A printf-style format string.
- * @param ... \a (variadic) Additional arguments whose types correspond to
- * the format specifier at the same index in \p format.
- *
- * @return boolean
- * @retval true All destinations registered for this level were successfully
- * processed.
- * @retval false One or more destinations were not successfully processed.
+/*
+ * Log a formatted critical error message.
  */
 
 bool sir_crit(const sirchar_t *format, ...);
 
-/**
- * @brief Log a formatted alert message.
- *
- * This function maps internally to the logging level ::SIRL_ALERT.
- *
- * @param format A printf-style format string.
- * @param ... \a (variadic) Additional arguments whose types correspond to
- * the format specifier at the same index in \p format.
- *
- * @return boolean
- * @retval true All destinations registered for this level were successfully
- * processed.
- * @retval false One or more destinations were not successfully processed.
+/*
+ * Log a formatted alert message.
  */
 
 bool sir_alert(const sirchar_t *format, ...);
 
-/**
- * @brief Log a formatted emergency message.
- *
- * This function maps internally to the logging level ::SIRL_EMERG.
- *
- * @param format A printf-style format string.
- * @param ... \a (variadic) Additional arguments whose types correspond to
- * the format specifier at the same index in \p format.
- *
- * @return boolean
- * @retval true All destinations registered for this level were successfully
- * processed.
- * @retval false One or more destinations were not successfully processed.
+/*
+ * Log a formatted emergency message.
  */
 
 bool sir_emerg(const sirchar_t *format, ...);
 
-/**
- * @brief Add a log file to receive formatted output for one or more
- * ::sir_level.
- *
- * @param path The absolute or relative path to the file. If it does not
- * exist, it will be created.
- * @param levels One or more ::sir_level for which the file should be sent
- * output. Use
- * ::SIRL_ALL to send all logging levels to the file.
- * @param opts Zero or more ::sir_option flags used to control output
- * formatting.
- *
- * @attention The sirfileid_t type is a pointer to the internally mapped
- * file descriptor for a file. If you modify the value at this address, the
- * behavior is undefined, and bad things will happen.
- *
- * @return sirfileid_t
- * @retval The file descriptor for the file that was successfully added.
- * @retval NULL An error occurred while trying to add the file.
+/*
+ * Add a log file to receive formatted output for one or more sir_level.
  */
 
 sirfileid_t sir_addfile(const sirchar_t *path, sir_levels levels,
                         sir_options opts);
 
-/**
- * @brief Remove a previously added log file.
- *
- * @param id The file descriptor returned from ::sir_addfile.
- *
- * @return boolean
- * @retval true The file was removed and will no longer receive output.
- * @retval false An error occurred while trying to remove the file.
+/*
+ * Remove a previously added log file.
  */
 
 bool sir_remfile(sirfileid_t id);
 
-/**
- * @brief Sets the text style in \a stdio output for a ::sir_level of output.
- *
- * @param level The level \a (only one is permitted per call) for which the
- * style will be set.
- * @param style Foreground color, background color, and brightness control
- * flags bitwise OR'd to create the text style for \p level. See
- * ::sir_textstyle.
- *
- * @return boolean
- * @retval true The style is valid and was applied.
- * @retval false An error occurred while trying to set the text style.
+/*
+ * Sets the text style in stdio output for a sir_level of output.
  */
 
 bool sir_settextstyle(sir_level level, sir_textstyle style);
 
-/**
- * @brief Resets all \a stdio text styles to their default values
- * (::sir_default_styles).
- *
- * @return boolean
- * @retval true All text styles were reset to their defaults.
- * @retval false An error occurred while trying to reset text styles.
+/*
+ * Resets all stdio text styles to their default values (sir_default_styles).
  */
 
 bool sir_resettextstyles(void);

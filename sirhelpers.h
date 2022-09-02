@@ -1,4 +1,6 @@
 /*
+ * scspell-id: 2b3241cb-2b0e-11ed-84fb-80ee73e9b8e7
+ *
  * Copyright (c) 2018 Ryan M. Lederman
  * Copyright (c) 2022 Jeffrey H. Johnson <trnsz@pobox.com>
  *
@@ -27,6 +29,7 @@
 # include "sirtypes.h"
 
 /* Computes the size of an array. */
+
 # define _sir_countof(arr) ( sizeof ( arr ) / sizeof ( arr[0] ))
 
 /*
@@ -37,6 +40,7 @@
 # define _sir_mkerror(code) (((uint32_t)( code & 0x7fff ) << 16 ) | 0x80000000 )
 
 /* Validates an internal error. */
+
 static inline bool
 _sir_validerror(sirerror_t err)
 {
@@ -45,7 +49,8 @@ _sir_validerror(sirerror_t err)
   return masked >= 0x80000000 && masked <= 0x8fff0000;
 }
 
-/** Extracts just the code from an internal error. */
+/* Extracts just the code from an internal error. */
+
 static inline uint16_t
 _sir_geterrcode(sirerror_t err)
 {
@@ -53,18 +58,22 @@ _sir_geterrcode(sirerror_t err)
 }
 
 /* Evil macro used for _sir_lv wrappers. */
+
 # define _SIR_L_START(format)  \
   bool r = false;              \
   va_list args;                \
   va_start(args, format);
 
 /* Evil macro used for _sir_lv wrappers. */
+
 # define _SIR_L_END(args) va_end(args);
 
 /* Validates a pointer. */
+
 # define _sir_validptr(p) ( NULL != p )
 
 /* Checks a bitfield for a specific set of bits. */
+
 static inline bool
 _sir_bittest(uint32_t flags, uint32_t test)
 {
@@ -72,6 +81,7 @@ _sir_bittest(uint32_t flags, uint32_t test)
 }
 
 /* Wraps free. */
+
 static inline void
 __sir_safefree(void **p)
 {
@@ -85,6 +95,7 @@ __sir_safefree(void **p)
 }
 
 /* Wraps free. */
+
 static inline void
 _sir_safefree(void *p)
 {
@@ -92,15 +103,19 @@ _sir_safefree(void *p)
 }
 
 /* Validates a log file identifier. */
+
 bool _sir_validfid(int id);
 
 /* Validates a set of sir_level flags. */
+
 bool _sir_validlevels(sir_levels levels);
 
 /* Validates a single sir_level. */
+
 bool _sir_validlevel(sir_level level);
 
 /* Applies default sir_level flags if applicable. */
+
 static inline void
 _sir_defaultlevels(sir_levels *levels, sir_levels def)
 {
@@ -111,6 +126,7 @@ _sir_defaultlevels(sir_levels *levels, sir_levels def)
 }
 
 /* Applies default sir_options flags if applicable. */
+
 static inline void
 _sir_defaultopts(sir_options *opts, sir_options def)
 {
@@ -121,12 +137,15 @@ _sir_defaultopts(sir_options *opts, sir_options def)
 }
 
 /* Validates a set of sir_option flags. */
+
 bool _sir_validopts(sir_options opts);
 
 /* Validates a string pointer and optionally fails if it's invalid. */
+
 bool __sir_validstr(const sirchar_t *str, bool fail);
 
 /* Validates a string pointer and fails if it's invalid. */
+
 static inline bool
 _sir_validstr(const sirchar_t *str)
 {
@@ -134,6 +153,7 @@ _sir_validstr(const sirchar_t *str)
 }
 
 /* Validates a string pointer but ignores if it's invalid. */
+
 static inline bool
 _sir_validstrnofail(const sirchar_t *str)
 {
@@ -141,6 +161,7 @@ _sir_validstrnofail(const sirchar_t *str)
 }
 
 static inline bool
+
 _sir_validupdatedata(sir_update_data *data)
 {
   return NULL != data
@@ -149,6 +170,7 @@ _sir_validupdatedata(sir_update_data *data)
 }
 
 /* Places a null terminator at the first index in a string buffer. */
+
 static inline void
 _sir_resetstr(sirchar_t *str)
 {

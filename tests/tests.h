@@ -1,4 +1,6 @@
 /*
+ * scspell-id: e62b0803-2b0e-11ed-b8c6-80ee73e9b8e7
+ *
  * Copyright (c) 2018 Ryan M. Lederman
  * Copyright (c) 2022 Jeffrey H. Johnson <trnsz@pobox.com>
  *
@@ -23,9 +25,9 @@
 
 /*
  * Supported systems:
- * - Ubuntu 16.04 x64 (gcc)
- * - Windows 10 x64  (MinGW)
- * - macOS 10.13.4 x64 (clang)
+ * - Ubuntu 16.04   x64  (GCC)
+ * - Windows 10     x64  (MinGW)
+ * - macOS 10.13.4  x64  (Clang)
  * - Other platforms are untested.
  */
 
@@ -38,6 +40,9 @@
 # ifndef _DEFAULT_SOURCE
 #  define _DEFAULT_SOURCE 1
 # endif /* ifndef _DEFAULT_SOURCE */
+# ifndef _ALLA_SOURCE
+#  define _ALL_SOURCE 1
+# endif /* ifndef _ALL_SOURCE */
 
 # define _CRT_RAND_S
 
@@ -87,80 +92,80 @@
   var.d_stderr.opts   = o_stderr;                                   \
   var.d_stderr.levels = l_stderr;                                   \
   if (strlen(name) > 0)                                             \
-  strncpy(var.processName, name, SIR_MAXNAME);                      \
+  (void)strncpy(var.processName, name, SIR_MAXNAME);                \
   bool var ## _init = sir_init(&var);
 
 # define INIT(var, l_stdout, o_stdout, l_stderr, o_stderr) \
   INIT_N(var, l_stdout, o_stdout, l_stderr, o_stderr, "")
 
-/** Function signature for a single test. */
+/* Function signature for a single test. */
 typedef bool (*sir_test_fn) (void);
 
-/** Map a test to a human-readable description. */
+/* Map a test to a human-readable description. */
 typedef struct
 {
   const char *name;
   sir_test_fn fn;
 } sir_test;
 
-/**
- * @defgroup tests Tests
- *
- * libsir integrity tests.
- *
- * @addtogroup tests
- * @{
+/*
+ * Properly handle multiple threads competing for locked sections.
  */
 
-/**
- * @test Properly handle multiple threads competing for locked sections.
- */
 bool sirtest_mthread_race(void);
 
-/**
- * @test Properly handle messages that exceed internal buffer sizes.
+/*
+ * Properly handle messages that exceed internal buffer sizes.
  */
+
 bool sirtest_exceedmaxsize(void);
 
-/**
- * @test Properly handle adding and removing log files.
+/*
+ * Properly handle adding and removing log files.
  */
+
 bool sirtest_filecachesanity(void);
 
-/**
- * @test Properly handle invalid text style.
+/*
+ * Properly handle invalid text style.
  */
+
 bool sirtest_failsetinvalidstyle(void);
 
-/**
- * @test Properly handle the lack of any output destinations.
+/*
+ * Properly handle the lack of any output destinations.
  */
+
 bool sirtest_failnooutputdest(void);
 
-/**
- * @test Properly handle invalid log file name.
+/*
+ * Properly handle invalid log file name.
  */
+
 bool sirtest_failinvalidfilename(void);
 
-/**
- * @test Properly handle log file without appropriate permissions.
+/*
+ * Properly handle log file without appropriate permissions.
  */
+
 bool sirtest_failfilebadpermission(void);
 
-/**
- * @test Properly handle null/empty input.
+/*
+ * Properly handle null/empty input.
  */
+
 bool sirtest_failnulls(void);
 
-/**
- * @test Properly handle calls without initialization.
+/*
+ * Properly handle calls without initialization.
  */
+
 bool sirtest_failwithoutinit(void);
 
-/**
- * @test Properly handle two initialization calls without corresponding
- * cleanup.
+/*
+ * Properly handle two initialization calls without corresponding cleanup.
  */
+
 bool sirtest_failinittwice(void);
 
 /**
@@ -168,53 +173,57 @@ bool sirtest_failinittwice(void);
  */
 bool sirtest_failaftercleanup(void);
 
-/**
- * @test Properly handle initialization, cleanup, re-initialization.
+/*
+ * Properly handle initialization, cleanup, re-initialization.
  */
+
 bool sirtest_initcleanupinit(void);
 
-/**
- * @test Properly refuse to add a duplicate file.
+/*
+ * Properly refuse to add a duplicate file.
  */
+
 bool sirtest_faildupefile(void);
 
-/**
- * @test Properly refuse to remove a file that isn't added.
+/*
+ * Properly refuse to remove a file that isn't added.
  */
+
 bool sirtest_failremovebadfile(void);
 
-/**
- * @test Properly roll/archive a file when it hits max size.
+/*
+ * Properly roll/archive a file when it hits max size.
  */
+
 bool sirtest_rollandarchivefile(void);
 
-/**
- * @test Properly return valid codes and messages for all possible errors.
+/*
+ * Properly return valid codes and messages for all possible errors.
  */
+
 bool sirtest_errorsanity(void);
 
-/**
- * @test Properly style stdio output for each level, and handle style
- * overrides.
+/*
+ * Properly style stdio output for each level, and handle style overrides.
  */
+
 bool sirtest_textstylesanity(void);
 
-/**
- * @test Performance evaluation.
+/*
+ * Performance evaluation.
  */
+
 bool sirtest_perf(void);
 
-/**
- * @test Properly update levels/options at runtime.
+/*
+ * Properly update levels/options at runtime.
  */
+
 bool sirtest_updatesanity(void);
 
-/**
- * @test .
- *
- * bool sirtest_xxxx(void); */
-
-/** @} */
+/*
+ * bool sirtest_xxxx(void);
+ */
 
 bool printerror(bool pass);
 void printexpectederr(void);

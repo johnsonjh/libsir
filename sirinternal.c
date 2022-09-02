@@ -1,4 +1,6 @@
 /*
+ * scspell-id: 312060a7-2b0e-11ed-abd0-80ee73e9b8e7
+ *
  * Copyright (c) 2018 Ryan M. Lederman
  * Copyright (c) 2022 Jeffrey H. Johnson <trnsz@pobox.com>
  *
@@ -119,20 +121,19 @@ _sir_init(sirinit *si)
 
   if (_si)
     {
-      memcpy(_si, si, sizeof ( sirinit ));
+      (void)memcpy(_si, si, sizeof ( sirinit ));
 
 #ifndef SIR_NO_SYSLOG
       if (0 != _si->d_syslog.levels)
         {
           openlog(
             _sir_validstrnofail(_si->processName) ? _si->processName : "",
-            ( _si->d_syslog.includePID ? LOG_PID : 0 ) | LOG_ODELAY,
-            LOG_USER);
+            ( _si->d_syslog.includePID ? LOG_PID : 0 ) | LOG_ODELAY, LOG_USER);
         }
 #endif /* ifndef SIR_NO_SYSLOG */
 
       _sir_magic = _SIR_MAGIC;
-      _sir_unlocksection(_SIRM_INIT);
+      (void)_sir_unlocksection(_SIRM_INIT);
       return true;
     }
 
@@ -291,11 +292,11 @@ _sir_cleanup(void)
 
   if (cleanup &= NULL != si)
     {
-      memset(si, 0, sizeof ( sirinit ));
+      (void)memset(si, 0, sizeof ( sirinit ));
       cleanup &= _sir_unlocksection(_SIRM_INIT);
     }
 
-  _sir_resettextstyles();
+  (void)_sir_resettextstyles();
   _sir_magic = 0;
   _sir_selflog("%s: libsir is cleaned up\n", __func__);
   return cleanup;
@@ -355,7 +356,7 @@ void
 _sir_once(sironce_t *once, sir_once_fn func)
 {
 #ifndef _WIN32
-  pthread_once(once, func);
+  (void)pthread_once(once, func);
 #else  /* ifndef _WIN32 */
   BOOL result   = InitOnceExecuteOnce(once, func, NULL, NULL);
   assert(FALSE != result);
@@ -383,8 +384,8 @@ _sir_logv(sir_level level, const sirchar_t *format, va_list args)
     0
   };
 
-  memcpy(&tmpsi, si, sizeof ( sirinit ));
-  _sir_unlocksection(_SIRM_INIT);
+  (void)memcpy(&tmpsi, si, sizeof ( sirinit ));
+  (void)_sir_unlocksection(_SIRM_INIT);
 
   sirbuf buf;
   siroutput output = {
@@ -415,7 +416,7 @@ _sir_logv(sir_level level, const sirchar_t *format, va_list args)
   assert(output.timestamp);
 
   time_t now;
-  long nowmsec;
+  long long nowmsec;
   bool gettime = _sir_getlocaltime(&now, &nowmsec);
 
   assert(gettime);
@@ -448,7 +449,7 @@ _sir_logv(sir_level level, const sirchar_t *format, va_list args)
 
   output.level = _sirbuf_get(&buf, _SIRBUF_LEVEL);
   assert(output.level);
-  snprintf(
+  (void)snprintf(
     output.level,
     SIR_MAXLEVEL,
     SIR_LEVELFORMAT,
@@ -459,7 +460,7 @@ _sir_logv(sir_level level, const sirchar_t *format, va_list args)
 
   if (_sir_validstrnofail(tmpsi.processName))
     {
-      strncpy(output.name, tmpsi.processName, SIR_MAXNAME);
+      (void)strncpy(output.name, tmpsi.processName, SIR_MAXNAME);
     }
   else
     {
@@ -617,19 +618,19 @@ _sir_format(bool styling, sir_options opts, siroutput *output)
 #ifndef _WIN32
       if (styling)
         {
-          strncat(output->output, output->style, SIR_MAXSTYLE);
+          (void)strncat(output->output, output->style, SIR_MAXSTYLE);
         }
 #endif /* ifndef _WIN32 */
 
       if (!_sir_bittest(opts, SIRO_NOTIME))
         {
-          strncat(output->output, output->timestamp, SIR_MAXTIME);
+          (void)strncat(output->output, output->timestamp, SIR_MAXTIME);
           first = false;
 
 #ifdef SIR_MSEC_TIMER
           if (!_sir_bittest(opts, SIRO_NOMSEC))
             {
-              strncat(output->output, output->msec, SIR_MAXMSEC);
+              (void)strncat(output->output, output->msec, SIR_MAXMSEC);
             }
 #endif /* ifdef SIR_MSEC_TIMER */
         }
@@ -638,10 +639,10 @@ _sir_format(bool styling, sir_options opts, siroutput *output)
         {
           if (!first)
             {
-              strcat(output->output, " ");
+              (void)strcat(output->output, " ");
             }
 
-          strncat(output->output, output->level, SIR_MAXLEVEL);
+          (void)strncat(output->output, output->level, SIR_MAXLEVEL);
           first = false;
         }
 
@@ -651,10 +652,10 @@ _sir_format(bool styling, sir_options opts, siroutput *output)
         {
           if (!first)
             {
-              strcat(output->output, " ");
+              (void)strcat(output->output, " ");
             }
 
-          strncat(output->output, output->name, SIR_MAXNAME);
+          (void)strncat(output->output, output->name, SIR_MAXNAME);
           first = false;
           name  = true;
         }
@@ -666,49 +667,49 @@ _sir_format(bool styling, sir_options opts, siroutput *output)
         {
           if (name)
             {
-              strcat(output->output, "(");
+              (void)strcat(output->output, "(");
             }
           else if (!first)
             {
-              strcat(output->output, " ");
+              (void)strcat(output->output, " ");
             }
 
           if (wantpid)
             {
-              strncat(output->output, output->pid, SIR_MAXPID);
+              (void)strncat(output->output, output->pid, SIR_MAXPID);
             }
 
           if (wanttid)
             {
               if (wantpid)
                 {
-                  strcat(output->output, SIR_PIDSEPARATOR);
+                  (void)strcat(output->output, SIR_PIDSEPARATOR);
                 }
 
-              strncat(output->output, output->tid, SIR_MAXPID);
+              (void)strncat(output->output, output->tid, SIR_MAXPID);
             }
 
           if (name)
             {
-              strcat(output->output, ")");
+              (void)strcat(output->output, ")");
             }
         }
 
       if (!first)
         {
-          strcat(output->output, ": ");
+          (void)strcat(output->output, ": ");
         }
 
-      strncat(output->output, output->message, SIR_MAXMESSAGE);
+      (void)strncat(output->output, output->message, SIR_MAXMESSAGE);
 
 #ifndef _WIN32
       if (styling)
         {
-          strncat(output->output, SIR_ENDSTYLE, SIR_MAXSTYLE);
+          (void)strncat(output->output, SIR_ENDSTYLE, SIR_MAXSTYLE);
         }
 #endif /* ifndef _WIN32 */
 
-      strcat(output->output, "\n");
+      (void)strcat(output->output, "\n");
       return output->output;
     }
 
@@ -748,7 +749,7 @@ _sir_syslog_maplevel(sir_level level)
       return LOG_DEBUG;
 
     default:
-      assert(false);
+      /* assert(false); */
       return LOG_INFO;
     }
 }
@@ -790,7 +791,8 @@ _sirbuf_get(sirbuf *buf, size_t idx)
       return buf->output;
 
     default:
-      assert(false);
+	  ;
+      /* assert(false); */
     }
 
   return NULL;
@@ -853,11 +855,11 @@ _sir_formattime(time_t now, sirchar_t *buffer, const sirchar_t *format)
 }
 
 bool
-_sir_getlocaltime(time_t *tbuf, long *nsecbuf)
+_sir_getlocaltime(time_t *tbuf, long long *nsecbuf)
 {
   if (tbuf)
     {
-      time(tbuf);
+      (void)time(tbuf);
 #ifdef SIR_MSEC_POSIX
       struct timespec ts = {
         0
@@ -904,7 +906,7 @@ _sir_getlocaltime(time_t *tbuf, long *nsecbuf)
         }
 
 #else /* ifdef SIR_MSEC_POSIX */
-      time(tbuf);
+      (void)time(tbuf);
       if (nsecbuf)
         {
           *nsecbuf = 0;
@@ -952,6 +954,7 @@ _sir_gettid(void)
 bool
 _sir_getthreadname(char name[SIR_MAXPID])
 {
+  (void)name;
 #ifdef _GNU_SOURCE
   return 0 == pthread_getname_np(pthread_self(), name, SIR_MAXPID);
 #else /* ifdef _GNU_SOURCE */

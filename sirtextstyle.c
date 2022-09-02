@@ -1,4 +1,6 @@
 /*
+ * scspell-id: bc3d6378-2b0e-11ed-86f8-80ee73e9b8e7
+ *
  * Copyright (c) 2018 Ryan M. Lederman
  * Copyright (c) 2022 Jeffrey H. Johnson <trnsz@pobox.com>
  *
@@ -87,7 +89,7 @@ _sir_gettextstyle(sir_level level)
               found = _sir_getdefstyle(sir_default_styles, level);
             }
 
-          _sir_unlocksection(_SIRM_TEXTSTYLE);
+          (void)_sir_unlocksection(_SIRM_TEXTSTYLE);
           return found;
         }
     }
@@ -164,7 +166,7 @@ _sir_resettextstyles(void)
           map[n].style = SIRS_INVALID;
         }
 
-      _sir_unlocksection(_SIRM_TEXTSTYLE);
+      (void)_sir_unlocksection(_SIRM_TEXTSTYLE);
       return true;
     }
 
@@ -210,22 +212,22 @@ _sir_formatstyle(sir_textstyle style, sirchar_t *buf, size_t size)
 
           if (privfg != 0)
             {
-              snprintf(fgfmt, 5, ";%03hhu", (unsigned char)privfg);
+              (void)snprintf(fgfmt, 5, ";%03hhu", (unsigned char)privfg);
             }
 
           if (privbg != 0)
             {
-              snprintf(bgfmt, 5, ";%03hhu", (unsigned char)privbg);
+              (void)snprintf(bgfmt, 5, ";%03hhu", (unsigned char)privbg);
             }
 
           /* '\033[n;nnn;nnnm' */
-          snprintf(buf, size, "\033[%.1hu%s%sm", privattr, fgfmt, bgfmt);
+          (void)snprintf(buf, size, "\033[%.1hu%s%sm", privattr, fgfmt, bgfmt);
 
           return _sir_validstr(buf);
 
 #else /* ifndef _WIN32 */
           uint16_t final = privattr | privfg | privbg;
-          memcpy(buf, &final, sizeof ( uint16_t ));
+          (void)memcpy(buf, &final, sizeof ( uint16_t ));
           return true;
 #endif /* ifndef _WIN32 */
         }

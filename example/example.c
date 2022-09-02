@@ -1,4 +1,6 @@
 /*
+ * scspell-id: d9b3c85e-2b0e-11ed-a0dd-80ee73e9b8e7
+ *
  * Copyright (c) 2018 Ryan M. Lederman
  * Copyright (c) 2022 Jeffrey H. Johnson <trnsz@pobox.com>
  *
@@ -43,7 +45,7 @@ main(int argc, char **argv)
    * Instantiate the initialization structure.
    *
    * Note: It is not necessary to retain this structure in memory;
-   * libsir makes a copy of it before returning from ::sir_init.
+   * libsir makes a copy of it before returning from sir_init.
    */
 
   sirinit si = {
@@ -90,6 +92,7 @@ main(int argc, char **argv)
   strcpy(si.processName, "example");
 
   /* Initialize SIR. */
+
   if (!sir_init(&si))
     {
       return report_error();
@@ -115,7 +118,7 @@ main(int argc, char **argv)
   float f = 0.0009f;
 
   /*
-   * This will be sent to all destinations registered for ::SIRL_DEBUG.
+   * This will be sent to all destinations registered for SIRL_DEBUG.
    * Notice that it is not necessary to add a newline at the end. libsir does
    * this automatically.
    */
