@@ -129,12 +129,12 @@ typedef BOOL ( CALLBACK *sir_once_fn ) (PINIT_ONCE, PVOID, PVOID *);
 # endif /* ifndef _WIN32 */
 
 # ifndef thread_local
-#  if __STDC_VERSION__ >= 201112 && !defined( __STDC_NO_THREADS__ )
+#  if ( __STDC_VERSION__ >= 201112 && !defined( __STDC_NO_THREADS__ ) ) || \
+     ( defined(__SUNPRO_C) || defined(__SUNPRO_CC) || defined(__SUNPRO_C_COMPAT) )
 #   define thread_local _Thread_local
 #  elif defined( _WIN32 )
 #   define thread_local __declspec( thread )
-#  elif defined( __GNUC__ ) || defined(__xlc__) || defined(__xlC__) || \
-      defined(__SUNPRO_C) || defined(__SUNPRO_CC) || defined(__SUNPRO_C_COMPAT)
+#  elif defined( __GNUC__ ) || defined(__xlc__) || defined(__xlC__)
 #   define thread_local __thread
 #  else /* if __STDC_VERSION__ >= 201112 && !defined( __STDC_NO_THREADS__ ) */
 #   error "Unable to configure thread_local!"
