@@ -161,7 +161,7 @@ _sir_geterror(sirchar_t message[SIR_MAXERROR - 1])
 
           if (_SIR_E_PLATFORM == sir_errors[n].e)
             {
-              final = (sirchar_t *)calloc(SIR_MAXERROR, sizeof ( sirchar_t ));
+              final = (sirchar_t *)calloc(SIR_MAXERROR + 1, sizeof ( sirchar_t ));
 
               if (_sir_validptr(final))
                 {
