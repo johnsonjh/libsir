@@ -105,6 +105,9 @@ typedef void (*log_once_fn) (void);
 #  include <synchapi.h>
 #  include <windows.h>
 
+#  define F_OK 0
+#  define access _access
+
 #  define LOG_MAXPATH MAX_PATH
 #  define LOG_NO_SYSLOG
 #  define LOG_MSEC_TIMER

@@ -63,6 +63,9 @@
 #  define _WIN32_WINNT 0x0600
 #  include <process.h>
 #  include <windows.h>
+#  include <io.h>
+#  define F_OK 0
+#  define access _access
 # endif /* ifndef _WIN32 */
 
 # ifndef _WIN32

@@ -31,12 +31,8 @@
 #include "sirmutex.h"
 #include "sirtextstyle.h"
 
-static loginit _log_si = {
-  0
-};
-static logfcache _log_fc = {
-  0
-};
+static loginit _log_si = { 0 };
+static logfcache _log_fc = { 0 };
 
 static logmutex_t si_mutex;
 static logonce_t  si_once = LOG_ONCE_INIT;
@@ -472,7 +468,7 @@ _log_logv(log_level level, const logchar_t *format, va_list args)
   assert(output.pid);
 
   pid_t pid  = _log_getpid();
-  int pidfmt = snprintf(output.pid, LOG_MAXPID, LOG_PIDFORMAT, pid);
+  int pidfmt = snprintf(output.pid, LOG_MAXPID, LOG_PIDFORMAT, (unsigned long)pid);
 
   assert(pidfmt >= 0);
 
@@ -490,7 +486,7 @@ _log_logv(log_level level, const logchar_t *format, va_list args)
     {
       if (!_log_getthreadname(output.tid))
         {
-          pidfmt = snprintf(output.tid, LOG_MAXPID, LOG_PIDFORMAT, tid);
+          pidfmt = snprintf(output.tid, LOG_MAXPID, LOG_PIDFORMAT, (unsigned long)tid);
           assert(pidfmt >= 0);
 
           if (pidfmt < 0)
@@ -792,8 +788,7 @@ _logbuf_get(logbuf *buf, size_t idx)
       return buf->output;
 
     default:
-	  ;
-      /* assert(false); */
+	  ; /* assert(false); */
     }
 
   return NULL;
@@ -828,6 +823,7 @@ _log_levelstr(log_level level)
       return LOGL_S_EMERG;
 
     case LOGL_DEBUG:
+	  /*FALLTHROUGH*/
     default:
       return LOGL_S_DEBUG;
     }

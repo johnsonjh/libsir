@@ -29,6 +29,8 @@
 #include "sirinternal.h"
 #include "sirmutex.h"
 
+volatile unsigned long long int sir_sequence_counter = 0;
+
 logfileid_t
 _log_addfile(const logchar_t *path, log_levels levels, log_options opts)
 {
@@ -183,10 +185,8 @@ _logfile_write(logfile *sf, const logchar_t *output)
 
           if (_logfile_roll(sf, &newpath))
             {
-              logchar_t header[LOG_MAXMESSAGE] = {
-                0
-              };
-              (void)snprintf(header, LOG_MAXMESSAGE, LOG_FHROLLED, newpath);
+              logchar_t header[LOG_MAXMESSAGE] = { 0 };
+              (void)snprintf(header, LOG_MAXMESSAGE, LOG_FHROLLED);
               rolled = _logfile_writeheader(sf, header);
             }
 
@@ -211,7 +211,7 @@ _logfile_write(logfile *sf, const logchar_t *output)
           _log_handleerr(eof);
 
           _log_selflog(
-            "%s: wrote %lu/%lu bytes to %d; ferror: %d, feof: %d\n",
+            "%s: wrote %'lu/%'lu bytes to %d; ferror: %d, feof: %d\n",
             __func__,
             write,
             writeLen,
@@ -245,17 +245,13 @@ _logfile_writeheader(logfile *sf, const logchar_t *msg)
 
       if (gettime)
         {
-          logchar_t timestamp[LOG_MAXTIME] = {
-            0
-          };
+          logchar_t timestamp[LOG_MAXTIME] = { 0 };
           bool fmttime = _log_formattime(now, timestamp, LOG_FHTIMEFORMAT);
           assert(fmttime);
 
           if (fmttime)
             {
-              logchar_t header[LOG_MAXOUTPUT] = {
-                0
-              };
+              logchar_t header[LOG_MAXOUTPUT] = { 0 };
               int fmt = snprintf(header, LOG_MAXOUTPUT, LOG_FHFORMAT, msg, timestamp);
 
               if (fmt < 0)
@@ -276,9 +272,7 @@ _logfile_needsroll(logfile *sf)
 {
   if (_logfile_validate(sf))
     {
-      struct stat st = {
-        0
-      };
+      struct stat st = { 0 };
       int getstat = fstat(sf->id, &st);
 
       if (0 != getstat)
@@ -333,11 +327,19 @@ _logfile_roll(logfile *sf, logchar_t **newpath)
                             LOG_FNAMEFORMAT,
                             name,
                             timestamp,
+							sir_sequence_counter++,
                             _log_validstrnofail(ext) ? ext : "");
 
                       if (fmtpath < 0)
                         {
                           _log_handleerr(errno);
+                        }
+
+                      if (access(*newpath, F_OK) == 0)
+                        {
+                          _log_safefree(name);
+                          _log_safefree(ext);
+                          return NULL;
                         }
 
                       r = fmtpath >= 0 && _logfile_archive(sf, *newpath);
@@ -363,6 +365,16 @@ _logfile_archive(logfile *sf, const logchar_t *newpath)
       /* Need to close the old file first on windows. */
       _logfile_close(sf);
 #endif /* ifdef _WIN32 */
+
+      if (access(newpath, F_OK) == 0)
+	    {
+          _log_selflog(
+            "%s: '%s' exists!\n",
+            __func__,
+			newpath);
+		  return false;
+        }
+
       if (0 != rename(sf->path, newpath))
         {
           _log_handleerr(errno);

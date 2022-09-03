@@ -43,7 +43,7 @@
  * The format for the current process/thread ID,
  */
 
-# define LOG_PIDFORMAT "%d"
+# define LOG_PIDFORMAT "%lu"
 
 /* The character to place between process and thread IDs. */
 
@@ -55,13 +55,13 @@
 
 /* The size, in bytes, at which a log file will be rolled/archived. */
 
-# define LOG_FROLLSIZE ( 1024L * 1024L * 10L )
+# define LOG_FROLLSIZE ( 1024L * 1024L * 1L )
 
 /*
  * The time format string in file headers (see LOG_FHFORMAT).
  */
 
-# define LOG_FHTIMEFORMAT "%H:%M:%S %a %d %b %y (%z)"
+# define LOG_FHTIMEFORMAT "%H:%M:%S %a %d %B %Y %Z (%z)"
 
 /*
  * The format string written to a log file when logging begins or the file
@@ -70,21 +70,14 @@
  * - The second %s is the current date/time (see LOG_FHTIMEFORMAT).
  */
 
-# define LOG_FHFORMAT "\n\n----- %s %s -----\n\n"
+# define LOG_FHFORMAT "\n\n===> %s %s <===\n\n"
 
 /*
  * The string included in LOG_FHFORMAT when a logging session begins.
  */
 
-# define LOG_FHBEGIN "session begin @"
-
-/*
- * The string included in LOG_FHFORMAT when a file is rolled/archived
- *   due to size.
- * The %s format specifier is the path of the archived file.
- */
-
-# define LOG_FHROLLED "archived as %s due to size @"
+# define LOG_FHBEGIN  "Log begins at"
+# define LOG_FHROLLED "Log begins at"
 
 /*
  * The time format string for rolled/archived log files (see LOG_FNAMEFORMAT).
@@ -97,11 +90,12 @@
  * - The first %s format specifier is the name part (the name up to the
  *     last '.') of the original file name.
  * - The second %s is the time stamp as defined by LOG_ROLLTIMEFORMAT.
+ * - The %d is an increasing sequence number.
  * - The third %s is the extension part (the name after and including the
  *     last '.') of the original file name if one is present.
  */
 
-# define LOG_FNAMEFORMAT "%s-%s%s"
+# define LOG_FNAMEFORMAT "%s-%s-%.3llu%s"
 
 /* The human-readable form of the LOGL_EMERG level. */
 
