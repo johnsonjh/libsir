@@ -1,4 +1,5 @@
 /*
+ * SPDX-License-Identifier: MIT
  * scspell-id: e1aeb7d3-2b0d-11ed-8599-80ee73e9b8e7
  *
  * Copyright (c) 2018 Ryan M. Lederman
@@ -54,7 +55,7 @@
 
 /* The size, in bytes, at which a log file will be rolled/archived. */
 
-# define LOG_FROLLSIZE ( 1024L * 1024L * 5L )
+# define LOG_FROLLSIZE ( 1024L * 1024L * 10L )
 
 /*
  * The time format string in file headers (see LOG_FHFORMAT).
@@ -79,7 +80,7 @@
 
 /*
  * The string included in LOG_FHFORMAT when a file is rolled/archived
- * due to size.
+ *   due to size.
  * The %s format specifier is the path of the archived file.
  */
 
@@ -94,45 +95,45 @@
 /*
  * The format string for rolled/archived log file names.
  * - The first %s format specifier is the name part (the name up to the
- *   last '.') of the original file name.
+ *     last '.') of the original file name.
  * - The second %s is the time stamp as defined by LOG_ROLLTIMEFORMAT.
  * - The third %s is the extension part (the name after and including the
- *   last '.') of the original file name if one is present.
+ *     last '.') of the original file name if one is present.
  */
 
 # define LOG_FNAMEFORMAT "%s-%s%s"
 
-/* The human-readable form of the SIRL_EMERG level. */
+/* The human-readable form of the LOGL_EMERG level. */
 
-# define SIRL_S_EMERG "emrg"
+# define LOGL_S_EMERG    "EMRG"
 
-/* The human-readable form of the SIRL_ALERT level. */
+/* The human-readable form of the LOGL_ALERT level. */
 
-# define SIRL_S_ALERT "alrt"
+# define LOGL_S_ALERT    "ALRT"
 
-/* The human-readable form of the SIRL_CRIT level. */
+/* The human-readable form of the LOGL_CRIT level. */
 
-# define SIRL_S_CRIT "crit"
+# define LOGL_S_CRIT     "CRIT"
 
-/* The human-readable form of the SIRL_ERROR level. */
+/* The human-readable form of the LOGL_ERROR level. */
 
-# define SIRL_S_ERROR "erro"
+# define LOGL_S_ERROR    "ERRO"
 
-/* The human-readable form of the SIRL_WARN level. */
+/* The human-readable form of the LOGL_WARN level. */
 
-# define SIRL_S_WARN "warn"
+# define LOGL_S_WARN     "WARN"
 
-/* The human-readable form of the SIRL_NOTICE level. */
+/* The human-readable form of the LOGL_NOTICE level. */
 
-# define SIRL_S_NOTICE "noti"
+# define LOGL_S_NOTICE   "NOTI"
 
-/* The human-readable form of the SIRL_INFO level. */
+/* The human-readable form of the LOGL_INFO level. */
 
-# define SIRL_S_INFO "info"
+# define LOGL_S_INFO     "INFO"
 
-/* The human-readable form of the SIRL_DEBUG level. */
+/* The human-readable form of the LOGL_DEBUG level. */
 
-# define SIRL_S_DEBUG "debg"
+# define LOGL_S_DEBUG    "DEBG"
 
 /* The maximum number of log files that may be registered. */
 

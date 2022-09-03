@@ -1,4 +1,5 @@
 /*
+ * SPDX-License-Identifier: MIT
  * scspell-id: 2b3241cb-2b0e-11ed-84fb-80ee73e9b8e7
  *
  * Copyright (c) 2018 Ryan M. Lederman
@@ -119,7 +120,7 @@ bool _log_validlevel(log_level level);
 static inline void
 _log_defaultlevels(log_levels *levels, log_levels def)
 {
-  if (levels && SIRL_DEFAULT == *levels)
+  if (levels && LOGL_DEFAULT == *levels)
     {
       *levels = def;
     }

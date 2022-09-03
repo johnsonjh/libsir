@@ -1,4 +1,5 @@
 /*
+ * SPDX-License-Identifier: MIT
  * scspell-id: 0c8622d6-2b0e-11ed-90cd-80ee73e9b8e7
  *
  * Copyright (c) 2018 Ryan M. Lederman
@@ -563,11 +564,9 @@ _log_fcache_pred_path(const void *match, logfile *iter)
 
 #ifndef _WIN32
   return 0 == strncmp(path, iter->path, LOG_MAXPATH);
-
 #else /* ifndef _WIN32 */
   /* paths/file names are not case sensitive on windows. */
   return 0 == _strnicmp(path, iter->path, LOG_MAXPATH);
-
 #endif /* ifndef _WIN32 */
 }
 
@@ -690,7 +689,6 @@ _log_fopen(const logchar_t *path)
       errno_t open = fopen_s(&tmp, path, LOG_FOPENMODE);
       _log_handleerr(open);
       return tmp;
-
 #else /* ifdef __STDC_SECURE_LIB__ */
       FILE *f = fopen(path, LOG_FOPENMODE);
       if (!f)
@@ -699,7 +697,6 @@ _log_fopen(const logchar_t *path)
         }
 
       return f;
-
 #endif /* ifdef __STDC_SECURE_LIB__ */
     }
 

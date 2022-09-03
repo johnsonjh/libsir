@@ -1,4 +1,5 @@
 /*
+ * SPDX-License-Identifier: MIT
  * scspell-id: d9b3c85e-2b0e-11ed-a0dd-80ee73e9b8e7
  *
  * Copyright (c) 2018 Ryan M. Lederman
@@ -43,21 +44,16 @@ main(int argc, char **argv)
 
   /*
    * Instantiate the initialization structure.
-   *
-   * Note: It is not necessary to retain this structure in memory;
-   * libsir makes a copy of it before returning from log_init.
    */
 
-  loginit si = {
-    0
-  };
+  loginit si = { 0 };
 
   /*
    * Configure levels for stdout.
    * Send debug, information, warning, and notice messages there.
    */
 
-  si.d_stdout.levels = SIRL_DEBUG | SIRL_INFO | SIRL_WARN | SIRL_NOTICE;
+  si.d_stdout.levels = LOGL_DEBUG | LOGL_INFO | LOGL_WARN | LOGL_NOTICE;
 
   /*
    * Configure options for stdout.
@@ -71,7 +67,7 @@ main(int argc, char **argv)
    * Send error and above there.
    */
 
-  si.d_stderr.levels = SIRL_ERROR | SIRL_CRIT | SIRL_ALERT | SIRL_EMERG;
+  si.d_stderr.levels = LOGL_ERROR | LOGL_CRIT | LOGL_ALERT | LOGL_EMERG;
 
   /*
    * Configure options for stderr.
@@ -104,7 +100,7 @@ main(int argc, char **argv)
    * Send all severity levels there.
    */
 
-  logfileid_t fileid1 = log_addfile("log-example.log", SIRL_ALL, SIRO_NONAME);
+  logfileid_t fileid1 = log_addfile("log-example.log", LOGL_ALL, SIRO_NONAME);
 
   if (NULL == fileid1)
     {
@@ -118,9 +114,8 @@ main(int argc, char **argv)
   float f = 0.0009f;
 
   /*
-   * This will be sent to all destinations registered for SIRL_DEBUG.
-   * Notice that it is not necessary to add a newline at the end. libsir does
-   * this automatically.
+   * This will be sent to all destinations registered for LOGL_DEBUG.
+   * Notice that it is not necessary to add a newline at the end.
    */
 
   log_debug("debug-level message: {n=%d, somestr='%s', f=%.04f}", n, somestr, f);
@@ -145,11 +140,9 @@ main(int argc, char **argv)
 int
 report_error(void)
 {
-  logchar_t message[LOG_MAXERROR] = {
-    0
-  };
+  logchar_t message[LOG_MAXERROR] = { 0 };
   uint16_t code = log_geterror(message);
 
-  fprintf(stderr, "libsir error: (%hu, %s)\n", code, message);
+  fprintf(stderr, "error: (%hu, %s)\n", code, message);
   return 1;
 }

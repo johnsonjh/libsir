@@ -1,4 +1,5 @@
 /*
+ * SPDX-License-Identifier: MIT
  * scspell-id: d6ad8321-2b0d-11ed-9408-80ee73e9b8e7
  *
  * Copyright (c) 2018 Ryan M. Lederman
@@ -131,7 +132,7 @@ bool
 log_debug(const logchar_t *format, ...)
 {
   _LOG_L_START(format);
-  r = _log_logv(SIRL_DEBUG, format, args);
+  r = _log_logv(LOGL_DEBUG, format, args);
   _LOG_L_END(args);
   return r;
 }
@@ -140,7 +141,7 @@ bool
 log_info(const logchar_t *format, ...)
 {
   _LOG_L_START(format);
-  r = _log_logv(SIRL_INFO, format, args);
+  r = _log_logv(LOGL_INFO, format, args);
   _LOG_L_END(args);
   return r;
 }
@@ -149,7 +150,7 @@ bool
 log_notice(const logchar_t *format, ...)
 {
   _LOG_L_START(format);
-  r = _log_logv(SIRL_NOTICE, format, args);
+  r = _log_logv(LOGL_NOTICE, format, args);
   _LOG_L_END(args);
   return r;
 }
@@ -158,7 +159,7 @@ bool
 log_warn(const logchar_t *format, ...)
 {
   _LOG_L_START(format);
-  r = _log_logv(SIRL_WARN, format, args);
+  r = _log_logv(LOGL_WARN, format, args);
   _LOG_L_END(args);
   return r;
 }
@@ -167,7 +168,7 @@ bool
 log_error(const logchar_t *format, ...)
 {
   _LOG_L_START(format);
-  r = _log_logv(SIRL_ERROR, format, args);
+  r = _log_logv(LOGL_ERROR, format, args);
   _LOG_L_END(args);
   return r;
 }
@@ -176,7 +177,7 @@ bool
 log_crit(const logchar_t *format, ...)
 {
   _LOG_L_START(format);
-  r = _log_logv(SIRL_CRIT, format, args);
+  r = _log_logv(LOGL_CRIT, format, args);
   _LOG_L_END(args);
   return r;
 }
@@ -185,7 +186,7 @@ bool
 log_alert(const logchar_t *format, ...)
 {
   _LOG_L_START(format);
-  r = _log_logv(SIRL_ALERT, format, args);
+  r = _log_logv(LOGL_ALERT, format, args);
   _LOG_L_END(args);
   return r;
 }
@@ -194,7 +195,7 @@ bool
 log_emerg(const logchar_t *format, ...)
 {
   _LOG_L_START(format);
-  r = _log_logv(SIRL_EMERG, format, args);
+  r = _log_logv(LOGL_EMERG, format, args);
   _LOG_L_END(args);
   return r;
 }

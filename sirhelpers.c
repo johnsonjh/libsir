@@ -1,4 +1,5 @@
 /*
+ * SPDX-License-Identifier: MIT
  * scspell-id: 23f9365c-2b0e-11ed-bb28-80ee73e9b8e7
  *
  * Copyright (c) 2018 Ryan M. Lederman
@@ -43,7 +44,7 @@ _log_validfid(int id)
 bool
 _log_validlevels(log_levels levels)
 {
-  bool valid = levels <= SIRL_ALL;
+  bool valid = levels <= LOGL_ALL;
 
   if (!valid)
     {
@@ -71,7 +72,7 @@ _log_validlevel(log_level level)
 bool
 _log_validopts(log_options opts)
 {
-  bool valid = ( opts & SIRL_ALL ) == 0 && opts <= 0xfff00;
+  bool valid = ( opts & LOGL_ALL ) == 0 && opts <= 0xfff00;
 
   if (!valid)
     {

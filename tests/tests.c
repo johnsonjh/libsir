@@ -1,4 +1,5 @@
 /*
+ * SPDX-License-Identifier: MIT
  * scspell-id: e076319a-2b0e-11ed-836b-80ee73e9b8e7
  *
  * Copyright (c) 2018 Ryan M. Lederman
@@ -78,7 +79,7 @@ main(int argc, char **argv)
     0
   };
 
-  printf(WHITE("running %lu libsir test(s)...\n"), tests);
+  printf(WHITE("running %'lu test(s)...\n"), tests);
 
   if (!startlogtimer(&timer))
     {
@@ -104,14 +105,14 @@ main(int argc, char **argv)
 
   printf(
     WHITE("done; ")
-    BLUE("%lu/%lu libsir test(s) passed in %.04fsec") "\n",
+    BLUE("%'lu/%'lu test(s) passed in %'.04fsec") "\n",
     passed,
     tests - first,
     elapsed / 1e3);
 
   if (wait)
     {
-      printf(WHITE("press any key to exit") "\n");
+      printf(WHITE("press return to exit") "\n");
       getc(stdin);
     }
 
@@ -121,7 +122,7 @@ main(int argc, char **argv)
 bool
 logtest_exceedmaxsize(void)
 {
-  INIT(si, SIRL_ALL, 0, 0, 0);
+  INIT(si, LOGL_ALL, 0, 0, 0);
   bool pass = si_init;
 
   char toobig[LOG_MAXMESSAGE + 100] = {
@@ -139,7 +140,7 @@ logtest_exceedmaxsize(void)
 bool
 logtest_filecachesanity(void)
 {
-  INIT(si, SIRL_ALL, 0, 0, 0);
+  INIT(si, LOGL_ALL, 0, 0, 0);
   bool pass = si_init;
 
   size_t numfiles = LOG_MAXFILES + 1;
@@ -157,14 +158,14 @@ logtest_filecachesanity(void)
       };
       (void)snprintf(path, LOG_MAXPATH, "test-%lu.log", n);
       rmfile(path);
-      ids[n] = log_addfile(path, SIRL_ALL, ( n % 2 ) ? odd : even);
-      pass &= NULL != ids[n] && log_info("test %u", n);
+      ids[n]  = log_addfile(path, LOGL_ALL, ( n % 2 ) ? odd : even);
+      pass   &= NULL != ids[n] && log_info("test %u", n);
     }
 
   pass &= log_info("test test test");
 
   /* This one should fail; max files already added */
-  pass &= NULL == log_addfile("should-fail.log", SIRL_ALL, SIRO_MSGONLY);
+  pass &= NULL == log_addfile("should-fail.log", LOGL_ALL, SIRO_MSGONLY);
 
   log_info("test test test");
 
@@ -233,11 +234,11 @@ logtest_filecachesanity(void)
 bool
 logtest_failsetinvalidstyle(void)
 {
-  INIT(si, SIRL_ALL, 0, 0, 0);
+  INIT(si, LOGL_ALL, 0, 0, 0);
   bool pass = si_init;
 
-  pass &= !log_settextstyle(SIRL_INFO, 0xfefe);
-  pass &= !log_settextstyle(SIRL_ALL, SIRS_FG_RED | SIRS_FG_DEFAULT);
+  pass &= !log_settextstyle(LOGL_INFO, 0xfefe);
+  pass &= !log_settextstyle(LOGL_ALL, LOGS_FG_RED | LOGS_FG_DEFAULT);
 
   if (pass)
     {
@@ -252,7 +253,7 @@ bool
 logtest_failnooutputdest(void)
 {
   INIT(si, 0, 0, 0, 0);
-  bool pass = si_init;
+  bool pass           = si_init;
   const char *logfile = "levels.log";
 
   pass &= !log_info("this goes nowhere!");
@@ -261,11 +262,11 @@ logtest_failnooutputdest(void)
     {
       printexpectederr();
 
-      pass &= log_stdoutlevels(SIRL_INFO);
+      pass &= log_stdoutlevels(LOGL_INFO);
       pass &= log_info("this goes to stdout");
-      pass &= log_stdoutlevels(SIRL_NONE);
+      pass &= log_stdoutlevels(LOGL_NONE);
 
-      pass &= NULL != log_addfile(logfile, SIRL_INFO, SIRO_DEFAULT);
+      pass &= NULL != log_addfile(logfile, LOGL_INFO, SIRO_DEFAULT);
       pass &= log_info("this goes to %s", logfile);
 
       rmfile(logfile);
@@ -278,10 +279,10 @@ logtest_failnooutputdest(void)
 bool
 logtest_failinvalidfilename(void)
 {
-  INIT(si, SIRL_ALL, 0, 0, 0);
+  INIT(si, LOGL_ALL, 0, 0, 0);
   bool pass = si_init;
 
-  pass &= NULL == log_addfile("bad file!/name", SIRL_ALL, SIRO_MSGONLY);
+  pass &= NULL == log_addfile("bad file!/name", LOGL_ALL, SIRO_MSGONLY);
 
   if (pass)
     {
@@ -295,10 +296,10 @@ logtest_failinvalidfilename(void)
 bool
 logtest_failfilebadpermission(void)
 {
-  INIT(si, SIRL_ALL, 0, 0, 0);
+  INIT(si, LOGL_ALL, 0, 0, 0);
   bool pass = si_init;
 
-  pass &= NULL == log_addfile("/noperms", SIRL_ALL, SIRO_MSGONLY);
+  pass &= NULL == log_addfile("/noperms", LOGL_ALL, SIRO_MSGONLY);
 
   if (pass)
     {
@@ -312,11 +313,11 @@ logtest_failfilebadpermission(void)
 bool
 logtest_failnulls(void)
 {
-  INIT(si, SIRL_ALL, 0, 0, 0);
+  INIT(si, LOGL_ALL, 0, 0, 0);
   bool pass = si_init;
 
   pass &= !log_info(NULL);
-  pass &= NULL == log_addfile(NULL, SIRL_ALL, SIRO_MSGONLY);
+  pass &= NULL == log_addfile(NULL, LOGL_ALL, SIRO_MSGONLY);
 
   if (pass)
     {
@@ -343,10 +344,10 @@ logtest_failwithoutinit(void)
 bool
 logtest_failinittwice(void)
 {
-  INIT(si, SIRL_ALL, 0, 0, 0);
+  INIT(si, LOGL_ALL, 0, 0, 0);
   bool pass = si_init;
 
-  INIT(si2, SIRL_ALL, 0, 0, 0);
+  INIT(si2, LOGL_ALL, 0, 0, 0);
   pass &= !si2_init;
 
   if (pass)
@@ -361,7 +362,7 @@ logtest_failinittwice(void)
 bool
 logtest_failaftercleanup()
 {
-  INIT(si, SIRL_ALL, 0, 0, 0);
+  INIT(si, LOGL_ALL, 0, 0, 0);
   bool pass = si_init;
 
   log_cleanup();
@@ -378,13 +379,13 @@ logtest_failaftercleanup()
 bool
 logtest_initcleanupinit(void)
 {
-  INIT(si1, SIRL_ALL, 0, 0, 0);
+  INIT(si1, LOGL_ALL, 0, 0, 0);
   bool pass = si1_init;
 
   pass &= log_info("init called once; testing output...");
   log_cleanup();
 
-  INIT(si2, SIRL_ALL, 0, 0, 0);
+  INIT(si2, LOGL_ALL, 0, 0, 0);
   pass &= si2_init;
 
   pass &= log_info("init called again after re-init; testing output...");
@@ -396,11 +397,11 @@ logtest_initcleanupinit(void)
 bool
 logtest_faildupefile(void)
 {
-  INIT(si, SIRL_ALL, 0, 0, 0);
+  INIT(si, LOGL_ALL, 0, 0, 0);
   bool pass = si_init;
 
-  pass &= NULL != log_addfile("foo.log", SIRL_ALL, SIRO_DEFAULT);
-  pass &= NULL == log_addfile("foo.log", SIRL_ALL, SIRO_DEFAULT);
+  pass &= NULL != log_addfile("foo.log", LOGL_ALL, SIRO_DEFAULT);
+  pass &= NULL == log_addfile("foo.log", LOGL_ALL, SIRO_DEFAULT);
 
   rmfile("foo.log");
   log_cleanup();
@@ -410,7 +411,7 @@ logtest_faildupefile(void)
 bool
 logtest_failremovebadfile(void)
 {
-  INIT(si, SIRL_ALL, 0, 0, 0);
+  INIT(si, LOGL_ALL, 0, 0, 0);
   bool pass = si_init;
 
   int invalidid = 9999999;
@@ -474,12 +475,12 @@ logtest_rollandarchivefile(void)
   bool pass = si_init;
 
   logfileid_t fileid
-    = log_addfile(logfilename, SIRL_DEBUG, SIRO_MSGONLY | SIRO_NOHDR);
+    = log_addfile(logfilename, LOGL_DEBUG, SIRO_MSGONLY | SIRO_NOHDR);
 
   if (pass &= NULL != fileid)
     {
       /* Write an (approximately) known quantity until we should have rolled */
-      size_t written = 0;
+      size_t written  = 0;
       size_t linesize = strlen(line);
 
       do
@@ -530,7 +531,7 @@ logtest_rollandarchivefile(void)
 bool
 logtest_errorsanity(void)
 {
-  INIT(si, SIRL_ALL, 0, 0, 0);
+  INIT(si, LOGL_ALL, 0, 0, 0);
   bool pass = si_init;
 
   struct
@@ -574,48 +575,48 @@ logtest_errorsanity(void)
 bool
 logtest_textstylesanity(void)
 {
-  INIT(si, SIRL_ALL, 0, 0, 0);
+  INIT(si, LOGL_ALL, 0, 0, 0);
   bool pass = si_init;
 
   if (pass)
     {
       pass &= log_debug("default style");
-      pass &= log_settextstyle(SIRL_DEBUG, SIRS_FG_YELLOW | SIRS_BG_DGRAY);
+      pass &= log_settextstyle(LOGL_DEBUG, LOGS_FG_YELLOW | LOGS_BG_DGRAY);
       pass &= log_debug("override style");
 
       pass &= log_info("default style");
-      pass &= log_settextstyle(SIRL_INFO, SIRS_FG_GREEN | SIRS_BG_MAGENTA);
+      pass &= log_settextstyle(LOGL_INFO, LOGS_FG_GREEN | LOGS_BG_MAGENTA);
       pass &= log_info("override style");
 
       pass &= log_notice("default style");
-      pass &= log_settextstyle(SIRL_NOTICE, SIRS_FG_BLACK | SIRS_BG_LYELLOW);
+      pass &= log_settextstyle(LOGL_NOTICE, LOGS_FG_BLACK | LOGS_BG_LYELLOW);
       pass &= log_notice("override style");
 
       pass &= log_warn("default style");
-      pass &= log_settextstyle(SIRL_WARN, SIRS_FG_BLACK | SIRS_BG_WHITE);
+      pass &= log_settextstyle(LOGL_WARN, LOGS_FG_BLACK | LOGS_BG_WHITE);
       pass &= log_warn("override style");
 
       pass &= log_error("default style");
-      pass &= log_settextstyle(SIRL_ERROR, SIRS_FG_WHITE | SIRS_BG_BLUE);
+      pass &= log_settextstyle(LOGL_ERROR, LOGS_FG_WHITE | LOGS_BG_BLUE);
       pass &= log_error("override style");
 
       pass &= log_crit("default style");
-      pass &= log_settextstyle(SIRL_CRIT, SIRS_FG_DGRAY | SIRS_BG_LGREEN);
+      pass &= log_settextstyle(LOGL_CRIT, LOGS_FG_DGRAY | LOGS_BG_LGREEN);
       pass &= log_crit("override style");
 
       pass &= log_alert("default style");
-      pass &= log_settextstyle(SIRL_ALERT, SIRS_BRIGHT | SIRS_FG_LBLUE);
+      pass &= log_settextstyle(LOGL_ALERT, LOGS_BRIGHT | LOGS_FG_LBLUE);
       pass &= log_alert("override style");
 
       pass &= log_emerg("default style");
-      pass &= log_settextstyle(SIRL_EMERG, SIRS_BRIGHT | SIRS_FG_DGRAY);
+      pass &= log_settextstyle(LOGL_EMERG, LOGS_BRIGHT | LOGS_FG_DGRAY);
       pass &= log_emerg("override style");
     }
 
   printf("\tcleanup to reset styles...\n");
   log_cleanup();
 
-  INIT(si2, SIRL_ALL, 0, 0, 0);
+  INIT(si2, LOGL_ALL, 0, 0, 0);
   pass &= si2_init;
 
   pass &= log_debug  ("default style");
@@ -637,13 +638,8 @@ logtest_perf(void)
 {
   const logchar_t *logfilename = "logperf";
 
-#ifndef _WIN32
   const size_t perflines = 1e6;
-#else  /* ifndef _WIN32 */
-  /* stdio is hilariously slow on windows; do less. */
-  const size_t perflines = 1e4;
-#endif /* ifndef _WIN32 */
-  INIT(si, SIRL_ALL, 0, 0, 0);
+  INIT(si, LOGL_ALL, 0, 0, 0);
   bool pass = si_init;
 
   if (pass)
@@ -652,11 +648,9 @@ logtest_perf(void)
       float stdioelapsed  = 0.0f;
       float fileelapsed   = 0.0f;
 
-      printf("\t%lu lines printf...\n", perflines);
+      printf("\t%'lu lines printf...\n", perflines);
 
-      logtimer_t printftimer = {
-        0
-      };
+      logtimer_t printftimer = { 0 };
       startlogtimer(&printftimer);
 
       for (size_t n = 0; n < perflines; n++)
@@ -670,11 +664,9 @@ logtest_perf(void)
 
       printfelapsed = logtimerelapsed(&printftimer);
 
-      printf("\t%lu lines libsir stdout...\n", perflines);
+      printf("\t%'lu lines stdout...\n", perflines);
 
-      logtimer_t stdiotimer = {
-        0
-      };
+      logtimer_t stdiotimer = { 0 };
       startlogtimer(&stdiotimer);
 
       for (size_t n = 0; n < perflines; n++)
@@ -689,16 +681,14 @@ logtest_perf(void)
       INIT(si2, 0, 0, 0, 0);
       pass &= si2_init;
 
-      logfileid_t logid = log_addfile(logfilename, SIRL_ALL, SIRO_MSGONLY);
-      pass &= NULL != logid;
+      logfileid_t logid  = log_addfile(logfilename, LOGL_ALL, SIRO_MSGONLY);
+      pass              &= NULL != logid;
 
       if (pass)
         {
-          printf("\t%lu lines log file...\n", perflines);
+          printf("\t%'lu lines log file...\n", perflines);
 
-          logtimer_t filetimer = {
-            0
-          };
+          logtimer_t filetimer = { 0 };
           startlogtimer(&filetimer);
 
           for (size_t n = 0; n < perflines; n++)
@@ -713,16 +703,16 @@ logtest_perf(void)
 
       if (pass)
         {
-          printf("\t" WHITE("%lu lines printf:")
-                 " "  GREEN("%.2fsec (%.1f lines/sec)") "\n",
+          printf("\t" WHITE("%'lu lines printf   :")
+                 " "  GREEN("%'.2fsec (%'.1f lines/sec)") "\n",
             perflines,    printfelapsed / 1e3,
             perflines / ( printfelapsed / 1e3 ));
-          printf("\t" WHITE("%lu lines libsir stdout:")
-                 " "  GREEN("%.2fsec (%.1f lines/sec)") "\n",
+          printf("\t" WHITE("%'lu lines stdout   :")
+                 " "  GREEN("%'.2fsec (%'.1f lines/sec)") "\n",
             perflines,    stdioelapsed / 1e3,
             perflines / ( stdioelapsed / 1e3 ));
-          printf("\t" WHITE("%lu lines log file:")
-                 " "  GREEN("%.2fsec (%.1f lines/sec)") "\n",
+          printf("\t" WHITE("%'lu lines log file :")
+                 " "  GREEN("%'.2fsec (%'.1f lines/sec)") "\n",
             perflines,    fileelapsed / 1e3,
             perflines / ( fileelapsed / 1e3 ));
         }
@@ -743,12 +733,12 @@ logtest_perf(void)
 bool
 logtest_updatesanity(void)
 {
-  INIT_N(si, SIRL_DEFAULT, 0, SIRL_DEFAULT, 0, "update_sanity");
+  INIT_N(si, LOGL_DEFAULT, 0, LOGL_DEFAULT, 0, "update_sanity");
   bool pass = si_init;
   const char *logfile = "update.log";
 
   rmfile(logfile);
-  logfileid_t id1 = log_addfile(logfile, SIRL_DEFAULT, SIRO_DEFAULT);
+  logfileid_t id1 = log_addfile(logfile, LOGL_DEFAULT, SIRO_DEFAULT);
 
   pass &= NULL != id1;
 
@@ -763,12 +753,12 @@ logtest_updatesanity(void)
       pass &= log_alert        ("default config");
       pass &= log_emerg        ("default config");
 
-      pass &= log_stdoutlevels (SIRL_DEBUG);
+      pass &= log_stdoutlevels (LOGL_DEBUG);
       pass &= log_stdoutopts   (SIRO_NOTIME);
-      pass &= log_stderrlevels (SIRL_ALL);
+      pass &= log_stderrlevels (LOGL_ALL);
       pass &= log_stderropts   (SIRO_NONAME);
 
-      pass &= log_filelevels   (id1, SIRL_DEBUG);
+      pass &= log_filelevels   (id1, LOGL_DEBUG);
       pass &= log_fileopts     (id1, SIRO_MSGONLY);
 
       pass &= log_debug        ("modified config");
@@ -792,7 +782,7 @@ logtest_updatesanity(void)
 /*
  * bool logtest_XXX(void) {
  *
- *  INIT(si, SIRL_ALL, 0, 0, 0);
+ *  INIT(si, LOGL_ALL, 0, 0, 0);
  *  bool pass = si_init;
  *
  *  log_cleanup();
@@ -817,7 +807,7 @@ logtest_mthread_race(void)
   uintptr_t thrds[NUM_THREADS];
 #endif /* ifndef _WIN32 */
 
-  INIT_N(si, SIRL_ALL, SIRO_NOPID, 0, 0, "multi-thread race");
+  INIT_N(si, LOGL_ALL, SIRO_NOPID, 0, 0, "multi-thread race");
   bool pass = si_init;
 
   for (size_t n = 0; n < NUM_THREADS; n++)
@@ -880,14 +870,12 @@ logtest_thread(void *arg)
 #endif /* ifndef _WIN32 */
   pid_t threadid = _log_gettid();
 
-  char mypath[LOG_MAXPATH + 16] = {
-    0
-  };
+  char mypath[LOG_MAXPATH + 16] = { 0 };
   (void)strncpy(mypath, (const char *)arg, LOG_MAXPATH - 1);
   free(arg);
 
   rmfile(mypath);
-  logfileid_t id = log_addfile(mypath, SIRL_ALL, SIRO_MSGONLY);
+  logfileid_t id = log_addfile(mypath, LOGL_ALL, SIRO_MSGONLY);
 
   if (NULL == id)
     {
@@ -921,21 +909,21 @@ logtest_thread(void *arg)
                   printerror(false);
                 }
 
-              id = log_addfile(mypath, SIRL_ALL, SIRO_MSGONLY);
+              id = log_addfile(mypath, LOGL_ALL, SIRO_MSGONLY);
 
               if (NULL == id)
                 {
                   printerror(false);
                 }
 
-              if (!log_settextstyle(SIRL_DEBUG, SIRS_FG_RED | SIRS_BG_DEFAULT))
+              if (!log_settextstyle(LOGL_DEBUG, LOGS_FG_RED | LOGS_BG_DEFAULT))
                 {
                   printerror(false);
                 }
             }
           else
             {
-              if (!log_settextstyle(SIRL_DEBUG, SIRS_FG_CYAN | SIRS_BG_YELLOW))
+              if (!log_settextstyle(LOGL_DEBUG, LOGS_FG_CYAN | LOGS_BG_YELLOW))
                 {
                   printerror(false);
                 }
@@ -947,10 +935,8 @@ logtest_thread(void *arg)
 
 #ifndef _WIN32
   return NULL;
-
 #else  /* ifndef _WIN32 */
   return 0;
-
 #endif /* ifndef _WIN32 */
 }
 
@@ -985,10 +971,8 @@ getoserr(void)
 {
 #ifndef _WIN32
   return errno;
-
 #else  /* ifndef _WIN32 */
   return (int)GetLastError();
-
 #endif /* ifndef _WIN32 */
 }
 
@@ -999,7 +983,6 @@ getrand(void)
 
 #ifndef _WIN32
   return (unsigned int)rand_r(&seed);
-
 #else  /* ifndef _WIN32 */
   if (0 == rand_s(&seed))
     {
@@ -1010,7 +993,6 @@ getrand(void)
       srand(seed);
       return (unsigned int)rand();
     }
-
 #endif /* ifndef _WIN32 */
 }
 
@@ -1019,10 +1001,8 @@ rmfile(const char *filename)
 {
 #ifndef _WIN32
   return 0 == remove(filename);
-
 #else  /* ifndef _WIN32 */
   return FALSE != DeleteFile(filename);
-
 #endif /* ifndef _WIN32 */
 }
 
@@ -1034,7 +1014,7 @@ deletefiles(const char *search, const char *filename, unsigned *data)
       struct stat st;
       if (0 == stat(filename, &st))
         {
-          printf("\tdeleting %s (size: %lu)...\n", filename, st.st_size);
+          printf("\tdeleting %s (size: %'lu)...\n", filename, st.st_size);
         }
 
       if (!rmfile(filename))
@@ -1126,11 +1106,9 @@ startlogtimer(logtimer_t *timer)
 #ifndef _WIN32
   int gettime = clock_gettime(CLOCK_MONOTONIC, &timer->ts);
   return 0 == gettime;
-
 #else  /* ifndef _WIN32 */
   GetSystemTimePreciseAsFileTime(&timer->ft);
   return true;
-
 #endif /* ifndef _WIN32 */
 }
 
@@ -1146,7 +1124,6 @@ logtimerelapsed(const logtimer_t *timer)
     }
 
   return 0;
-
 #else  /* ifndef _WIN32 */
   FILETIME now;
   GetSystemTimePreciseAsFileTime(&now);
@@ -1156,7 +1133,6 @@ logtimerelapsed(const logtimer_t *timer)
   ULARGE_INTEGER n100sec;
   n100sec.LowPart  = now.dwLowDateTime;
   n100sec.HighPart = now.dwHighDateTime;
-  return ( n100sec.QuadPart - start.QuadPart ) / 1e4;
-
+  return ( n100sec.QuadPart - start.QuadPart ) / 1e6;
 #endif /* ifndef _WIN32 */
 }

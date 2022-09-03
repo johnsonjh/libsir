@@ -1,4 +1,5 @@
 /*
+ * SPDX-License-Identifier: MIT
  * scspell-id: e62b0803-2b0e-11ed-b8c6-80ee73e9b8e7
  *
  * Copyright (c) 2018 Ryan M. Lederman
@@ -91,9 +92,11 @@
   INIT_N(var, l_stdout, o_stdout, l_stderr, o_stderr, "")
 
 /* Function signature for a single test. */
+
 typedef bool (*log_test_fn) (void);
 
 /* Map a test to a human-readable description. */
+
 typedef struct
 {
   const char *name;

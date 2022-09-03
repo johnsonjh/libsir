@@ -1,4 +1,5 @@
 /*
+ * SPDX-License-Identifier: MIT
  * scspell-id: 1d4896a0-2b0e-11ed-9a9f-80ee73e9b8e7
  *
  * Copyright (c) 2018 Ryan M. Lederman
@@ -55,10 +56,10 @@ bool log_init(loginit *si);
  *
  * Value          | Behavior
  * -----          | --------
- * `SIRL_NONE`    | No levels.
- * `SIRL_ALL`     | All levels.
- * `SIRL_DEFAULT` | Revert to the default.
- * `SIRL_*`       | Register for each level set.
+ * `LOGL_NONE`    | No levels.
+ * `LOGL_ALL`     | All levels.
+ * `LOGL_DEFAULT` | Revert to the default.
+ * `LOGL_*`       | Register for each level set.
  *
  * retval true  = Levels were updated successfully.
  * retval false = An error occurred while trying to update levels.
@@ -91,10 +92,10 @@ bool log_stdoutopts(log_options opts);
  *
  * Value          | Behavior
  * -----          | --------
- * `SIRL_NONE`    | No levels.
- * `SIRL_ALL`     | All levels.
- * `SIRL_DEFAULT` | Revert to the default.
- * `SIRL_*`       | Register for each level set.
+ * `LOGL_NONE`    | No levels.
+ * `LOGL_ALL`     | All levels.
+ * `LOGL_DEFAULT` | Revert to the default.
+ * `LOGL_*`       | Register for each level set.
  *
  * retval true  = Levels were updated successfully.
  * retval false = An error occurred while trying to update levels.
@@ -130,10 +131,10 @@ bool log_stderropts(log_options opts);
  *
  * Value          | Behavior
  * -----          | --------
- * `SIRL_NONE`    | No levels.
- * `SIRL_ALL`     | All levels.
- * `SIRL_DEFAULT` | Revert to the default.
- * `SIRL_*`       | Register for each level set.
+ * `LOGL_NONE`    | No levels.
+ * `LOGL_ALL`     | All levels.
+ * `LOGL_DEFAULT` | Revert to the default.
+ * `LOGL_*`       | Register for each level set.
  *
  * retval true  = Levels were updated successfully.
  * retval false = An error occurred while trying to update levels.
@@ -148,10 +149,10 @@ bool log_sysloglevels(log_levels levels);
  *
  * Value          | Behavior
  * -----          | --------
- * `SIRL_NONE`    | No levels.
- * `SIRL_ALL`     | All levels.
- * `SIRL_DEFAULT` | Revert to the default.
- * `SIRL_*`       | Register for each level set.
+ * `LOGL_NONE`    | No levels.
+ * `LOGL_ALL`     | All levels.
+ * `LOGL_DEFAULT` | Revert to the default.
+ * `LOGL_*`       | Register for each level set.
  *
  * retval true Levels were updated successfully.
  * retval false An error occurred while trying to update levels.

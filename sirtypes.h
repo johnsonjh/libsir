@@ -1,4 +1,5 @@
 /*
+ * SPDX-License-Identifier: MIT
  * scspell-id: d04c0528-2b0e-11ed-a16e-80ee73e9b8e7
  *
  * Copyright (c) 2018 Ryan M. Lederman
@@ -41,17 +42,17 @@ typedef uint32_t logerror_t;
 
 typedef enum
 {
-  SIRL_NONE    = 0x0,  /* No output.                                           */
-  SIRL_EMERG   = 0x1,  /* Nuclear war, Armageddon, etc.                        */
-  SIRL_ALERT   = 0x2,  /* Action required ASAP.                                */
-  SIRL_CRIT    = 0x4,  /* Critical errors.                                     */
-  SIRL_ERROR   = 0x8,  /* Errors.                                              */
-  SIRL_WARN    = 0x10, /* Warnings that could likely be ignored.               */
-  SIRL_NOTICE  = 0x20, /* Normal but significant.                              */
-  SIRL_INFO    = 0x40, /* Informational messages.                              */
-  SIRL_DEBUG   = 0x80, /* Debugging/diagnostic output.                         */
-  SIRL_ALL     = 0xff, /* Includes all logging levels.                         */
-  SIRL_DEFAULT = 0x100 /* Use the default levels for this type of destination. */
+  LOGL_NONE    = 0x0,  /* No output.                                           */
+  LOGL_EMERG   = 0x1,  /* Nuclear war, Armageddon, etc.                        */
+  LOGL_ALERT   = 0x2,  /* Action required ASAP.                                */
+  LOGL_CRIT    = 0x4,  /* Critical errors.                                     */
+  LOGL_ERROR   = 0x8,  /* Errors.                                              */
+  LOGL_WARN    = 0x10, /* Warnings that could likely be ignored.               */
+  LOGL_NOTICE  = 0x20, /* Normal but significant.                              */
+  LOGL_INFO    = 0x40, /* Informational messages.                              */
+  LOGL_DEBUG   = 0x80, /* Debugging/diagnostic output.                         */
+  LOGL_ALL     = 0xff, /* Includes all logging levels.                         */
+  LOGL_DEFAULT = 0x100 /* Use the default levels for this type of destination. */
 } log_level;
 
 /*
@@ -128,44 +129,44 @@ typedef uint32_t log_options;
 
 typedef enum
 {
-  SIRS_NONE         = 0,       /* Used internally; has no effect.                */
-  SIRS_BRIGHT       = 0x1,     /* If set, the foreground color is 'intensified'. */
-  SIRS_DIM          = 0x2,     /* If set, the foreground color is 'dimmed'.      */
-  SIRS_FG_BLACK     = 0x10,    /* Black foreground.                              */
-  SIRS_FG_RED       = 0x20,    /* Red foreground.                                */
-  SIRS_FG_GREEN     = 0x30,    /* Green foreground.                              */
-  SIRS_FG_YELLOW    = 0x40,    /* Yellow foreground.                             */
-  SIRS_FG_BLUE      = 0x50,    /* Blue foreground.                               */
-  SIRS_FG_MAGENTA   = 0x60,    /* Magenta foreground.                            */
-  SIRS_FG_CYAN      = 0x70,    /* Cyan foreground.                               */
-  SIRS_FG_WHITE     = 0x80,    /* White foreground.                              */
-  SIRS_FG_LGRAY     = 0x90,    /* Light gray foreground.                         */
-  SIRS_FG_DGRAY     = 0xa0,    /* Dark gray foreground.                          */
-  SIRS_FG_LRED      = 0xb0,    /* Light red foreground.                          */
-  SIRS_FG_LGREEN    = 0xc0,    /* Light green foreground.                        */
-  SIRS_FG_LYELLOW   = 0xd0,    /* Light yellow foreground.                       */
-  SIRS_FG_LBLUE     = 0xe0,    /* Light blue foreground.                         */
-  SIRS_FG_LMAGENTA  = 0xf0,    /* Light magenta foreground.                      */
-  SIRS_FG_LCYAN     = 0xf10,   /* Light cyan foreground.                         */
-  SIRS_FG_DEFAULT   = 0xf20,   /* Use the default foreground color.              */
-  SIRS_BG_BLACK     = 0x1000,  /* Black background.                              */
-  SIRS_BG_RED       = 0x2000,  /* Red background.                                */
-  SIRS_BG_GREEN     = 0x3000,  /* Green background.                              */
-  SIRS_BG_YELLOW    = 0x4000,  /* Yellow background.                             */
-  SIRS_BG_BLUE      = 0x5000,  /* Blue background.                               */
-  SIRS_BG_MAGENTA   = 0x6000,  /* Magenta background.                            */
-  SIRS_BG_CYAN      = 0x7000,  /* Cyan background.                               */
-  SIRS_BG_WHITE     = 0x8000,  /* White background.                              */
-  SIRS_BG_LGRAY     = 0x9000,  /* Light gray background.                         */
-  SIRS_BG_DGRAY     = 0xa000,  /* Dark gray background.                          */
-  SIRS_BG_LRED      = 0xb000,  /* Light red background.                          */
-  SIRS_BG_LGREEN    = 0xc000,  /* Light green background.                        */
-  SIRS_BG_LYELLOW   = 0xd000,  /* Light yellow background.                       */
-  SIRS_BG_LBLUE     = 0xe000,  /* Light blue background.                         */
-  SIRS_BG_LMAGENTA  = 0xf000,  /* Light magenta background.                      */
-  SIRS_BG_LCYAN     = 0xf1000, /* Light cyan background.                         */
-  SIRS_BG_DEFAULT   = 0xf2000, /* Use the default background color.              */
-  SIRS_INVALID      = 0xf3000  /* Represents the invalid text style.             */
+  LOGS_NONE         = 0,       /* Used internally; has no effect.                */
+  LOGS_BRIGHT       = 0x1,     /* If set, the foreground color is 'intensified'. */
+  LOGS_DIM          = 0x2,     /* If set, the foreground color is 'dimmed'.      */
+  LOGS_FG_BLACK     = 0x10,    /* Black foreground.                              */
+  LOGS_FG_RED       = 0x20,    /* Red foreground.                                */
+  LOGS_FG_GREEN     = 0x30,    /* Green foreground.                              */
+  LOGS_FG_YELLOW    = 0x40,    /* Yellow foreground.                             */
+  LOGS_FG_BLUE      = 0x50,    /* Blue foreground.                               */
+  LOGS_FG_MAGENTA   = 0x60,    /* Magenta foreground.                            */
+  LOGS_FG_CYAN      = 0x70,    /* Cyan foreground.                               */
+  LOGS_FG_WHITE     = 0x80,    /* White foreground.                              */
+  LOGS_FG_LGRAY     = 0x90,    /* Light gray foreground.                         */
+  LOGS_FG_DGRAY     = 0xa0,    /* Dark gray foreground.                          */
+  LOGS_FG_LRED      = 0xb0,    /* Light red foreground.                          */
+  LOGS_FG_LGREEN    = 0xc0,    /* Light green foreground.                        */
+  LOGS_FG_LYELLOW   = 0xd0,    /* Light yellow foreground.                       */
+  LOGS_FG_LBLUE     = 0xe0,    /* Light blue foreground.                         */
+  LOGS_FG_LMAGENTA  = 0xf0,    /* Light magenta foreground.                      */
+  LOGS_FG_LCYAN     = 0xf10,   /* Light cyan foreground.                         */
+  LOGS_FG_DEFAULT   = 0xf20,   /* Use the default foreground color.              */
+  LOGS_BG_BLACK     = 0x1000,  /* Black background.                              */
+  LOGS_BG_RED       = 0x2000,  /* Red background.                                */
+  LOGS_BG_GREEN     = 0x3000,  /* Green background.                              */
+  LOGS_BG_YELLOW    = 0x4000,  /* Yellow background.                             */
+  LOGS_BG_BLUE      = 0x5000,  /* Blue background.                               */
+  LOGS_BG_MAGENTA   = 0x6000,  /* Magenta background.                            */
+  LOGS_BG_CYAN      = 0x7000,  /* Cyan background.                               */
+  LOGS_BG_WHITE     = 0x8000,  /* White background.                              */
+  LOGS_BG_LGRAY     = 0x9000,  /* Light gray background.                         */
+  LOGS_BG_DGRAY     = 0xa000,  /* Dark gray background.                          */
+  LOGS_BG_LRED      = 0xb000,  /* Light red background.                          */
+  LOGS_BG_LGREEN    = 0xc000,  /* Light green background.                        */
+  LOGS_BG_LYELLOW   = 0xd000,  /* Light yellow background.                       */
+  LOGS_BG_LBLUE     = 0xe000,  /* Light blue background.                         */
+  LOGS_BG_LMAGENTA  = 0xf000,  /* Light magenta background.                      */
+  LOGS_BG_LCYAN     = 0xf1000, /* Light cyan background.                         */
+  LOGS_BG_DEFAULT   = 0xf2000, /* Use the default background color.              */
+  LOGS_INVALID      = 0xf3000  /* Represents the invalid text style.             */
 } log_textstyle;
 
 /* The underlying type used for characters in output. */
@@ -226,15 +227,15 @@ typedef struct
 
 /* Text style attribute mask. */
 
-# define _SIRS_ATTR_MASK 0xf
+# define _LOGS_ATTR_MASK 0xf
 
 /* Text style foreground color mask. */
 
-# define _SIRS_FG_MASK 0xff0
+# define _LOGS_FG_MASK 0xff0
 
 /* Text style background color mask. */
 
-# define _SIRS_BG_MASK 0xff000
+# define _LOGS_BG_MASK 0xff000
 
 /* Magic number used to determine if libsir has been initialized. */
 

@@ -1,4 +1,5 @@
 /*
+ * SPDX-License-Identifier: MIT
  * scspell-id: 3f7c94ed-2b0e-11ed-8bb3-80ee73e9b8e7
  *
  * Copyright (c) 2018 Ryan M. Lederman

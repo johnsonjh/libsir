@@ -1,4 +1,5 @@
 /*
+ * SPDX-License-Identifier: MIT
  * scspell-id: bc3d6378-2b0e-11ed-86f8-80ee73e9b8e7
  *
  * Copyright (c) 2018 Ryan M. Lederman
@@ -31,13 +32,13 @@ bool
 _log_validstyle(log_textstyle style, uint32_t *pattr, uint32_t *pfg,
                 uint32_t *pbg)
 {
-  uint32_t attr = ( style & _SIRS_ATTR_MASK );
-  uint32_t fg   = ( style & _SIRS_FG_MASK );
-  uint32_t bg   = ( style & _SIRS_BG_MASK );
+  uint32_t attr = ( style & _LOGS_ATTR_MASK );
+  uint32_t fg   = ( style & _LOGS_FG_MASK   );
+  uint32_t bg   = ( style & _LOGS_BG_MASK   );
 
-  bool attrvalid = attr <= SIRS_DIM;
-  bool fgvalid   = fg   <= SIRS_FG_DEFAULT;
-  bool bgvalid   = bg   <= SIRS_BG_DEFAULT;
+  bool attrvalid = attr <= LOGS_DIM;
+  bool fgvalid   = fg   <= LOGS_FG_DEFAULT;
+  bool bgvalid   = bg   <= LOGS_BG_DEFAULT;
 
   (void)log_override_styles;
 
@@ -71,12 +72,12 @@ _log_gettextstyle(log_level level)
 
       if (map)
         {
-          log_textstyle found = SIRS_INVALID;
+          log_textstyle found = LOGS_INVALID;
           bool override = false;
 
           for (size_t n = 0; n < LOG_NUMLEVELS; n++)
             {
-              if (map[n].level == level && map[n].style != SIRS_INVALID)
+              if (map[n].level == level && map[n].style != LOGS_INVALID)
                 {
                   override = true;
                   found = map[n].style;
@@ -94,7 +95,7 @@ _log_gettextstyle(log_level level)
         }
     }
 
-  return SIRS_INVALID;
+  return LOGS_INVALID;
 }
 
 log_textstyle
@@ -104,7 +105,7 @@ _log_getdefstyle(const log_style_map *map, log_level level)
     {
       if (map)
         {
-          log_textstyle found = SIRS_INVALID;
+          log_textstyle found = LOGS_INVALID;
           for (size_t n = 0; n < LOG_NUMLEVELS; n++)
             {
               if (map[n].level == level)
@@ -118,7 +119,7 @@ _log_getdefstyle(const log_style_map *map, log_level level)
         }
     }
 
-  return SIRS_INVALID;
+  return LOGS_INVALID;
 }
 
 bool
@@ -163,7 +164,7 @@ _log_resettextstyles(void)
     {
       for (size_t n = 0; n < LOG_NUMLEVELS; n++)
         {
-          map[n].style = SIRS_INVALID;
+          map[n].style = LOGS_INVALID;
         }
 
       (void)_log_unlocksection(_LOGM_TEXTSTYLE);
@@ -184,7 +185,7 @@ _log_getprivstyle(uint32_t cat)
         }
     }
 
-  return _log_getprivstyle(SIRS_NONE);
+  return _log_getprivstyle(LOGS_NONE);
 }
 
 bool

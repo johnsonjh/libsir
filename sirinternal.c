@@ -1,4 +1,5 @@
 /*
+ * SPDX-License-Identifier: MIT
  * scspell-id: 312060a7-2b0e-11ed-abd0-80ee73e9b8e7
  *
  * Copyright (c) 2018 Ryan M. Lederman
@@ -398,9 +399,9 @@ _log_logv(log_level level, const logchar_t *format, va_list args)
   bool appliedstyle = false;
   log_textstyle style = _log_gettextstyle(level);
 
-  assert(SIRS_INVALID != style);
+  assert(LOGS_INVALID != style);
 
-  if (SIRS_INVALID != style)
+  if (LOGS_INVALID != style)
     {
       bool fmtstyle = _log_formatstyle(style, output.style, LOG_MAXSTYLE);
       assert(fmtstyle);
@@ -724,28 +725,28 @@ _log_syslog_maplevel(log_level level)
 
   switch (level)
     {
-    case SIRL_EMERG:
+    case LOGL_EMERG:
       return LOG_EMERG;
 
-    case SIRL_ALERT:
+    case LOGL_ALERT:
       return LOG_ALERT;
 
-    case SIRL_CRIT:
+    case LOGL_CRIT:
       return LOG_CRIT;
 
-    case SIRL_ERROR:
+    case LOGL_ERROR:
       return LOG_ERR;
 
-    case SIRL_WARN:
+    case LOGL_WARN:
       return LOG_WARNING;
 
-    case SIRL_NOTICE:
+    case LOGL_NOTICE:
       return LOG_NOTICE;
 
-    case SIRL_INFO:
+    case LOGL_INFO:
       return LOG_INFO;
 
-    case SIRL_DEBUG:
+    case LOGL_DEBUG:
       return LOG_DEBUG;
 
     default:
@@ -805,30 +806,30 @@ _log_levelstr(log_level level)
 
   switch (level)
     {
-    case SIRL_INFO:
-      return SIRL_S_INFO;
+    case LOGL_INFO:
+      return LOGL_S_INFO;
 
-    case SIRL_NOTICE:
-      return SIRL_S_NOTICE;
+    case LOGL_NOTICE:
+      return LOGL_S_NOTICE;
 
-    case SIRL_WARN:
-      return SIRL_S_WARN;
+    case LOGL_WARN:
+      return LOGL_S_WARN;
 
-    case SIRL_ERROR:
-      return SIRL_S_ERROR;
+    case LOGL_ERROR:
+      return LOGL_S_ERROR;
 
-    case SIRL_CRIT:
-      return SIRL_S_CRIT;
+    case LOGL_CRIT:
+      return LOGL_S_CRIT;
 
-    case SIRL_ALERT:
-      return SIRL_S_ALERT;
+    case LOGL_ALERT:
+      return LOGL_S_ALERT;
 
-    case SIRL_EMERG:
-      return SIRL_S_EMERG;
+    case LOGL_EMERG:
+      return LOGL_S_EMERG;
 
-    case SIRL_DEBUG:
+    case LOGL_DEBUG:
     default:
-      return SIRL_S_DEBUG;
+      return LOGL_S_DEBUG;
     }
 }
 

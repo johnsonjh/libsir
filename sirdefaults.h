@@ -1,4 +1,5 @@
 /*
+ * SPDX-License-Identifier: MIT
  * scspell-id: f93e5ca6-2b0d-11ed-a75e-80ee73e9b8e7
  *
  * Copyright (c) 2018 Ryan M. Lederman
@@ -31,7 +32,7 @@
 /* Default levels for stdout. */
 
 static const log_levels log_stdout_def_lvls
-  = SIRL_DEBUG | SIRL_INFO | SIRL_NOTICE | SIRL_WARN;
+  = LOGL_DEBUG | LOGL_INFO | LOGL_NOTICE | LOGL_WARN;
 
 /* Default options for stdout. */
 
@@ -41,7 +42,7 @@ static const log_options log_stdout_def_opts
 /* Default levels for stderr. */
 
 static const log_levels log_stderr_def_lvls
-  = SIRL_ERROR | SIRL_CRIT | SIRL_EMERG;
+  = LOGL_ERROR | LOGL_CRIT | LOGL_EMERG;
 
 /* Default options for stderr. */
 
@@ -51,11 +52,11 @@ static const log_options log_stderr_def_opts
 /* Default levels for syslog (if enabled). */
 
 static const log_levels log_syslog_def_lvls
-  = SIRL_WARN | SIRL_CRIT | SIRL_ALERT | SIRL_EMERG;
+  = LOGL_WARN | LOGL_CRIT | LOGL_ALERT | LOGL_EMERG;
 
 /* Default levels for log files. */
 
-static const log_levels log_file_def_lvls = SIRL_ALL;
+static const log_levels log_file_def_lvls = LOGL_ALL;
 
 /* Default options for log files. */
 
@@ -64,14 +65,14 @@ static const log_options log_file_def_opts = 0; /* (all output) */
 /* Default mapping of log_level to log_textstyle. */
 
 static const log_style_map log_default_styles[LOG_NUMLEVELS] = {
-  { SIRL_DEBUG,  SIRS_FG_DGRAY                                 },
-  { SIRL_INFO,   SIRS_FG_WHITE                                 },
-  { SIRL_NOTICE, SIRS_FG_CYAN                                  },
-  { SIRL_WARN,   SIRS_FG_YELLOW                                },
-  { SIRL_ERROR,  SIRS_FG_RED                                   },
-  { SIRL_CRIT,   SIRS_BRIGHT | SIRS_FG_RED                     },
-  { SIRL_ALERT,  SIRS_BRIGHT | SIRS_FG_BLACK | SIRS_BG_LYELLOW },
-  { SIRL_EMERG,  SIRS_BRIGHT | SIRS_FG_LYELLOW | SIRS_BG_RED   },
+  { LOGL_DEBUG,  LOGS_FG_DGRAY                                 },
+  { LOGL_INFO,   LOGS_FG_WHITE                                 },
+  { LOGL_NOTICE, LOGS_FG_CYAN                                  },
+  { LOGL_WARN,   LOGS_FG_YELLOW                                },
+  { LOGL_ERROR,  LOGS_FG_RED                                   },
+  { LOGL_CRIT,   LOGS_BRIGHT | LOGS_FG_RED                     },
+  { LOGL_ALERT,  LOGS_BRIGHT | LOGS_FG_BLACK | LOGS_BG_LYELLOW },
+  { LOGL_EMERG,  LOGS_BRIGHT | LOGS_FG_LYELLOW | LOGS_BG_RED   },
 };
 
 #endif /* !_LOG_DEFAULTS_H_INCLUDED */
