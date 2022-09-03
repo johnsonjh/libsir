@@ -840,7 +840,7 @@ sirtest_mthread_race(void)
           pass = false;
         }
 
-#ifdef _GNU_SOURCE
+#if defined(_GNU_SOURCE) && !defined(_AIX)
       char thrd_name[SIR_MAXPID];
       (void)snprintf(thrd_name, SIR_MAXPID, "%lu", n);
       create = pthread_setname_np(thrds[n], thrd_name);
@@ -850,8 +850,7 @@ sirtest_mthread_race(void)
             RED("\twarning: failed to set thread name; err: %d") "\n",
             errno);
         }
-
-#endif /* ifdef _GNU_SOURCE */
+#endif /* if defined(_GNU_SOURCE) && !defined(_AIX) */
     }
 
   if (pass)

@@ -23,14 +23,6 @@
  * IN THE SOFTWARE.
  */
 
-/*
- * Supported systems:
- * - Ubuntu 16.04   x64  (GCC)
- * - Windows 10     x64  (MinGW)
- * - macOS 10.13.4  x64  (Clang)
- * - Other platforms are untested.
- */
-
 #ifndef _SIR_TESTS_H_INCLUDED
 # define _SIR_TESTS_H_INCLUDED
 

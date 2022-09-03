@@ -945,6 +945,8 @@ _sir_gettid(void)
   tid = (pid_t)tid64;
 #elif defined( _WIN32 )
   tid = (pid_t)GetCurrentThreadId();
+#elif defined(_AIX)
+  tid = (pid_t)thread_self();
 #else  /* ifdef __MACOS__ */
   tid = syscall(SYS_gettid);
 #endif /* ifdef __MACOS__ */
@@ -955,9 +957,9 @@ bool
 _sir_getthreadname(char name[SIR_MAXPID])
 {
   (void)name;
-#ifdef _GNU_SOURCE
+#if defined(_GNU_SOURCE) && !defined(_AIX)
   return 0 == pthread_getname_np(pthread_self(), name, SIR_MAXPID);
-#else /* ifdef _GNU_SOURCE */
+#else /* if defined(_GNU_SOURCE) && !defined(_AIX) */
   return false;
-#endif /* ifdef _GNU_SOURCE */
+#endif /* if defined(_GNU_SOURCE) && !defined(_AIX) */
 }

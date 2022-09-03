@@ -61,7 +61,9 @@
 # ifndef _WIN32
 #  include <pthread.h>
 #  include <strings.h>
-#  include <sys/syscall.h>
+#  ifndef _AIX
+#   include <sys/syscall.h>
+#  endif
 #  include <syslog.h>
 #  include <unistd.h>
 
