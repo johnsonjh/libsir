@@ -84,11 +84,11 @@
 
 /* The mutex type. */
 
-typedef pthread_mutex_t sirmutex_t;
+typedef pthread_mutex_t logmutex_t;
 
 /* The one-time type. */
 
-typedef pthread_once_t sironce_t;
+typedef pthread_once_t logonce_t;
 
 /* The one-time execution function type. */
 
@@ -111,11 +111,11 @@ typedef void (*log_once_fn) (void);
 
 /* The mutex type. */
 
-typedef HANDLE sirmutex_t;
+typedef HANDLE logmutex_t;
 
 /* The one-time type. */
 
-typedef INIT_ONCE sironce_t;
+typedef INIT_ONCE logonce_t;
 
 /* Process/thread ID. */
 

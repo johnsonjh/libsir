@@ -30,7 +30,7 @@
 #include "sirtextstyle.h"
 
 bool
-log_init(sirinit *si)
+log_init(loginit *si)
 {
   return _log_init(si);
 }
@@ -94,7 +94,7 @@ log_sysloglevels(log_levels levels)
 }
 
 bool
-log_filelevels(sirfileid_t id, log_levels levels)
+log_filelevels(logfileid_t id, log_levels levels)
 {
   _log_defaultlevels(&levels, log_file_def_lvls);
   log_update_data data = {
@@ -105,7 +105,7 @@ log_filelevels(sirfileid_t id, log_levels levels)
 }
 
 bool
-log_fileopts(sirfileid_t id, log_options opts)
+log_fileopts(logfileid_t id, log_options opts)
 {
   _log_defaultopts(&opts, log_file_def_opts);
   log_update_data data = {
@@ -122,13 +122,13 @@ log_cleanup(void)
 }
 
 uint16_t
-log_geterror(sirchar_t message[LOG_MAXERROR - 1])
+log_geterror(logchar_t message[LOG_MAXERROR - 1])
 {
   return _log_geterrcode(_log_geterror(message));
 }
 
 bool
-log_debug(const sirchar_t *format, ...)
+log_debug(const logchar_t *format, ...)
 {
   _LOG_L_START(format);
   r = _log_logv(SIRL_DEBUG, format, args);
@@ -137,7 +137,7 @@ log_debug(const sirchar_t *format, ...)
 }
 
 bool
-log_info(const sirchar_t *format, ...)
+log_info(const logchar_t *format, ...)
 {
   _LOG_L_START(format);
   r = _log_logv(SIRL_INFO, format, args);
@@ -146,7 +146,7 @@ log_info(const sirchar_t *format, ...)
 }
 
 bool
-log_notice(const sirchar_t *format, ...)
+log_notice(const logchar_t *format, ...)
 {
   _LOG_L_START(format);
   r = _log_logv(SIRL_NOTICE, format, args);
@@ -155,7 +155,7 @@ log_notice(const sirchar_t *format, ...)
 }
 
 bool
-log_warn(const sirchar_t *format, ...)
+log_warn(const logchar_t *format, ...)
 {
   _LOG_L_START(format);
   r = _log_logv(SIRL_WARN, format, args);
@@ -164,7 +164,7 @@ log_warn(const sirchar_t *format, ...)
 }
 
 bool
-log_error(const sirchar_t *format, ...)
+log_error(const logchar_t *format, ...)
 {
   _LOG_L_START(format);
   r = _log_logv(SIRL_ERROR, format, args);
@@ -173,7 +173,7 @@ log_error(const sirchar_t *format, ...)
 }
 
 bool
-log_crit(const sirchar_t *format, ...)
+log_crit(const logchar_t *format, ...)
 {
   _LOG_L_START(format);
   r = _log_logv(SIRL_CRIT, format, args);
@@ -182,7 +182,7 @@ log_crit(const sirchar_t *format, ...)
 }
 
 bool
-log_alert(const sirchar_t *format, ...)
+log_alert(const logchar_t *format, ...)
 {
   _LOG_L_START(format);
   r = _log_logv(SIRL_ALERT, format, args);
@@ -191,7 +191,7 @@ log_alert(const sirchar_t *format, ...)
 }
 
 bool
-log_emerg(const sirchar_t *format, ...)
+log_emerg(const logchar_t *format, ...)
 {
   _LOG_L_START(format);
   r = _log_logv(SIRL_EMERG, format, args);
@@ -199,14 +199,14 @@ log_emerg(const sirchar_t *format, ...)
   return r;
 }
 
-sirfileid_t
-log_addfile(const sirchar_t *path, log_levels levels, log_options opts)
+logfileid_t
+log_addfile(const logchar_t *path, log_levels levels, log_options opts)
 {
   return _log_addfile(path, levels, opts);
 }
 
 bool
-log_remfile(sirfileid_t id)
+log_remfile(logfileid_t id)
 {
   return _log_remfile(id);
 }

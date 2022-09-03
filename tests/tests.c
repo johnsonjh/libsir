@@ -26,25 +26,25 @@
 #include "tests.h"
 
 static const log_test log_tests[] = {
-  { "performance",             sirtest_perf                  },
-  { "multi-thread race",       sirtest_mthread_race          },
-  { "exceed max buffer size",  sirtest_exceedmaxsize         },
-  { "file cache sanity",       sirtest_filecachesanity       },
-  { "set invalid text style",  sirtest_failsetinvalidstyle   },
-  { "no output destination",   sirtest_failnooutputdest      },
-  { "invalid file name",       sirtest_failinvalidfilename   },
-  { "bad file permissions",    sirtest_failfilebadpermission },
-  { "null pointers",           sirtest_failnulls             },
-  { "output without init",     sirtest_failwithoutinit       },
-  { "superfluous init",        sirtest_failinittwice         },
-  { "output after cleanup",    sirtest_failaftercleanup      },
-  { "re-initialize",           sirtest_initcleanupinit       },
-  { "duplicate file name",     sirtest_faildupefile          },
-  { "remove nonexistent file", sirtest_failremovebadfile     },
-  { "roll/archive large file", sirtest_rollandarchivefile    },
-  { "error handling sanity",   sirtest_errorsanity           },
-  { "text style sanity",       sirtest_textstylesanity       },
-  { "update levels/options",   sirtest_updatesanity          },
+  { "performance",             logtest_perf                  },
+  { "multi-thread race",       logtest_mthread_race          },
+  { "exceed max buffer size",  logtest_exceedmaxsize         },
+  { "file cache sanity",       logtest_filecachesanity       },
+  { "set invalid text style",  logtest_failsetinvalidstyle   },
+  { "no output destination",   logtest_failnooutputdest      },
+  { "invalid file name",       logtest_failinvalidfilename   },
+  { "bad file permissions",    logtest_failfilebadpermission },
+  { "null pointers",           logtest_failnulls             },
+  { "output without init",     logtest_failwithoutinit       },
+  { "superfluous init",        logtest_failinittwice         },
+  { "output after cleanup",    logtest_failaftercleanup      },
+  { "re-initialize",           logtest_initcleanupinit       },
+  { "duplicate file name",     logtest_faildupefile          },
+  { "remove nonexistent file", logtest_failremovebadfile     },
+  { "roll/archive large file", logtest_rollandarchivefile    },
+  { "error handling sanity",   logtest_errorsanity           },
+  { "text style sanity",       logtest_textstylesanity       },
+  { "update levels/options",   logtest_updatesanity          },
 };
 
 static const char *arg_wait
@@ -74,13 +74,13 @@ main(int argc, char **argv)
   size_t tests = ( perf ? 1 : sizeof ( log_tests ) / sizeof ( log_test ));
   size_t first = ( perf ? 0 : 1 );
   size_t passed = 0;
-  sirtimer_t timer = {
+  logtimer_t timer = {
     0
   };
 
   printf(WHITE("running %lu libsir test(s)...\n"), tests);
 
-  if (!startsirtimer(&timer))
+  if (!startlogtimer(&timer))
     {
       printf(
         RED(
@@ -100,7 +100,7 @@ main(int argc, char **argv)
         thispass ? GREEN("PASS") : RED("FAIL"));
     }
 
-  float elapsed = sirtimerelapsed(&timer);
+  float elapsed = logtimerelapsed(&timer);
 
   printf(
     WHITE("done; ")
@@ -119,7 +119,7 @@ main(int argc, char **argv)
 }
 
 bool
-sirtest_exceedmaxsize(void)
+logtest_exceedmaxsize(void)
 {
   INIT(si, SIRL_ALL, 0, 0, 0);
   bool pass = si_init;
@@ -137,13 +137,13 @@ sirtest_exceedmaxsize(void)
 }
 
 bool
-sirtest_filecachesanity(void)
+logtest_filecachesanity(void)
 {
   INIT(si, SIRL_ALL, 0, 0, 0);
   bool pass = si_init;
 
   size_t numfiles = LOG_MAXFILES + 1;
-  sirfileid_t ids[LOG_MAXFILES] = {
+  logfileid_t ids[LOG_MAXFILES] = {
     0
   };
 
@@ -231,7 +231,7 @@ sirtest_filecachesanity(void)
 }
 
 bool
-sirtest_failsetinvalidstyle(void)
+logtest_failsetinvalidstyle(void)
 {
   INIT(si, SIRL_ALL, 0, 0, 0);
   bool pass = si_init;
@@ -249,7 +249,7 @@ sirtest_failsetinvalidstyle(void)
 }
 
 bool
-sirtest_failnooutputdest(void)
+logtest_failnooutputdest(void)
 {
   INIT(si, 0, 0, 0, 0);
   bool pass = si_init;
@@ -276,7 +276,7 @@ sirtest_failnooutputdest(void)
 }
 
 bool
-sirtest_failinvalidfilename(void)
+logtest_failinvalidfilename(void)
 {
   INIT(si, SIRL_ALL, 0, 0, 0);
   bool pass = si_init;
@@ -293,7 +293,7 @@ sirtest_failinvalidfilename(void)
 }
 
 bool
-sirtest_failfilebadpermission(void)
+logtest_failfilebadpermission(void)
 {
   INIT(si, SIRL_ALL, 0, 0, 0);
   bool pass = si_init;
@@ -310,7 +310,7 @@ sirtest_failfilebadpermission(void)
 }
 
 bool
-sirtest_failnulls(void)
+logtest_failnulls(void)
 {
   INIT(si, SIRL_ALL, 0, 0, 0);
   bool pass = si_init;
@@ -328,9 +328,9 @@ sirtest_failnulls(void)
 }
 
 bool
-sirtest_failwithoutinit(void)
+logtest_failwithoutinit(void)
 {
-  bool pass = !log_info("sir isn't initialized; this needs to fail");
+  bool pass = !log_info("log isn't initialized; this needs to fail");
 
   if (pass)
     {
@@ -341,7 +341,7 @@ sirtest_failwithoutinit(void)
 }
 
 bool
-sirtest_failinittwice(void)
+logtest_failinittwice(void)
 {
   INIT(si, SIRL_ALL, 0, 0, 0);
   bool pass = si_init;
@@ -359,7 +359,7 @@ sirtest_failinittwice(void)
 }
 
 bool
-sirtest_failaftercleanup()
+logtest_failaftercleanup()
 {
   INIT(si, SIRL_ALL, 0, 0, 0);
   bool pass = si_init;
@@ -376,7 +376,7 @@ sirtest_failaftercleanup()
 }
 
 bool
-sirtest_initcleanupinit(void)
+logtest_initcleanupinit(void)
 {
   INIT(si1, SIRL_ALL, 0, 0, 0);
   bool pass = si1_init;
@@ -394,7 +394,7 @@ sirtest_initcleanupinit(void)
 }
 
 bool
-sirtest_faildupefile(void)
+logtest_faildupefile(void)
 {
   INIT(si, SIRL_ALL, 0, 0, 0);
   bool pass = si_init;
@@ -408,7 +408,7 @@ sirtest_faildupefile(void)
 }
 
 bool
-sirtest_failremovebadfile(void)
+logtest_failremovebadfile(void)
 {
   INIT(si, SIRL_ALL, 0, 0, 0);
   bool pass = si_init;
@@ -422,13 +422,13 @@ sirtest_failremovebadfile(void)
 }
 
 bool
-sirtest_rollandarchivefile(void)
+logtest_rollandarchivefile(void)
 {
   /* Roll size minus 1KB so we can write until it maxes. */
   const long deltasize               = 1024;
   const long fillsize                = LOG_FROLLSIZE - deltasize;
-  const sirchar_t *const logfilename = "rollandarchive";
-  const sirchar_t *const line        = "hello, i am some data. nice to meet you.";
+  const logchar_t *const logfilename = "rollandarchive";
+  const logchar_t *const line        = "hello, i am some data. nice to meet you.";
 
   unsigned delcount = 0;
 
@@ -473,7 +473,7 @@ sirtest_rollandarchivefile(void)
   INIT(si, 0, 0, 0, 0);
   bool pass = si_init;
 
-  sirfileid_t fileid
+  logfileid_t fileid
     = log_addfile(logfilename, SIRL_DEBUG, SIRO_MSGONLY | SIRO_NOHDR);
 
   if (pass &= NULL != fileid)
@@ -528,7 +528,7 @@ sirtest_rollandarchivefile(void)
 }
 
 bool
-sirtest_errorsanity(void)
+logtest_errorsanity(void)
 {
   INIT(si, SIRL_ALL, 0, 0, 0);
   bool pass = si_init;
@@ -553,7 +553,7 @@ sirtest_errorsanity(void)
     { LOG_E_UNKNOWN,   "LOG_E_UNKNOWN"   }, /* = 4095 */
   };
 
-  sirchar_t message[LOG_MAXERROR] = {
+  logchar_t message[LOG_MAXERROR] = {
     0
   };
 
@@ -572,7 +572,7 @@ sirtest_errorsanity(void)
 }
 
 bool
-sirtest_textstylesanity(void)
+logtest_textstylesanity(void)
 {
   INIT(si, SIRL_ALL, 0, 0, 0);
   bool pass = si_init;
@@ -633,9 +633,9 @@ sirtest_textstylesanity(void)
 }
 
 bool
-sirtest_perf(void)
+logtest_perf(void)
 {
-  const sirchar_t *logfilename = "sirperf";
+  const logchar_t *logfilename = "logperf";
 
 #ifndef _WIN32
   const size_t perflines = 1e6;
@@ -654,10 +654,10 @@ sirtest_perf(void)
 
       printf("\t%lu lines printf...\n", perflines);
 
-      sirtimer_t printftimer = {
+      logtimer_t printftimer = {
         0
       };
-      startsirtimer(&printftimer);
+      startlogtimer(&printftimer);
 
       for (size_t n = 0; n < perflines; n++)
         {
@@ -668,45 +668,45 @@ sirtest_perf(void)
 #endif /* ifndef _WIN32 */
         }
 
-      printfelapsed = sirtimerelapsed(&printftimer);
+      printfelapsed = logtimerelapsed(&printftimer);
 
       printf("\t%lu lines libsir stdout...\n", perflines);
 
-      sirtimer_t stdiotimer = {
+      logtimer_t stdiotimer = {
         0
       };
-      startsirtimer(&stdiotimer);
+      startlogtimer(&stdiotimer);
 
       for (size_t n = 0; n < perflines; n++)
         {
           log_debug("lorem ipsum foo bar blah");
         }
 
-      stdioelapsed = sirtimerelapsed(&stdiotimer);
+      stdioelapsed = logtimerelapsed(&stdiotimer);
 
       log_cleanup();
 
       INIT(si2, 0, 0, 0, 0);
       pass &= si2_init;
 
-      sirfileid_t logid = log_addfile(logfilename, SIRL_ALL, SIRO_MSGONLY);
+      logfileid_t logid = log_addfile(logfilename, SIRL_ALL, SIRO_MSGONLY);
       pass &= NULL != logid;
 
       if (pass)
         {
           printf("\t%lu lines log file...\n", perflines);
 
-          sirtimer_t filetimer = {
+          logtimer_t filetimer = {
             0
           };
-          startsirtimer(&filetimer);
+          startlogtimer(&filetimer);
 
           for (size_t n = 0; n < perflines; n++)
             {
               log_debug("lorem ipsum foo bar blah");
             }
 
-          fileelapsed = sirtimerelapsed(&filetimer);
+          fileelapsed = logtimerelapsed(&filetimer);
 
           pass &= log_remfile(logid);
         }
@@ -741,14 +741,14 @@ sirtest_perf(void)
 }
 
 bool
-sirtest_updatesanity(void)
+logtest_updatesanity(void)
 {
   INIT_N(si, SIRL_DEFAULT, 0, SIRL_DEFAULT, 0, "update_sanity");
   bool pass = si_init;
   const char *logfile = "update.log";
 
   rmfile(logfile);
-  sirfileid_t id1 = log_addfile(logfile, SIRL_DEFAULT, SIRO_DEFAULT);
+  logfileid_t id1 = log_addfile(logfile, SIRL_DEFAULT, SIRO_DEFAULT);
 
   pass &= NULL != id1;
 
@@ -790,7 +790,7 @@ sirtest_updatesanity(void)
 }
 
 /*
- * bool sirtest_XXX(void) {
+ * bool logtest_XXX(void) {
  *
  *  INIT(si, SIRL_ALL, 0, 0, 0);
  *  bool pass = si_init;
@@ -801,15 +801,15 @@ sirtest_updatesanity(void)
  */
 
 #ifndef _WIN32
-static void *sirtest_thread(void *arg);
+static void *logtest_thread(void *arg);
 #else  /* ifndef _WIN32 */
-static unsigned sirtest_thread(void *arg);
+static unsigned logtest_thread(void *arg);
 #endif /* ifndef _WIN32 */
 
 #define NUM_THREADS 2
 
 bool
-sirtest_mthread_race(void)
+logtest_mthread_race(void)
 {
 #ifndef _WIN32
   pthread_t thrds[NUM_THREADS];
@@ -827,12 +827,12 @@ sirtest_mthread_race(void)
 
 #ifndef _WIN32
       int create
-        = pthread_create(&thrds[n], NULL, sirtest_thread, (void *)path);
+        = pthread_create(&thrds[n], NULL, logtest_thread, (void *)path);
       if (0 != create)
         {
           errno = create;
 #else  /* ifndef _WIN32 */
-      thrds[n] = _beginthreadex(NULL, 0, sirtest_thread, (void *)path, 0, NULL);
+      thrds[n] = _beginthreadex(NULL, 0, logtest_thread, (void *)path, 0, NULL);
       if (0 == thrds[n])
         {
 #endif /* ifndef _WIN32 */
@@ -871,11 +871,11 @@ sirtest_mthread_race(void)
 
 #ifndef _WIN32
 static void *
-sirtest_thread(void *arg)
+logtest_thread(void *arg)
 {
 #else  /* ifndef _WIN32 */
 unsigned
-sirtest_thread(void *arg)
+logtest_thread(void *arg)
 {
 #endif /* ifndef _WIN32 */
   pid_t threadid = _log_gettid();
@@ -887,7 +887,7 @@ sirtest_thread(void *arg)
   free(arg);
 
   rmfile(mypath);
-  sirfileid_t id = log_addfile(mypath, SIRL_ALL, SIRO_MSGONLY);
+  logfileid_t id = log_addfile(mypath, SIRL_ALL, SIRO_MSGONLY);
 
   if (NULL == id)
     {
@@ -959,7 +959,7 @@ printerror(bool pass)
 {
   if (!pass)
     {
-      sirchar_t message[LOG_MAXERROR] = {
+      logchar_t message[LOG_MAXERROR] = {
         0
       };
       uint16_t code = log_geterror(message);
@@ -972,7 +972,7 @@ printerror(bool pass)
 void
 printexpectederr(void)
 {
-  sirchar_t message[LOG_MAXERROR] = {
+  logchar_t message[LOG_MAXERROR] = {
     0
   };
   uint16_t code = log_geterror(message);
@@ -1121,7 +1121,7 @@ enumfiles(const char *search, fileenumproc cb, unsigned *data)
 }
 
 bool
-startsirtimer(sirtimer_t *timer)
+startlogtimer(logtimer_t *timer)
 {
 #ifndef _WIN32
   int gettime = clock_gettime(CLOCK_MONOTONIC, &timer->ts);
@@ -1135,7 +1135,7 @@ startsirtimer(sirtimer_t *timer)
 }
 
 float
-sirtimerelapsed(const sirtimer_t *timer)
+logtimerelapsed(const logtimer_t *timer)
 {
 #ifndef _WIN32
   struct timespec now;

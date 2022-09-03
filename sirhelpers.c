@@ -83,9 +83,9 @@ _log_validopts(log_options opts)
 }
 
 bool
-__log_validstr(const sirchar_t *str, bool fail)
+__log_validstr(const logchar_t *str, bool fail)
 {
-  bool valid = str && ( *str != (sirchar_t)'\0' );
+  bool valid = str && ( *str != (logchar_t)'\0' );
 
   if (!valid && fail)
     {

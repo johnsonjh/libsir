@@ -33,7 +33,7 @@ static thread_local log_thread_err log_te
   };
 
 void
-__log_seterror(sirerror_t err, const sirchar_t *func, const sirchar_t *file,
+__log_seterror(logerror_t err, const logchar_t *func, const logchar_t *file,
                uint32_t line)
 {
   if (_log_validerror(err))
@@ -48,8 +48,8 @@ __log_seterror(sirerror_t err, const sirchar_t *func, const sirchar_t *file,
 }
 
 void
-__log_setoserror(int code, const sirchar_t *message, const sirchar_t *func,
-                 const sirchar_t *file, uint32_t line)
+__log_setoserror(int code, const logchar_t *message, const logchar_t *func,
+                 const logchar_t *file, uint32_t line)
 {
   log_te.os_error = code;
   _log_resetstr(log_te.os_errmsg);
@@ -63,12 +63,12 @@ __log_setoserror(int code, const sirchar_t *message, const sirchar_t *func,
 }
 
 void
-__log_handleerr(int code, const sirchar_t *func, const sirchar_t *file,
+__log_handleerr(int code, const logchar_t *func, const logchar_t *file,
                 uint32_t line)
 {
   if (LOG_E_NOERROR != code)
     {
-      sirchar_t message[LOG_MAXERROR - 1] = {
+      logchar_t message[LOG_MAXERROR - 1] = {
         0
       };
 
@@ -107,12 +107,12 @@ __log_handleerr(int code, const sirchar_t *func, const sirchar_t *file,
 
 #ifdef _WIN32
 void
-__log_handlewin32err(DWORD code, const sirchar_t *func, const sirchar_t *file,
+__log_handlewin32err(DWORD code, const logchar_t *func, const logchar_t *file,
                      uint32_t line)
 {
   if (ERROR_SUCCESS != code)
     {
-      sirchar_t *errbuf = NULL;
+      logchar_t *errbuf = NULL;
       DWORD flags = FORMAT_MESSAGE_ALLOCATE_BUFFER
                   | FORMAT_MESSAGE_FROM_SYSTEM
                   | FORMAT_MESSAGE_IGNORE_INSERTS
@@ -151,20 +151,20 @@ __log_handlewin32err(DWORD code, const sirchar_t *func, const sirchar_t *file,
 }
 #endif /* ifdef _WIN32 */
 
-sirerror_t
-_log_geterror(sirchar_t message[LOG_MAXERROR - 1])
+logerror_t
+_log_geterror(logchar_t message[LOG_MAXERROR - 1])
 {
   _log_resetstr(message);
   for (size_t n = 0; n < _log_countof(log_errors); n++)
     {
       if (log_errors[n].e == log_te.lasterror)
         {
-          sirchar_t *final = NULL;
+          logchar_t *final = NULL;
           bool alloc       = false;
 
           if (_LOG_E_PLATFORM == log_errors[n].e)
             {
-              final = (sirchar_t *)calloc(LOG_MAXERROR + 1, sizeof ( sirchar_t ));
+              final = (logchar_t *)calloc(LOG_MAXERROR + 1, sizeof ( logchar_t ));
 
               if (_log_validptr(final))
                 {
@@ -179,7 +179,7 @@ _log_geterror(sirchar_t message[LOG_MAXERROR - 1])
             }
           else
             {
-              final = (sirchar_t *)log_errors[n].msg;
+              final = (logchar_t *)log_errors[n].msg;
             }
 
           int fmtmsg
@@ -209,9 +209,9 @@ _log_geterror(sirchar_t message[LOG_MAXERROR - 1])
 
 #ifdef LOG_SELFLOG
 void
-_log_selflog(const sirchar_t *format, ...)
+_log_selflog(const logchar_t *format, ...)
 {
-  sirchar_t output[LOG_MAXMESSAGE] = {
+  logchar_t output[LOG_MAXMESSAGE] = {
     0
   };
   va_list args;

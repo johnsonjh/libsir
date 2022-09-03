@@ -78,7 +78,7 @@
 # endif /* ifndef _WIN32 */
 
 # define INIT_N(var, l_stdout, o_stdout, l_stderr, o_stderr, name)  \
-  sirinit var         = { 0 };                                      \
+  loginit var         = { 0 };                                      \
   var.d_stdout.opts   = o_stdout;                                   \
   var.d_stdout.levels = l_stdout;                                   \
   var.d_stderr.opts   = o_stderr;                                   \
@@ -104,117 +104,117 @@ typedef struct
  * Properly handle multiple threads competing for locked sections.
  */
 
-bool sirtest_mthread_race(void);
+bool logtest_mthread_race(void);
 
 /*
  * Properly handle messages that exceed internal buffer sizes.
  */
 
-bool sirtest_exceedmaxsize(void);
+bool logtest_exceedmaxsize(void);
 
 /*
  * Properly handle adding and removing log files.
  */
 
-bool sirtest_filecachesanity(void);
+bool logtest_filecachesanity(void);
 
 /*
  * Properly handle invalid text style.
  */
 
-bool sirtest_failsetinvalidstyle(void);
+bool logtest_failsetinvalidstyle(void);
 
 /*
  * Properly handle the lack of any output destinations.
  */
 
-bool sirtest_failnooutputdest(void);
+bool logtest_failnooutputdest(void);
 
 /*
  * Properly handle invalid log file name.
  */
 
-bool sirtest_failinvalidfilename(void);
+bool logtest_failinvalidfilename(void);
 
 /*
  * Properly handle log file without appropriate permissions.
  */
 
-bool sirtest_failfilebadpermission(void);
+bool logtest_failfilebadpermission(void);
 
 /*
  * Properly handle null/empty input.
  */
 
-bool sirtest_failnulls(void);
+bool logtest_failnulls(void);
 
 /*
  * Properly handle calls without initialization.
  */
 
-bool sirtest_failwithoutinit(void);
+bool logtest_failwithoutinit(void);
 
 /*
  * Properly handle two initialization calls without corresponding cleanup.
  */
 
-bool sirtest_failinittwice(void);
+bool logtest_failinittwice(void);
 
 /**
  * @test Properly handle calls after cleanup.
  */
-bool sirtest_failaftercleanup(void);
+bool logtest_failaftercleanup(void);
 
 /*
  * Properly handle initialization, cleanup, re-initialization.
  */
 
-bool sirtest_initcleanupinit(void);
+bool logtest_initcleanupinit(void);
 
 /*
  * Properly refuse to add a duplicate file.
  */
 
-bool sirtest_faildupefile(void);
+bool logtest_faildupefile(void);
 
 /*
  * Properly refuse to remove a file that isn't added.
  */
 
-bool sirtest_failremovebadfile(void);
+bool logtest_failremovebadfile(void);
 
 /*
  * Properly roll/archive a file when it hits max size.
  */
 
-bool sirtest_rollandarchivefile(void);
+bool logtest_rollandarchivefile(void);
 
 /*
  * Properly return valid codes and messages for all possible errors.
  */
 
-bool sirtest_errorsanity(void);
+bool logtest_errorsanity(void);
 
 /*
  * Properly style stdio output for each level, and handle style overrides.
  */
 
-bool sirtest_textstylesanity(void);
+bool logtest_textstylesanity(void);
 
 /*
  * Performance evaluation.
  */
 
-bool sirtest_perf(void);
+bool logtest_perf(void);
 
 /*
  * Properly update levels/options at runtime.
  */
 
-bool sirtest_updatesanity(void);
+bool logtest_updatesanity(void);
 
 /*
- * bool sirtest_xxxx(void);
+ * bool logtest_xxxx(void);
  */
 
 bool printerror(bool pass);
@@ -239,9 +239,9 @@ typedef struct
 # else  /* ifndef _WIN32 */
   FILETIME ft;
 # endif /* ifndef _WIN32 */
-} sirtimer_t;
+} logtimer_t;
 
-bool startsirtimer(sirtimer_t *timer);
-float sirtimerelapsed(const sirtimer_t *timer);  // msec
+bool startlogtimer(logtimer_t *timer);
+float logtimerelapsed(const logtimer_t *timer);  // msec
 
 #endif /* !_LOG_TESTS_H_INCLUDED */

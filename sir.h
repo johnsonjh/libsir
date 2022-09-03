@@ -46,7 +46,7 @@
  * retval false = Initialization failed.
  */
 
-bool log_init(sirinit *si);
+bool log_init(loginit *si);
 
 /*
  * Sets levels sent to stdout.
@@ -157,7 +157,7 @@ bool log_sysloglevels(log_levels levels);
  * retval false An error occurred while trying to update levels.
  */
 
-bool log_filelevels(sirfileid_t id, log_levels levels);
+bool log_filelevels(logfileid_t id, log_levels levels);
 
 /*
  * Sets formatting options for a log file.
@@ -175,7 +175,7 @@ bool log_filelevels(sirfileid_t id, log_levels levels);
  * retval false = An error occurred while trying to update options.
  */
 
-bool log_fileopts(sirfileid_t id, log_options opts);
+bool log_fileopts(logfileid_t id, log_options opts);
 
 /*
  * Frees allocated resources and resets internal state.
@@ -216,68 +216,68 @@ bool log_cleanup(void);
  * retval LOG_E_UNKNOWN   = Error is not known
  */
 
-uint16_t log_geterror(sirchar_t message[LOG_MAXERROR - 1]);
+uint16_t log_geterror(logchar_t message[LOG_MAXERROR - 1]);
 
 /*
  * Log a formatted debug-level message.
  */
 
-bool log_debug(const sirchar_t *format, ...);
+bool log_debug(const logchar_t *format, ...);
 
 /*
  * Log a formatted informational message.
  */
 
-bool log_info(const sirchar_t *format, ...);
+bool log_info(const logchar_t *format, ...);
 
 /*
  * Log a formatted notice message.
  */
 
-bool log_notice(const sirchar_t *format, ...);
+bool log_notice(const logchar_t *format, ...);
 
 /*
  * Log a formatted warning message.
  */
 
-bool log_warn(const sirchar_t *format, ...);
+bool log_warn(const logchar_t *format, ...);
 
 /*
  * Log a formatted error message.
  */
 
-bool log_error(const sirchar_t *format, ...);
+bool log_error(const logchar_t *format, ...);
 
 /*
  * Log a formatted critical error message.
  */
 
-bool log_crit(const sirchar_t *format, ...);
+bool log_crit(const logchar_t *format, ...);
 
 /*
  * Log a formatted alert message.
  */
 
-bool log_alert(const sirchar_t *format, ...);
+bool log_alert(const logchar_t *format, ...);
 
 /*
  * Log a formatted emergency message.
  */
 
-bool log_emerg(const sirchar_t *format, ...);
+bool log_emerg(const logchar_t *format, ...);
 
 /*
  * Add a log file to receive formatted output for one or more log_level.
  */
 
-sirfileid_t log_addfile(const sirchar_t *path, log_levels levels,
+logfileid_t log_addfile(const logchar_t *path, log_levels levels,
                         log_options opts);
 
 /*
  * Remove a previously added log file.
  */
 
-bool log_remfile(sirfileid_t id);
+bool log_remfile(logfileid_t id);
 
 /*
  * Sets the text style in stdio output for a log_level of output.

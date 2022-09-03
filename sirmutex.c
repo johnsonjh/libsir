@@ -30,7 +30,7 @@
 #ifndef _WIN32 /* pthread mutex implementation */
 
 bool
-_logmutex_create(sirmutex_t *mutex)
+_logmutex_create(logmutex_t *mutex)
 {
   if (_log_validptr(mutex))
     {
@@ -58,7 +58,7 @@ _logmutex_create(sirmutex_t *mutex)
 }
 
 bool
-_logmutex_trylock(sirmutex_t *mutex)
+_logmutex_trylock(logmutex_t *mutex)
 {
   if (_log_validptr(mutex))
     {
@@ -71,7 +71,7 @@ _logmutex_trylock(sirmutex_t *mutex)
 }
 
 bool
-_logmutex_lock(sirmutex_t *mutex)
+_logmutex_lock(logmutex_t *mutex)
 {
   if (_log_validptr(mutex))
     {
@@ -84,7 +84,7 @@ _logmutex_lock(sirmutex_t *mutex)
 }
 
 bool
-_logmutex_unlock(sirmutex_t *mutex)
+_logmutex_unlock(logmutex_t *mutex)
 {
   if (_log_validptr(mutex))
     {
@@ -97,7 +97,7 @@ _logmutex_unlock(sirmutex_t *mutex)
 }
 
 bool
-_logmutex_destroy(sirmutex_t *mutex)
+_logmutex_destroy(logmutex_t *mutex)
 {
   if (_log_validptr(mutex))
     {
@@ -111,14 +111,14 @@ _logmutex_destroy(sirmutex_t *mutex)
 
 #else /* Win32 mutex implementation */
 
-static bool _logmutex_waitwin32(sirmutex_t mutex, DWORD msec);
+static bool _logmutex_waitwin32(logmutex_t mutex, DWORD msec);
 
 bool
-_logmutex_create(sirmutex_t *mutex)
+_logmutex_create(logmutex_t *mutex)
 {
   if (_log_validptr(mutex))
     {
-      sirmutex_t tmp = CreateMutex(NULL, FALSE, NULL);
+      logmutex_t tmp = CreateMutex(NULL, FALSE, NULL);
 
       if (!tmp)
         {
@@ -134,19 +134,19 @@ _logmutex_create(sirmutex_t *mutex)
 }
 
 bool
-_logmutex_trylock(sirmutex_t *mutex)
+_logmutex_trylock(logmutex_t *mutex)
 {
   return _logmutex_waitwin32(*mutex, 0);
 }
 
 bool
-_logmutex_lock(sirmutex_t *mutex)
+_logmutex_lock(logmutex_t *mutex)
 {
   return _logmutex_waitwin32(*mutex, INFINITE);
 }
 
 bool
-_logmutex_unlock(sirmutex_t *mutex)
+_logmutex_unlock(logmutex_t *mutex)
 {
   if (_log_validptr(mutex))
     {
@@ -164,7 +164,7 @@ _logmutex_unlock(sirmutex_t *mutex)
 }
 
 bool
-_logmutex_destroy(sirmutex_t *mutex)
+_logmutex_destroy(logmutex_t *mutex)
 {
   if (_log_validptr(mutex))
     {
@@ -182,7 +182,7 @@ _logmutex_destroy(sirmutex_t *mutex)
 }
 
 static bool
-_logmutex_waitwin32(sirmutex_t mutex, DWORD msec)
+_logmutex_waitwin32(logmutex_t mutex, DWORD msec)
 {
   if (_log_validptr(mutex))
     {

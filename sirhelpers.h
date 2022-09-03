@@ -42,9 +42,9 @@
 /* Validates an internal error. */
 
 static inline bool
-_log_validerror(sirerror_t err)
+_log_validerror(logerror_t err)
 {
-  sirerror_t masked = err & 0x8fffffff;
+  logerror_t masked = err & 0x8fffffff;
 
   return masked >= 0x80000000 && masked <= 0x8fff0000;
 }
@@ -52,7 +52,7 @@ _log_validerror(sirerror_t err)
 /* Extracts just the code from an internal error. */
 
 static inline uint16_t
-_log_geterrcode(sirerror_t err)
+_log_geterrcode(logerror_t err)
 {
   return ( err >> 16 ) & 0x7fff;
 }
@@ -142,12 +142,12 @@ bool _log_validopts(log_options opts);
 
 /* Validates a string pointer and optionally fails if it's invalid. */
 
-bool __log_validstr(const sirchar_t *str, bool fail);
+bool __log_validstr(const logchar_t *str, bool fail);
 
 /* Validates a string pointer and fails if it's invalid. */
 
 static inline bool
-_log_validstr(const sirchar_t *str)
+_log_validstr(const logchar_t *str)
 {
   return __log_validstr(str, true);
 }
@@ -155,7 +155,7 @@ _log_validstr(const sirchar_t *str)
 /* Validates a string pointer but ignores if it's invalid. */
 
 static inline bool
-_log_validstrnofail(const sirchar_t *str)
+_log_validstrnofail(const logchar_t *str)
 {
   return __log_validstr(str, false);
 }
@@ -172,9 +172,9 @@ _log_validupdatedata(log_update_data *data)
 /* Places a null terminator at the first index in a string buffer. */
 
 static inline void
-_log_resetstr(sirchar_t *str)
+_log_resetstr(logchar_t *str)
 {
-  str[0] = (sirchar_t)'\0';
+  str[0] = (logchar_t)'\0';
 }
 
 #endif /* !_LOG_HELPERS_H_INCLUDED */

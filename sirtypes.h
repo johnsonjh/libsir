@@ -31,11 +31,11 @@
 
 /* The file identifier type. */
 
-typedef const int *sirfileid_t;
+typedef const int *logfileid_t;
 
 /* The error code type. */
 
-typedef uint32_t sirerror_t;
+typedef uint32_t logerror_t;
 
 /* Defines the available levels (severity/priority) of logging output. */
 
@@ -111,7 +111,7 @@ typedef enum
 
   /*
    * Use the default for this type of destination. See
-   * sirdefaults.h for specifics.
+   * logdefaults.h for specifics.
    */
 
   SIRO_DEFAULT  = 0x100000,
@@ -170,7 +170,7 @@ typedef enum
 
 /* The underlying type used for characters in output. */
 
-typedef char sirchar_t;
+typedef char logchar_t;
 
 /*
  * log_stdio_dest
@@ -195,7 +195,7 @@ typedef struct
 } log_syslog_dest;
 
 /*
- * sirinit
+ * loginit
  * Initialization data for libsir.
  *
  * Allocate an instance of this struct and pass it to log_init
@@ -213,16 +213,16 @@ typedef struct
    * Set SIRO_NONAME for a destination to supppress it.
    */
 
-  sirchar_t processName[LOG_MAXNAME];
-} sirinit;
+  logchar_t processName[LOG_MAXNAME];
+} loginit;
 
 /* Library error type. */
 
 typedef struct
 {
-  sirerror_t code;
-  const sirchar_t *const message;
-} sirerror;
+  logerror_t code;
+  const logchar_t *const message;
+} logerror;
 
 /* Text style attribute mask. */
 
@@ -244,37 +244,37 @@ typedef struct
 
 typedef struct
 {
-  sirchar_t *path;
+  logchar_t *path;
   log_levels levels;
   log_options opts;
   FILE *f;
   int id;
-} sirfile;
+} logfile;
 
 /* Log file cache. */
 
 typedef struct
 {
-  sirfile *files[LOG_MAXFILES];
+  logfile *files[LOG_MAXFILES];
   size_t count;
-} sirfcache;
+} logfcache;
 
 /* Formatted output sent to destinations. */
 
 typedef struct
 {
-  sirchar_t *style;
-  sirchar_t *timestamp;
-  sirchar_t *msec;
-  sirchar_t *level;
-  sirchar_t *name;
-  sirchar_t *pid;
-  sirchar_t *tid;
-  sirchar_t *message;
-  sirchar_t *output;
-} siroutput;
+  logchar_t *style;
+  logchar_t *timestamp;
+  logchar_t *msec;
+  logchar_t *level;
+  logchar_t *name;
+  logchar_t *pid;
+  logchar_t *tid;
+  logchar_t *message;
+  logchar_t *output;
+} logoutput;
 
-/* Indexes into sirbuf buffers. */
+/* Indexes into logbuf buffers. */
 
 typedef enum
 {
@@ -288,22 +288,22 @@ typedef enum
   _SIRBUF_MSG,
   _SIRBUF_OUTPUT,
   _SIRBUF_MAX
-} sirbuf_idx;
+} logbuf_idx;
 
 /* Buffers for output formatting. */
 
 typedef struct
 {
-  sirchar_t style     [LOG_MAXSTYLE];
-  sirchar_t timestamp [LOG_MAXTIME];
-  sirchar_t msec      [LOG_MAXMSEC];
-  sirchar_t level     [LOG_MAXLEVEL];
-  sirchar_t name      [LOG_MAXNAME];
-  sirchar_t pid       [LOG_MAXPID];
-  sirchar_t tid       [LOG_MAXPID];
-  sirchar_t message   [LOG_MAXMESSAGE];
-  sirchar_t output    [LOG_MAXOUTPUT];
-} sirbuf;
+  logchar_t style     [LOG_MAXSTYLE];
+  logchar_t timestamp [LOG_MAXTIME];
+  logchar_t msec      [LOG_MAXMSEC];
+  logchar_t level     [LOG_MAXLEVEL];
+  logchar_t name      [LOG_MAXNAME];
+  logchar_t pid       [LOG_MAXPID];
+  logchar_t tid       [LOG_MAXPID];
+  logchar_t message   [LOG_MAXMESSAGE];
+  logchar_t output    [LOG_MAXOUTPUT];
+} logbuf;
 
 /* log_level <> log_textstyle mapping. */
 
@@ -325,8 +325,8 @@ typedef struct
 
 typedef enum
 {
-  _LOGM_INIT = 0,  /* The sirinit section.       */
-  _LOGM_FILECACHE, /* The sirfcache section.     */
+  _LOGM_INIT = 0,  /* The loginit section.       */
+  _LOGM_FILECACHE, /* The logfcache section.     */
   _LOGM_TEXTSTYLE, /* The log_style_map section. */
 } log_mutex_id;
 
@@ -334,14 +334,14 @@ typedef enum
 
 typedef struct
 {
-  sirerror_t lasterror;
+  logerror_t lasterror;
   int os_error;
-  sirchar_t os_errmsg[LOG_MAXERROR - 1];
+  logchar_t os_errmsg[LOG_MAXERROR - 1];
 
   struct
   {
-    const sirchar_t *func;
-    const sirchar_t *file;
+    const logchar_t *func;
+    const logchar_t *file;
     uint32_t line;
   } loc;
 } log_thread_err;

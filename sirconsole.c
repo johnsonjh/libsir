@@ -29,22 +29,22 @@
 
 #ifndef _WIN32
 
-static bool _log_write_std(const sirchar_t *message, FILE *stream);
+static bool _log_write_std(const logchar_t *message, FILE *stream);
 
 bool
-_log_stderr_write(const sirchar_t *message)
+_log_stderr_write(const logchar_t *message)
 {
   return _log_write_std(message, stderr);
 }
 
 bool
-_log_stdout_write(const sirchar_t *message)
+_log_stdout_write(const logchar_t *message)
 {
   return _log_write_std(message, stdout);
 }
 
 static bool
-_log_write_std(const sirchar_t *message, FILE *stream)
+_log_write_std(const logchar_t *message, FILE *stream)
 {
   (void)log_override_styles;
   if (!_log_validstr(message) || !_log_validptr(stream))
@@ -64,17 +64,17 @@ _log_write_std(const sirchar_t *message, FILE *stream)
 #else /* ifndef _WIN32 */
 
 static CRITICAL_SECTION stdout_cs;
-static sironce_t stdout_once = LOG_ONCE_INIT;
+static logonce_t stdout_once = LOG_ONCE_INIT;
 
 static CRITICAL_SECTION stderr_cs;
-static sironce_t stderr_once = LOG_ONCE_INIT;
+static logonce_t stderr_once = LOG_ONCE_INIT;
 
-static bool _log_write_stdwin32(uint16_t style, const sirchar_t *message,
+static bool _log_write_stdwin32(uint16_t style, const logchar_t *message,
                                 HANDLE console, CRITICAL_SECTION *cs);
 static BOOL CALLBACK _log_initcs(PINIT_ONCE ponce, PVOID param, PVOID *ctx);
 
 bool
-_log_stderr_write(uint16_t style, const sirchar_t *message)
+_log_stderr_write(uint16_t style, const logchar_t *message)
 {
   BOOL initcs
     = InitOnceExecuteOnce(&stderr_once, _log_initcs, &stderr_cs, NULL);
@@ -88,7 +88,7 @@ _log_stderr_write(uint16_t style, const sirchar_t *message)
 }
 
 bool
-_log_stdout_write(uint16_t style, const sirchar_t *message)
+_log_stdout_write(uint16_t style, const logchar_t *message)
 {
   BOOL initcs
     = InitOnceExecuteOnce(&stdout_once, _log_initcs, &stdout_cs, NULL);
@@ -102,7 +102,7 @@ _log_stdout_write(uint16_t style, const sirchar_t *message)
 }
 
 static bool
-_log_write_stdwin32(uint16_t style, const sirchar_t *message, HANDLE console,
+_log_write_stdwin32(uint16_t style, const logchar_t *message, HANDLE console,
                     CRITICAL_SECTION *cs)
 {
   if (!_log_validstr(message))

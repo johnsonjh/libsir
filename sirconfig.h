@@ -40,7 +40,6 @@
 
 /*
  * The format for the current process/thread ID,
- * if no name is available/desired.
  */
 
 # define LOG_PIDFORMAT "%d"

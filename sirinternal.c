@@ -30,21 +30,21 @@
 #include "sirmutex.h"
 #include "sirtextstyle.h"
 
-static sirinit _log_si = {
+static loginit _log_si = {
   0
 };
-static sirfcache _log_fc = {
+static logfcache _log_fc = {
   0
 };
 
-static sirmutex_t si_mutex;
-static sironce_t  si_once = LOG_ONCE_INIT;
+static logmutex_t si_mutex;
+static logonce_t  si_once = LOG_ONCE_INIT;
 
-static sirmutex_t fc_mutex;
-static sironce_t  fc_once = LOG_ONCE_INIT;
+static logmutex_t fc_mutex;
+static logonce_t  fc_once = LOG_ONCE_INIT;
 
-static sirmutex_t ts_mutex;
-static sironce_t  ts_once = LOG_ONCE_INIT;
+static logmutex_t ts_mutex;
+static logonce_t  ts_once = LOG_ONCE_INIT;
 
 static volatile uint32_t _log_magic;
 
@@ -61,7 +61,7 @@ _log_sanity(void)
 }
 
 bool
-_log_options_sanity(const sirinit *si)
+_log_options_sanity(const loginit *si)
 {
   if (!_log_validptr(si))
     {
@@ -86,7 +86,7 @@ _log_options_sanity(const sirinit *si)
 }
 
 bool
-_log_init(sirinit *si)
+_log_init(loginit *si)
 {
   _log_seterror(_LOG_E_NOERROR);
 
@@ -116,12 +116,12 @@ _log_init(sirinit *si)
       return false;
     }
 
-  sirinit *_si = _log_locksection(_LOGM_INIT);
+  loginit *_si = _log_locksection(_LOGM_INIT);
   assert(_si);
 
   if (_si)
     {
-      (void)memcpy(_si, si, sizeof ( sirinit ));
+      (void)memcpy(_si, si, sizeof ( loginit ));
 
 #ifndef LOG_NO_SYSLOG
       if (0 != _si->d_syslog.levels)
@@ -141,43 +141,43 @@ _log_init(sirinit *si)
 }
 
 void
-_log_stdoutlevels(sirinit *si, log_update_data *data)
+_log_stdoutlevels(loginit *si, log_update_data *data)
 {
   si->d_stdout.levels = *data->levels;
 }
 
 void
-_log_stdoutopts(sirinit *si, log_update_data *data)
+_log_stdoutopts(loginit *si, log_update_data *data)
 {
   si->d_stdout.opts = *data->opts;
 }
 
 void
-_log_stderrlevels(sirinit *si, log_update_data *data)
+_log_stderrlevels(loginit *si, log_update_data *data)
 {
   si->d_stderr.levels = *data->levels;
 }
 
 void
-_log_stderropts(sirinit *si, log_update_data *data)
+_log_stderropts(loginit *si, log_update_data *data)
 {
   si->d_stderr.opts = *data->opts;
 }
 
 void
-_log_sysloglevels(sirinit *si, log_update_data *data)
+_log_sysloglevels(loginit *si, log_update_data *data)
 {
   si->d_syslog.levels = *data->levels;
 }
 
 bool
-_log_writeinit(log_update_data *data, sirinit_update update)
+_log_writeinit(log_update_data *data, loginit_update update)
 {
   _log_seterror(_LOG_E_NOERROR);
 
   if (_log_sanity() && _log_validupdatedata(data) && _log_validptr(update))
     {
-      sirinit *si = _log_locksection(_LOGM_INIT);
+      loginit *si = _log_locksection(_LOGM_INIT);
       assert(si);
       if (si)
         {
@@ -192,7 +192,7 @@ _log_writeinit(log_update_data *data, sirinit_update update)
 void *
 _log_locksection(log_mutex_id mid)
 {
-  sirmutex_t *m = NULL;
+  logmutex_t *m = NULL;
   void *sec     = NULL;
 
   if (_log_mapmutexid(mid, &m, &sec))
@@ -208,7 +208,7 @@ _log_locksection(log_mutex_id mid)
 bool
 _log_unlocksection(log_mutex_id mid)
 {
-  sirmutex_t *m = NULL;
+  logmutex_t *m = NULL;
   void *sec     = NULL;
 
   if (_log_mapmutexid(mid, &m, &sec))
@@ -222,14 +222,14 @@ _log_unlocksection(log_mutex_id mid)
 }
 
 bool
-_log_mapmutexid(log_mutex_id mid, sirmutex_t **m, void **section)
+_log_mapmutexid(log_mutex_id mid, logmutex_t **m, void **section)
 {
   if (!_log_validptr(m))
     {
       return false;
     }
 
-  sirmutex_t *tmpm;
+  logmutex_t *tmpm;
   void *tmpsec;
 
   switch (mid)
@@ -275,7 +275,7 @@ _log_cleanup(void)
     }
 
   bool cleanup   = true;
-  sirfcache *sfc = _log_locksection(_LOGM_FILECACHE);
+  logfcache *sfc = _log_locksection(_LOGM_FILECACHE);
 
   assert(sfc);
 
@@ -286,13 +286,13 @@ _log_cleanup(void)
       cleanup &= _log_unlocksection(_LOGM_FILECACHE) && destroyfc;
     }
 
-  sirinit *si = _log_locksection(_LOGM_INIT);
+  loginit *si = _log_locksection(_LOGM_INIT);
 
   assert(si);
 
   if (cleanup &= NULL != si)
     {
-      (void)memset(si, 0, sizeof ( sirinit ));
+      (void)memset(si, 0, sizeof ( loginit ));
       cleanup &= _log_unlocksection(_LOGM_INIT);
     }
 
@@ -344,7 +344,7 @@ _log_initmutex_ts_once(PINIT_ONCE ponce, PVOID param, PVOID *ctx)
 #endif /* ifndef _WIN32 */
 
 void
-_log_initmutex(sirmutex_t *mutex)
+_log_initmutex(logmutex_t *mutex)
 {
   bool init = _logmutex_create(mutex);
 
@@ -353,7 +353,7 @@ _log_initmutex(sirmutex_t *mutex)
 }
 
 void
-_log_once(sironce_t *once, log_once_fn func)
+_log_once(logonce_t *once, log_once_fn func)
 {
 #ifndef _WIN32
   (void)pthread_once(once, func);
@@ -364,7 +364,7 @@ _log_once(sironce_t *once, log_once_fn func)
 }
 
 bool
-_log_logv(log_level level, const sirchar_t *format, va_list args)
+_log_logv(log_level level, const logchar_t *format, va_list args)
 {
   _log_seterror(_LOG_E_NOERROR);
 
@@ -373,22 +373,22 @@ _log_logv(log_level level, const sirchar_t *format, va_list args)
       return false;
     }
 
-  sirinit *si = _log_locksection(_LOGM_INIT);
+  loginit *si = _log_locksection(_LOGM_INIT);
 
   if (!si)
     {
       return false;
     }
 
-  sirinit tmpsi = {
+  loginit tmpsi = {
     0
   };
 
-  (void)memcpy(&tmpsi, si, sizeof ( sirinit ));
+  (void)memcpy(&tmpsi, si, sizeof ( loginit ));
   (void)_log_unlocksection(_LOGM_INIT);
 
-  sirbuf buf;
-  siroutput output = {
+  logbuf buf;
+  logoutput output = {
     0
   };
 
@@ -522,7 +522,7 @@ _log_logv(log_level level, const sirchar_t *format, va_list args)
 }
 
 bool
-_log_dispatch(sirinit *si, log_level level, siroutput *output)
+_log_dispatch(loginit *si, log_level level, logoutput *output)
 {
   if (_log_validptr(output))
     {
@@ -532,7 +532,7 @@ _log_dispatch(sirinit *si, log_level level, siroutput *output)
 
       if (_log_bittest(si->d_stdout.levels, level))
         {
-          const sirchar_t *write /* = write */ = _log_format(true, si->d_stdout.opts, output);
+          const logchar_t *write /* = write */ = _log_format(true, si->d_stdout.opts, output);
           (void)write;
           assert(write);
 #ifndef _WIN32
@@ -553,7 +553,7 @@ _log_dispatch(sirinit *si, log_level level, siroutput *output)
 
       if (_log_bittest(si->d_stderr.levels, level))
         {
-          const sirchar_t *write /* = write */ = _log_format(true, si->d_stderr.opts, output);
+          const logchar_t *write /* = write */ = _log_format(true, si->d_stderr.opts, output);
           (void)write;
           assert(write);
 #ifndef _WIN32
@@ -581,7 +581,7 @@ _log_dispatch(sirinit *si, log_level level, siroutput *output)
         }
 
 #endif /* ifndef LOG_NO_SYSLOG */
-      sirfcache *sfc = _log_locksection(_LOGM_FILECACHE);
+      logfcache *sfc = _log_locksection(_LOGM_FILECACHE);
 
       if (sfc)
         {
@@ -605,8 +605,8 @@ _log_dispatch(sirinit *si, log_level level, siroutput *output)
   return false;
 }
 
-const sirchar_t *
-_log_format(bool styling, log_options opts, siroutput *output)
+const logchar_t *
+_log_format(bool styling, log_options opts, logoutput *output)
 {
   if (_log_validopts(opts) && _log_validptr(output)
       && _log_validptr(output->output))
@@ -756,8 +756,8 @@ _log_syslog_maplevel(log_level level)
 #endif /* ifndef LOG_NO_SYSLOG */
 
 /* In case there's a better way to implement this, abstract it away. */
-sirchar_t *
-_logbuf_get(sirbuf *buf, size_t idx)
+logchar_t *
+_logbuf_get(logbuf *buf, size_t idx)
 {
   assert(idx <= _SIRBUF_MAX);
 
@@ -798,7 +798,7 @@ _logbuf_get(sirbuf *buf, size_t idx)
   return NULL;
 }
 
-const sirchar_t *
+const logchar_t *
 _log_levelstr(log_level level)
 {
   assert(_log_validlevel(level));
@@ -833,7 +833,7 @@ _log_levelstr(log_level level)
 }
 
 bool
-_log_formattime(time_t now, sirchar_t *buffer, const sirchar_t *format)
+_log_formattime(time_t now, logchar_t *buffer, const logchar_t *format)
 {
   if (0 != now && _log_validptr(buffer) && _log_validstr(format))
     {

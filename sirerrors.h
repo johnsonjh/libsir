@@ -68,8 +68,8 @@ enum
 
 static const struct
 {
-  sirerror_t e;
-  const sirchar_t *msg;
+  logerror_t e;
+  const logchar_t *msg;
 } log_errors[] = {
   { _LOG_E_NOERROR,   "The operation completed successfully"    },
   { _LOG_E_NOTREADY,  "Logging has not been initialized"        },
@@ -86,18 +86,18 @@ static const struct
   { _LOG_E_UNKNOWN,   "Error is not known"                      },
 };
 
-void __log_seterror(sirerror_t err, const sirchar_t *func,
-                    const sirchar_t *file, uint32_t line);
+void __log_seterror(logerror_t err, const logchar_t *func,
+                    const logchar_t *file, uint32_t line);
 # define _log_seterror(err) __log_seterror(err, __func__, __FILE__, __LINE__)
 
-void __log_setoserror(int, const sirchar_t *, const sirchar_t *,
-                      const sirchar_t *, uint32_t);
+void __log_setoserror(int, const logchar_t *, const logchar_t *,
+                      const logchar_t *, uint32_t);
 # define _log_setoserror(err, msg) \
   __log_setoserror(err, msg, __func__, __FILE__, __LINE__)
 
 /* Handle a C library error. */
 
-void __log_handleerr(int code, const sirchar_t *func, const sirchar_t *file,
+void __log_handleerr(int code, const logchar_t *func, const logchar_t *file,
                      uint32_t line);
 # define _log_handleerr(code) \
   __log_handleerr(code, __func__, __FILE__, __LINE__)
@@ -111,21 +111,21 @@ void __log_handleerr(int code, const sirchar_t *func, const sirchar_t *file,
  * wrong is totally lost in translation.
  */
 
-void __log_handlewin32err(DWORD code, const sirchar_t *func,
-                          const sirchar_t *file, uint32_t line);
+void __log_handlewin32err(DWORD code, const logchar_t *func,
+                          const logchar_t *file, uint32_t line);
 #  define _log_handlewin32err(code) \
   __log_handlewin32err(code, __func__, __FILE__, __LINE__)
 # endif /* ifdef _WIN32 */
 
 /* Returns information about the last error that occurred. */
 
-sirerror_t _log_geterror(sirchar_t message[LOG_MAXERROR - 1]);
+logerror_t _log_geterror(logchar_t message[LOG_MAXERROR - 1]);
 
 # ifdef LOG_SELFLOG
 
 /* Log an internal message to stderr. */
 
-void _log_selflog(const sirchar_t *format, ...);
+void _log_selflog(const logchar_t *format, ...);
 # else /* ifdef LOG_SELFLOG */
 #  define _log_selflog(format, ...) ((void)( 0 ))
 # endif /* ifdef LOG_SELFLOG */

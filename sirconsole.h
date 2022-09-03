@@ -29,11 +29,11 @@
 # include "sirtypes.h"
 
 # ifndef _WIN32
-bool _log_stderr_write(const sirchar_t *message);
-bool _log_stdout_write(const sirchar_t *message);
+bool _log_stderr_write(const logchar_t *message);
+bool _log_stdout_write(const logchar_t *message);
 # else  /* ifndef _WIN32 */
-bool _log_stderr_write(uint16_t style, const sirchar_t *message);
-bool _log_stdout_write(uint16_t style, const sirchar_t *message);
+bool _log_stderr_write(uint16_t style, const logchar_t *message);
+bool _log_stdout_write(uint16_t style, const logchar_t *message);
 # endif /* ifndef _WIN32 */
 
 #endif /* !_LOG_CONSOLE_H_INCLUDED */

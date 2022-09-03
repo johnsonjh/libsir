@@ -158,6 +158,6 @@ uint16_t _log_getprivstyle(uint32_t cat);
  * form.
  */
 
-bool _log_formatstyle(log_textstyle style, sirchar_t *buf, size_t size);
+bool _log_formatstyle(log_textstyle style, logchar_t *buf, size_t size);
 
 #endif /* !_LOG_TEXTSTYLE_H_INCLUDED */

@@ -30,7 +30,7 @@
  * and outputting messages.
  *
  * When it is finished running, you can see the output in the console, and
- * example the contents of 'sir-example.log' in the current directory.
+ * example the contents of 'log-example.log' in the current directory.
  */
 
 int report_error(void);
@@ -48,7 +48,7 @@ main(int argc, char **argv)
    * libsir makes a copy of it before returning from log_init.
    */
 
-  sirinit si = {
+  loginit si = {
     0
   };
 
@@ -104,7 +104,7 @@ main(int argc, char **argv)
    * Send all severity levels there.
    */
 
-  sirfileid_t fileid1 = log_addfile("sir-example.log", SIRL_ALL, SIRO_NONAME);
+  logfileid_t fileid1 = log_addfile("log-example.log", SIRL_ALL, SIRO_NONAME);
 
   if (NULL == fileid1)
     {
@@ -145,7 +145,7 @@ main(int argc, char **argv)
 int
 report_error(void)
 {
-  sirchar_t message[LOG_MAXERROR] = {
+  logchar_t message[LOG_MAXERROR] = {
     0
   };
   uint16_t code = log_geterror(message);

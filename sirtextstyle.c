@@ -188,7 +188,7 @@ _log_getprivstyle(uint32_t cat)
 }
 
 bool
-_log_formatstyle(log_textstyle style, sirchar_t *buf, size_t size)
+_log_formatstyle(log_textstyle style, logchar_t *buf, size_t size)
 {
   if (_log_validptr(buf))
     {
@@ -203,10 +203,10 @@ _log_formatstyle(log_textstyle style, sirchar_t *buf, size_t size)
           uint16_t privbg   = _log_getprivstyle(bg);
 
 #ifndef _WIN32
-          sirchar_t fgfmt[5] = {
+          logchar_t fgfmt[5] = {
             0
           };
-          sirchar_t bgfmt[5] = {
+          logchar_t bgfmt[5] = {
             0
           };
 

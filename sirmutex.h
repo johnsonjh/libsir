@@ -30,22 +30,22 @@
 
 /* Creates/initializes a new mutex. */
 
-bool _logmutex_create(sirmutex_t *mutex);
+bool _logmutex_create(logmutex_t *mutex);
 
 /* Determines if a mutex is locked without waiting. */
 
-bool _logmutex_trylock(sirmutex_t *mutex);
+bool _logmutex_trylock(logmutex_t *mutex);
 
 /* Attempts to lock a mutex and waits indefinitely. */
 
-bool _logmutex_lock(sirmutex_t *mutex);
+bool _logmutex_lock(logmutex_t *mutex);
 
 /* Unlocks a previously locked mutex. */
 
-bool _logmutex_unlock(sirmutex_t *mutex);
+bool _logmutex_unlock(logmutex_t *mutex);
 
 /* Destroys a mutex. */
 
-bool _logmutex_destroy(sirmutex_t *mutex);
+bool _logmutex_destroy(logmutex_t *mutex);
 
 #endif /* !_LOG_MUTEX_H_INCLUDED */
