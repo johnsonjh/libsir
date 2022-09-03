@@ -45,7 +45,7 @@ main(int argc, char **argv)
    * Instantiate the initialization structure.
    *
    * Note: It is not necessary to retain this structure in memory;
-   * libsir makes a copy of it before returning from sir_init.
+   * libsir makes a copy of it before returning from log_init.
    */
 
   sirinit si = {
@@ -93,7 +93,7 @@ main(int argc, char **argv)
 
   /* Initialize SIR. */
 
-  if (!sir_init(&si))
+  if (!log_init(&si))
     {
       return report_error();
     }
@@ -104,7 +104,7 @@ main(int argc, char **argv)
    * Send all severity levels there.
    */
 
-  sirfileid_t fileid1 = sir_addfile("sir-example.log", SIRL_ALL, SIRO_NONAME);
+  sirfileid_t fileid1 = log_addfile("sir-example.log", SIRL_ALL, SIRO_NONAME);
 
   if (NULL == fileid1)
     {
@@ -123,21 +123,21 @@ main(int argc, char **argv)
    * this automatically.
    */
 
-  sir_debug("debug-level message: {n=%d, somestr='%s', f=%.04f}", n, somestr, f);
+  log_debug("debug-level message: {n=%d, somestr='%s', f=%.04f}", n, somestr, f);
 
   /* Do the same for the rest of available severity levels. */
 
-  sir_info("info-level message: {n=%d, somestr='%s', f=%.04f}", n, somestr, f);
-  sir_notice("notice-level message: {n=%d, somestr='%s', f=%.04f}", n, somestr, f);
-  sir_warn("warning-level message: {n=%d, somestr='%s', f=%.04f}", n, somestr, f);
-  sir_error("error-level message: {n=%d, somestr='%s', f=%.04f}", n, somestr, f);
-  sir_crit("critical error-level message: {n=%d, somestr='%s', f=%.04f}", n, somestr, f);
-  sir_alert("alert-level message: {n=%d, somestr='%s', f=%.04f}", n, somestr, f);
-  sir_emerg("emergency-level message: {n=%d, somestr='%s', f=%.04f}", n, somestr, f);
+  log_info("info-level message: {n=%d, somestr='%s', f=%.04f}", n, somestr, f);
+  log_notice("notice-level message: {n=%d, somestr='%s', f=%.04f}", n, somestr, f);
+  log_warn("warning-level message: {n=%d, somestr='%s', f=%.04f}", n, somestr, f);
+  log_error("error-level message: {n=%d, somestr='%s', f=%.04f}", n, somestr, f);
+  log_crit("critical error-level message: {n=%d, somestr='%s', f=%.04f}", n, somestr, f);
+  log_alert("alert-level message: {n=%d, somestr='%s', f=%.04f}", n, somestr, f);
+  log_emerg("emergency-level message: {n=%d, somestr='%s', f=%.04f}", n, somestr, f);
 
   /* Clean up. */
 
-  sir_cleanup();
+  log_cleanup();
 
   return 0;
 }
@@ -145,10 +145,10 @@ main(int argc, char **argv)
 int
 report_error(void)
 {
-  sirchar_t message[SIR_MAXERROR] = {
+  sirchar_t message[LOG_MAXERROR] = {
     0
   };
-  uint16_t code = sir_geterror(message);
+  uint16_t code = log_geterror(message);
 
   fprintf(stderr, "libsir error: (%hu, %s)\n", code, message);
   return 1;

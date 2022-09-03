@@ -1,6 +1,6 @@
 #####################################################
 #                                                   #
-#  Set the environment variable 'SIR_DEBUG' to 1    #
+#  Set the environment variable 'LOG_DEBUG' to 1    #
 #  in order to cause the compiler flags to include  #
 #  debug flags.                                     #
 #                                                   #
@@ -22,8 +22,8 @@ endif
 
 LIBS = -pthread
 
-ifeq ($(SIR_DEBUG),1)
-	CFLAGS   = -Wall -Wextra -Wpedantic -std=gnu11 -I. -g -O0 -DNDEBUG -fPIC -DSIR_SELFLOG -flto=auto
+ifeq ($(LOG_DEBUG),1)
+	CFLAGS   = -Wall -Wextra -Wpedantic -std=gnu11 -I. -g -O0 -DNDEBUG -fPIC -DLOG_SELFLOG -flto=auto
 else
 	CFLAGS   = -Wall -Wextra -Wpedantic -std=gnu11 -I. -DNDEBUG -fPIC -O3 -flto=auto
 endif

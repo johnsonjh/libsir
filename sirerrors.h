@@ -23,8 +23,8 @@
  * IN THE SOFTWARE.
  */
 
-#ifndef _SIR_ERRORS_H_INCLUDED
-# define _SIR_ERRORS_H_INCLUDED
+#ifndef _LOG_ERRORS_H_INCLUDED
+# define _LOG_ERRORS_H_INCLUDED
 
 # include "sirhelpers.h"
 # include "sirtypes.h"
@@ -37,70 +37,70 @@
 
 enum
 {
-  SIR_E_NOERROR   = 0,    /* The operation completed successfully    */
-  SIR_E_NOTREADY  = 1,    /* libsir has not been initialized         */
-  SIR_E_ALREADY   = 2,    /* libsir is already initialized           */
-  SIR_E_DUPFILE   = 3,    /* File already managed by libsir          */
-  SIR_E_NOFILE    = 4,    /* File not managed by libsir              */
-  SIR_E_FCFULL    = 5,    /* Maximum number of files already managed */
-  SIR_E_OPTIONS   = 6,    /* Option flags are invalid                */
-  SIR_E_LEVELS    = 7,    /* Level flags are invalid                 */
-  SIR_E_TEXTSTYLE = 8,    /* Text style is invalid                   */
-  SIR_E_STRING    = 9,    /* Invalid string argument                 */
-  SIR_E_NODEST    = 10,   /* No destinations registered for level    */
-  SIR_E_PLATFORM  = 11,   /* Platform error %d %s                    */
-  SIR_E_UNKNOWN   = 4095, /* Error is not known                      */
+  LOG_E_NOERROR   = 0,    /* The operation completed successfully    */
+  LOG_E_NOTREADY  = 1,    /* libsir has not been initialized         */
+  LOG_E_ALREADY   = 2,    /* libsir is already initialized           */
+  LOG_E_DUPFILE   = 3,    /* File already managed by libsir          */
+  LOG_E_NOFILE    = 4,    /* File not managed by libsir              */
+  LOG_E_FCFULL    = 5,    /* Maximum number of files already managed */
+  LOG_E_OPTIONS   = 6,    /* Option flags are invalid                */
+  LOG_E_LEVELS    = 7,    /* Level flags are invalid                 */
+  LOG_E_TEXTSTYLE = 8,    /* Text style is invalid                   */
+  LOG_E_STRING    = 9,    /* Invalid string argument                 */
+  LOG_E_NODEST    = 10,   /* No destinations registered for level    */
+  LOG_E_PLATFORM  = 11,   /* Platform error %d %s                    */
+  LOG_E_UNKNOWN   = 4095, /* Error is not known                      */
 };
 
-# define _SIR_E_NOERROR   _sir_mkerror(SIR_E_NOERROR)
-# define _SIR_E_NOTREADY  _sir_mkerror(SIR_E_NOTREADY)
-# define _SIR_E_ALREADY   _sir_mkerror(SIR_E_ALREADY)
-# define _SIR_E_DUPFILE   _sir_mkerror(SIR_E_DUPFILE)
-# define _SIR_E_NOFILE    _sir_mkerror(SIR_E_NOFILE)
-# define _SIR_E_FCFULL    _sir_mkerror(SIR_E_FCFULL)
-# define _SIR_E_OPTIONS   _sir_mkerror(SIR_E_OPTIONS)
-# define _SIR_E_LEVELS    _sir_mkerror(SIR_E_LEVELS)
-# define _SIR_E_TEXTSTYLE _sir_mkerror(SIR_E_TEXTSTYLE)
-# define _SIR_E_STRING    _sir_mkerror(SIR_E_STRING)
-# define _SIR_E_NODEST    _sir_mkerror(SIR_E_NODEST)
-# define _SIR_E_PLATFORM  _sir_mkerror(SIR_E_PLATFORM)
-# define _SIR_E_UNKNOWN   _sir_mkerror(SIR_E_UNKNOWN)
+# define _LOG_E_NOERROR   _log_mkerror(LOG_E_NOERROR)
+# define _LOG_E_NOTREADY  _log_mkerror(LOG_E_NOTREADY)
+# define _LOG_E_ALREADY   _log_mkerror(LOG_E_ALREADY)
+# define _LOG_E_DUPFILE   _log_mkerror(LOG_E_DUPFILE)
+# define _LOG_E_NOFILE    _log_mkerror(LOG_E_NOFILE)
+# define _LOG_E_FCFULL    _log_mkerror(LOG_E_FCFULL)
+# define _LOG_E_OPTIONS   _log_mkerror(LOG_E_OPTIONS)
+# define _LOG_E_LEVELS    _log_mkerror(LOG_E_LEVELS)
+# define _LOG_E_TEXTSTYLE _log_mkerror(LOG_E_TEXTSTYLE)
+# define _LOG_E_STRING    _log_mkerror(LOG_E_STRING)
+# define _LOG_E_NODEST    _log_mkerror(LOG_E_NODEST)
+# define _LOG_E_PLATFORM  _log_mkerror(LOG_E_PLATFORM)
+# define _LOG_E_UNKNOWN   _log_mkerror(LOG_E_UNKNOWN)
 
 static const struct
 {
   sirerror_t e;
   const sirchar_t *msg;
-} sir_errors[] = {
-  { _SIR_E_NOERROR,   "The operation completed successfully"    },
-  { _SIR_E_NOTREADY,  "Logging has not been initialized"        },
-  { _SIR_E_ALREADY,   "Logging is already initialized"          },
-  { _SIR_E_DUPFILE,   "File already managed"                    },
-  { _SIR_E_NOFILE,    "File not managed"                        },
-  { _SIR_E_FCFULL,    "Maximum number of files already managed" },
-  { _SIR_E_OPTIONS,   "Option flags are invalid"                },
-  { _SIR_E_LEVELS,    "Level flags are invalid"                 },
-  { _SIR_E_TEXTSTYLE, "Text style is invalid"                   },
-  { _SIR_E_STRING,    "Invalid string argument"                 },
-  { _SIR_E_NODEST,    "No destinations registered for level"    },
-  { _SIR_E_PLATFORM,  "%d %s"                                   },
-  { _SIR_E_UNKNOWN,   "Error is not known"                      },
+} log_errors[] = {
+  { _LOG_E_NOERROR,   "The operation completed successfully"    },
+  { _LOG_E_NOTREADY,  "Logging has not been initialized"        },
+  { _LOG_E_ALREADY,   "Logging is already initialized"          },
+  { _LOG_E_DUPFILE,   "File already managed"                    },
+  { _LOG_E_NOFILE,    "File not managed"                        },
+  { _LOG_E_FCFULL,    "Maximum number of files already managed" },
+  { _LOG_E_OPTIONS,   "Option flags are invalid"                },
+  { _LOG_E_LEVELS,    "Level flags are invalid"                 },
+  { _LOG_E_TEXTSTYLE, "Text style is invalid"                   },
+  { _LOG_E_STRING,    "Invalid string argument"                 },
+  { _LOG_E_NODEST,    "No destinations registered for level"    },
+  { _LOG_E_PLATFORM,  "%d %s"                                   },
+  { _LOG_E_UNKNOWN,   "Error is not known"                      },
 };
 
-void __sir_seterror(sirerror_t err, const sirchar_t *func,
+void __log_seterror(sirerror_t err, const sirchar_t *func,
                     const sirchar_t *file, uint32_t line);
-# define _sir_seterror(err) __sir_seterror(err, __func__, __FILE__, __LINE__)
+# define _log_seterror(err) __log_seterror(err, __func__, __FILE__, __LINE__)
 
-void __sir_setoserror(int, const sirchar_t *, const sirchar_t *,
+void __log_setoserror(int, const sirchar_t *, const sirchar_t *,
                       const sirchar_t *, uint32_t);
-# define _sir_setoserror(err, msg) \
-  __sir_setoserror(err, msg, __func__, __FILE__, __LINE__)
+# define _log_setoserror(err, msg) \
+  __log_setoserror(err, msg, __func__, __FILE__, __LINE__)
 
 /* Handle a C library error. */
 
-void __sir_handleerr(int code, const sirchar_t *func, const sirchar_t *file,
+void __log_handleerr(int code, const sirchar_t *func, const sirchar_t *file,
                      uint32_t line);
-# define _sir_handleerr(code) \
-  __sir_handleerr(code, __func__, __FILE__, __LINE__)
+# define _log_handleerr(code) \
+  __log_handleerr(code, __func__, __FILE__, __LINE__)
 
 # ifdef _WIN32
 
@@ -111,23 +111,23 @@ void __sir_handleerr(int code, const sirchar_t *func, const sirchar_t *file,
  * wrong is totally lost in translation.
  */
 
-void __sir_handlewin32err(DWORD code, const sirchar_t *func,
+void __log_handlewin32err(DWORD code, const sirchar_t *func,
                           const sirchar_t *file, uint32_t line);
-#  define _sir_handlewin32err(code) \
-  __sir_handlewin32err(code, __func__, __FILE__, __LINE__)
+#  define _log_handlewin32err(code) \
+  __log_handlewin32err(code, __func__, __FILE__, __LINE__)
 # endif /* ifdef _WIN32 */
 
 /* Returns information about the last error that occurred. */
 
-sirerror_t _sir_geterror(sirchar_t message[SIR_MAXERROR - 1]);
+sirerror_t _log_geterror(sirchar_t message[LOG_MAXERROR - 1]);
 
-# ifdef SIR_SELFLOG
+# ifdef LOG_SELFLOG
 
 /* Log an internal message to stderr. */
 
-void _sir_selflog(const sirchar_t *format, ...);
-# else /* ifdef SIR_SELFLOG */
-#  define _sir_selflog(format, ...) ((void)( 0 ))
-# endif /* ifdef SIR_SELFLOG */
+void _log_selflog(const sirchar_t *format, ...);
+# else /* ifdef LOG_SELFLOG */
+#  define _log_selflog(format, ...) ((void)( 0 ))
+# endif /* ifdef LOG_SELFLOG */
 
-#endif /* !_SIR_ERRORS_H_INCLUDED */
+#endif /* !_LOG_ERRORS_H_INCLUDED */

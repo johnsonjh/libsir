@@ -27,87 +27,87 @@
 
 /* Per-thread error data */
 
-static thread_local sir_thread_err sir_te
+static thread_local log_thread_err log_te
   = {
-  _SIR_E_NOERROR, 0, { 0 }, { SIR_UNKNOWN, SIR_UNKNOWN, 0 }
+  _LOG_E_NOERROR, 0, { 0 }, { LOG_UNKNOWN, LOG_UNKNOWN, 0 }
   };
 
 void
-__sir_seterror(sirerror_t err, const sirchar_t *func, const sirchar_t *file,
+__log_seterror(sirerror_t err, const sirchar_t *func, const sirchar_t *file,
                uint32_t line)
 {
-  if (_sir_validerror(err))
+  if (_log_validerror(err))
     {
-      sir_te.lasterror = err;
-      sir_te.loc.func  = func;
-      sir_te.loc.file  = file;
-      sir_te.loc.line  = line;
+      log_te.lasterror = err;
+      log_te.loc.func  = func;
+      log_te.loc.file  = file;
+      log_te.loc.line  = line;
     }
 
-  assert(_SIR_E_NOERROR == err);
+  assert(_LOG_E_NOERROR == err);
 }
 
 void
-__sir_setoserror(int code, const sirchar_t *message, const sirchar_t *func,
+__log_setoserror(int code, const sirchar_t *message, const sirchar_t *func,
                  const sirchar_t *file, uint32_t line)
 {
-  sir_te.os_error = code;
-  _sir_resetstr(sir_te.os_errmsg);
+  log_te.os_error = code;
+  _log_resetstr(log_te.os_errmsg);
 
-  if (_sir_validstrnofail(message))
+  if (_log_validstrnofail(message))
     {
-      (void)strncpy(sir_te.os_errmsg, message, SIR_MAXERROR - 2);
+      (void)strncpy(log_te.os_errmsg, message, LOG_MAXERROR - 2);
     }
 
-  __sir_seterror(_SIR_E_PLATFORM, func, file, line);
+  __log_seterror(_LOG_E_PLATFORM, func, file, line);
 }
 
 void
-__sir_handleerr(int code, const sirchar_t *func, const sirchar_t *file,
+__log_handleerr(int code, const sirchar_t *func, const sirchar_t *file,
                 uint32_t line)
 {
-  if (SIR_E_NOERROR != code)
+  if (LOG_E_NOERROR != code)
     {
-      sirchar_t message[SIR_MAXERROR - 1] = {
+      sirchar_t message[LOG_MAXERROR - 1] = {
         0
       };
 
 #ifndef _WIN32
-      errno = SIR_E_NOERROR;
+      errno = LOG_E_NOERROR;
 # if _POSIX_C_SOURCE >= 200112L && !defined( _GNU_SOURCE )
-      int finderr = strerror_r(code, message, SIR_MAXERROR - 1);
+      int finderr = strerror_r(code, message, LOG_MAXERROR - 1);
 # else /* if _POSIX_C_SOURCE >= 200112L && !defined( _GNU_SOURCE ) */
       int finderr = 0;
-      char *tmp   = strerror_r(code, message, SIR_MAXERROR - 1);
+      char *tmp   = strerror_r(code, message, LOG_MAXERROR - 1);
       if (tmp != message)
         {
-          (void)strncpy(message, tmp, strnlen(tmp, SIR_MAXERROR - 1));
+          (void)strncpy(message, tmp, strnlen(tmp, LOG_MAXERROR - 1));
         }
 
 # endif /* if _POSIX_C_SOURCE >= 200112L && !defined( _GNU_SOURCE ) */
 #else  /* ifndef _WIN32 */
-      errno_t finderr = strerror_s(message, SIR_MAXERROR - 1, code);
+      errno_t finderr = strerror_s(message, LOG_MAXERROR - 1, code);
 #endif /* ifndef _WIN32 */
-      if (0 == finderr && _sir_validstrnofail(message))
+      if (0 == finderr && _log_validstrnofail(message))
         {
-          __sir_setoserror(code, message, func, file, line);
+          __log_setoserror(code, message, func, file, line);
         }
       else
         {
 #ifndef _WIN32
-          _sir_selflog("%s: strerror_r failed! error: %d\n", __func__, errno);
+          _log_selflog("%s: strerror_r failed! error: %d\n", __func__, errno);
 #else  /* ifndef _WIN32 */
-          _sir_selflog("%s: strerror_s failed! error: %d\n", __func__, finderr);
+          _log_selflog("%s: strerror_s failed! error: %d\n", __func__, finderr);
 #endif /* ifndef _WIN32 */
         }
     }
 
-  assert(SIR_E_NOERROR == code);
+  assert(LOG_E_NOERROR == code);
 }
 
 #ifdef _WIN32
 void
-__sir_handlewin32err(DWORD code, const sirchar_t *func, const sirchar_t *file,
+__log_handlewin32err(DWORD code, const sirchar_t *func, const sirchar_t *file,
                      uint32_t line)
 {
   if (ERROR_SUCCESS != code)
@@ -123,16 +123,16 @@ __sir_handlewin32err(DWORD code, const sirchar_t *func, const sirchar_t *file,
         code,
         0,
         (LPSTR)&errbuf,
-        SIR_MAXERROR - 1,
+        LOG_MAXERROR - 1,
         NULL);
 
-      if (0 == fmtmsg && _sir_validstrnofail(errbuf))
+      if (0 == fmtmsg && _log_validstrnofail(errbuf))
         {
-          __sir_setoserror((int)code, errbuf, func, file, line);
+          __log_setoserror((int)code, errbuf, func, file, line);
         }
       else
         {
-          _sir_selflog(
+          _log_selflog(
             "%s: FormatMessage failed! error: %d\n",
             __func__,
             GetLastError());
@@ -152,72 +152,72 @@ __sir_handlewin32err(DWORD code, const sirchar_t *func, const sirchar_t *file,
 #endif /* ifdef _WIN32 */
 
 sirerror_t
-_sir_geterror(sirchar_t message[SIR_MAXERROR - 1])
+_log_geterror(sirchar_t message[LOG_MAXERROR - 1])
 {
-  _sir_resetstr(message);
-  for (size_t n = 0; n < _sir_countof(sir_errors); n++)
+  _log_resetstr(message);
+  for (size_t n = 0; n < _log_countof(log_errors); n++)
     {
-      if (sir_errors[n].e == sir_te.lasterror)
+      if (log_errors[n].e == log_te.lasterror)
         {
           sirchar_t *final = NULL;
           bool alloc       = false;
 
-          if (_SIR_E_PLATFORM == sir_errors[n].e)
+          if (_LOG_E_PLATFORM == log_errors[n].e)
             {
-              final = (sirchar_t *)calloc(SIR_MAXERROR + 1, sizeof ( sirchar_t ));
+              final = (sirchar_t *)calloc(LOG_MAXERROR + 1, sizeof ( sirchar_t ));
 
-              if (_sir_validptr(final))
+              if (_log_validptr(final))
                 {
                   alloc = true;
                   (void)snprintf(
                     final,
-                    SIR_MAXERROR + 1,
-                    sir_errors[n].msg,
-                    sir_te.os_error,
-                    _sir_validstrnofail(sir_te.os_errmsg) ? sir_te.os_errmsg : SIR_UNKNOWN);
+                    LOG_MAXERROR + 1,
+                    log_errors[n].msg,
+                    log_te.os_error,
+                    _log_validstrnofail(log_te.os_errmsg) ? log_te.os_errmsg : LOG_UNKNOWN);
                 }
             }
           else
             {
-              final = (sirchar_t *)sir_errors[n].msg;
+              final = (sirchar_t *)log_errors[n].msg;
             }
 
           int fmtmsg
             = snprintf(
                 message,
-                SIR_MAXERROR - 1,
-                SIR_ERRORFORMAT,
-                sir_te.loc.func,
-                sir_te.loc.file,
-                sir_te.loc.line,
+                LOG_MAXERROR - 1,
+                LOG_ERRORFORMAT,
+                log_te.loc.func,
+                log_te.loc.file,
+                log_te.loc.line,
                 final);
           (void)fmtmsg;
           assert(fmtmsg >= 0);
 
           if (alloc)
             {
-              _sir_safefree(final);
+              _log_safefree(final);
             }
 
-          return sir_errors[n].e;
+          return log_errors[n].e;
         }
     }
 
-  /* assert(false && sir_te.lasterror); */
-  return _SIR_E_UNKNOWN;
+  /* assert(false && log_te.lasterror); */
+  return _LOG_E_UNKNOWN;
 }
 
-#ifdef SIR_SELFLOG
+#ifdef LOG_SELFLOG
 void
-_sir_selflog(const sirchar_t *format, ...)
+_log_selflog(const sirchar_t *format, ...)
 {
-  sirchar_t output[SIR_MAXMESSAGE] = {
+  sirchar_t output[LOG_MAXMESSAGE] = {
     0
   };
   va_list args;
 
   va_start(args, format);
-  int print = vsnprintf(output, SIR_MAXMESSAGE, format, args);
+  int print = vsnprintf(output, LOG_MAXMESSAGE, format, args);
   (void)print;
   va_end(args);
 
@@ -230,4 +230,4 @@ _sir_selflog(const sirchar_t *format, ...)
       assert(put != EOF);
     }
 }
-#endif /* ifdef SIR_SELFLOG */
+#endif /* ifdef LOG_SELFLOG */

@@ -23,47 +23,47 @@
  * IN THE SOFTWARE.
  */
 
-#ifndef _SIR_DEFAULTS_H_INCLUDED
-# define _SIR_DEFAULTS_H_INCLUDED
+#ifndef _LOG_DEFAULTS_H_INCLUDED
+# define _LOG_DEFAULTS_H_INCLUDED
 
 # include "sirtypes.h"
 
 /* Default levels for stdout. */
 
-static const sir_levels sir_stdout_def_lvls
+static const log_levels log_stdout_def_lvls
   = SIRL_DEBUG | SIRL_INFO | SIRL_NOTICE | SIRL_WARN;
 
 /* Default options for stdout. */
 
-static const sir_options sir_stdout_def_opts
+static const log_options log_stdout_def_opts
   = SIRO_NOTIME | SIRO_NOPID | SIRO_NOTID;
 
 /* Default levels for stderr. */
 
-static const sir_levels sir_stderr_def_lvls
+static const log_levels log_stderr_def_lvls
   = SIRL_ERROR | SIRL_CRIT | SIRL_EMERG;
 
 /* Default options for stderr. */
 
-static const sir_options sir_stderr_def_opts
+static const log_options log_stderr_def_opts
   = SIRO_NOTIME | SIRO_NOPID | SIRO_NOTID;
 
 /* Default levels for syslog (if enabled). */
 
-static const sir_levels sir_syslog_def_lvls
+static const log_levels log_syslog_def_lvls
   = SIRL_WARN | SIRL_CRIT | SIRL_ALERT | SIRL_EMERG;
 
 /* Default levels for log files. */
 
-static const sir_levels sir_file_def_lvls = SIRL_ALL;
+static const log_levels log_file_def_lvls = SIRL_ALL;
 
 /* Default options for log files. */
 
-static const sir_options sir_file_def_opts = 0; /* (all output) */
+static const log_options log_file_def_opts = 0; /* (all output) */
 
-/* Default mapping of sir_level to sir_textstyle. */
+/* Default mapping of log_level to log_textstyle. */
 
-static const sir_style_map sir_default_styles[SIR_NUMLEVELS] = {
+static const log_style_map log_default_styles[LOG_NUMLEVELS] = {
   { SIRL_DEBUG,  SIRS_FG_DGRAY                                 },
   { SIRL_INFO,   SIRS_FG_WHITE                                 },
   { SIRL_NOTICE, SIRS_FG_CYAN                                  },
@@ -74,4 +74,4 @@ static const sir_style_map sir_default_styles[SIR_NUMLEVELS] = {
   { SIRL_EMERG,  SIRS_BRIGHT | SIRS_FG_LYELLOW | SIRS_BG_RED   },
 };
 
-#endif /* !_SIR_DEFAULTS_H_INCLUDED */
+#endif /* !_LOG_DEFAULTS_H_INCLUDED */

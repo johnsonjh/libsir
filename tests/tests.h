@@ -23,8 +23,8 @@
  * IN THE SOFTWARE.
  */
 
-#ifndef _SIR_TESTS_H_INCLUDED
-# define _SIR_TESTS_H_INCLUDED
+#ifndef _LOG_TESTS_H_INCLUDED
+# define _LOG_TESTS_H_INCLUDED
 
 # ifndef _POSIX_C_SOURCE
 #  define _POSIX_C_SOURCE 200809L
@@ -84,21 +84,21 @@
   var.d_stderr.opts   = o_stderr;                                   \
   var.d_stderr.levels = l_stderr;                                   \
   if (strlen(name) > 0)                                             \
-  (void)strncpy(var.processName, name, SIR_MAXNAME);                \
-  bool var ## _init = sir_init(&var);
+  (void)strncpy(var.processName, name, LOG_MAXNAME);                \
+  bool var ## _init = log_init(&var);
 
 # define INIT(var, l_stdout, o_stdout, l_stderr, o_stderr) \
   INIT_N(var, l_stdout, o_stdout, l_stderr, o_stderr, "")
 
 /* Function signature for a single test. */
-typedef bool (*sir_test_fn) (void);
+typedef bool (*log_test_fn) (void);
 
 /* Map a test to a human-readable description. */
 typedef struct
 {
   const char *name;
-  sir_test_fn fn;
-} sir_test;
+  log_test_fn fn;
+} log_test;
 
 /*
  * Properly handle multiple threads competing for locked sections.
@@ -244,4 +244,4 @@ typedef struct
 bool startsirtimer(sirtimer_t *timer);
 float sirtimerelapsed(const sirtimer_t *timer);  // msec
 
-#endif /* !_SIR_TESTS_H_INCLUDED */
+#endif /* !_LOG_TESTS_H_INCLUDED */

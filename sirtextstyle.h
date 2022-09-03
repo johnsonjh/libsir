@@ -23,14 +23,14 @@
  * IN THE SOFTWARE.
  */
 
-#ifndef _SIR_TEXTSTYLE_H_INCLUDED
-# define _SIR_TEXTSTYLE_H_INCLUDED
+#ifndef _LOG_TEXTSTYLE_H_INCLUDED
+# define _LOG_TEXTSTYLE_H_INCLUDED
 
 # include "sirtypes.h"
 
-/* Overrides for level <> text style mappings (sir_settextstyle). */
+/* Overrides for level <> text style mappings (log_settextstyle). */
 
-static sir_style_map sir_override_styles[SIR_NUMLEVELS] = {
+static log_style_map log_override_styles[LOG_NUMLEVELS] = {
   { SIRL_DEBUG,  SIRS_INVALID },
   { SIRL_INFO,   SIRS_INVALID },
   { SIRL_NOTICE, SIRS_INVALID },
@@ -41,9 +41,9 @@ static sir_style_map sir_override_styles[SIR_NUMLEVELS] = {
   { SIRL_EMERG,  SIRS_INVALID },
 };
 
-/* Mapping of sir_textstyle <> platform values. */
+/* Mapping of log_textstyle <> platform values. */
 
-static const sir_style_priv_map sir_priv_map[] = {
+static const log_style_priv_map log_priv_map[] = {
 # ifndef _WIN32
   { SIRS_NONE,                                                                0 },
   { SIRS_BRIGHT,                                                              1 },
@@ -125,39 +125,39 @@ static const sir_style_priv_map sir_priv_map[] = {
 # endif /* ifndef _WIN32 */
 };
 
-/* Validates a sir_textstyle and splits it into its component parts. */
+/* Validates a log_textstyle and splits it into its component parts. */
 
-bool _sir_validstyle(sir_textstyle style, uint32_t *pattr, uint32_t *pfg,
+bool _log_validstyle(log_textstyle style, uint32_t *pattr, uint32_t *pfg,
                      uint32_t *pbg);
 
 /*
- * Retrieves the override sir_textstyle for a sir_level  if one is set.
+ * Retrieves the override log_textstyle for a log_level  if one is set.
  * Otherwise, returns the default text style for that level.
  */
 
-sir_textstyle _sir_gettextstyle(sir_level level);
+log_textstyle _log_gettextstyle(log_level level);
 
-/* Retrieves the default sir_textstyle for a sir_level. */
+/* Retrieves the default log_textstyle for a log_level. */
 
-sir_textstyle _sir_getdefstyle(const sir_style_map *map, sir_level level);
+log_textstyle _log_getdefstyle(const log_style_map *map, log_level level);
 
-/* Sets the sir_textstyle for a sir_level. */
+/* Sets the log_textstyle for a log_level. */
 
-bool _sir_settextstyle(sir_level level, sir_textstyle style);
+bool _log_settextstyle(log_level level, log_textstyle style);
 
-/* Resets all override sir_textstyle. */
+/* Resets all override log_textstyle. */
 
-bool _sir_resettextstyles(void);
+bool _log_resettextstyles(void);
 
-/* Retrieves the platform value for a component part of a sir_textstyle. */
+/* Retrieves the platform value for a component part of a log_textstyle. */
 
-uint16_t _sir_getprivstyle(uint32_t cat);
+uint16_t _log_getprivstyle(uint32_t cat);
 
 /*
  * Combines component parts of a platform text style value into its final
  * form.
  */
 
-bool _sir_formatstyle(sir_textstyle style, sirchar_t *buf, size_t size);
+bool _log_formatstyle(log_textstyle style, sirchar_t *buf, size_t size);
 
-#endif /* !_SIR_TEXTSTYLE_H_INCLUDED */
+#endif /* !_LOG_TEXTSTYLE_H_INCLUDED */

@@ -23,73 +23,73 @@
  * IN THE SOFTWARE.
  */
 
-#ifndef _SIR_FILECACHE_H_INCLUDED
-# define _SIR_FILECACHE_H_INCLUDED
+#ifndef _LOG_FILECACHE_H_INCLUDED
+# define _LOG_FILECACHE_H_INCLUDED
 
 # include "sirtypes.h"
 
-typedef bool (*sir_fcache_pred) (const void *match, sirfile *iter);
+typedef bool (*log_fcache_pred) (const void *match, sirfile *iter);
 
-typedef void (*sir_fcache_update) (sirfile *si, sir_update_data *data);
+typedef void (*log_fcache_update) (sirfile *si, log_update_data *data);
 
-sirfileid_t _sir_addfile(const sirchar_t *path, sir_levels levels,
-                         sir_options opts);
+sirfileid_t _log_addfile(const sirchar_t *path, log_levels levels,
+                         log_options opts);
 
-bool _sir_updatefile(sirfileid_t id, sir_update_data *data);
+bool _log_updatefile(sirfileid_t id, log_update_data *data);
 
-bool _sir_remfile(sirfileid_t id);
+bool _log_remfile(sirfileid_t id);
 
-sirfile *_sirfile_create(const sirchar_t *path, sir_levels levels,
-                         sir_options opts);
+sirfile *_logfile_create(const sirchar_t *path, log_levels levels,
+                         log_options opts);
 
-bool _sirfile_open(sirfile *sf);
+bool _logfile_open(sirfile *sf);
 
-void _sirfile_close(sirfile *sf);
+void _logfile_close(sirfile *sf);
 
-bool _sir_write(sirfile *sf, const sirchar_t *output);
+bool _log_write(sirfile *sf, const sirchar_t *output);
 
-bool _sirfile_writeheader(sirfile *sf, const sirchar_t *msg);
+bool _logfile_writeheader(sirfile *sf, const sirchar_t *msg);
 
-bool _sirfile_needsroll(sirfile *sf);
+bool _logfile_needsroll(sirfile *sf);
 
-bool _sirfile_roll(sirfile *sf, sirchar_t **newpath);
+bool _logfile_roll(sirfile *sf, sirchar_t **newpath);
 
-bool _sirfile_archive(sirfile *sf, const sirchar_t *newpath);
+bool _logfile_archive(sirfile *sf, const sirchar_t *newpath);
 
-bool _sirfile_splitpath(sirfile *sf, sirchar_t **name, sirchar_t **ext);
+bool _logfile_splitpath(sirfile *sf, sirchar_t **name, sirchar_t **ext);
 
-void _sirfile_destroy(sirfile *sf);
+void _logfile_destroy(sirfile *sf);
 
-bool _sirfile_validate(sirfile *sf);
+bool _logfile_validate(sirfile *sf);
 
-void _sirfile_update(sirfile *sf, sir_update_data *data);
+void _logfile_update(sirfile *sf, log_update_data *data);
 
-sirfileid_t _sir_fcache_add(sirfcache *sfc, const sirchar_t *path,
-                            sir_levels levels, sir_options opts);
+sirfileid_t _log_fcache_add(sirfcache *sfc, const sirchar_t *path,
+                            log_levels levels, log_options opts);
 
-bool _sir_fcache_update(sirfcache *sfc, sirfileid_t id,
-                        sir_update_data *data);
+bool _log_fcache_update(sirfcache *sfc, sirfileid_t id,
+                        log_update_data *data);
 
-bool _sir_fcache_rem(sirfcache *sfc, sirfileid_t id);
+bool _log_fcache_rem(sirfcache *sfc, sirfileid_t id);
 
-bool _sir_fcache_pred_path(const void *match, sirfile *iter);
+bool _log_fcache_pred_path(const void *match, sirfile *iter);
 
-bool _sir_fcache_pred_id(const void *match, sirfile *iter);
+bool _log_fcache_pred_id(const void *match, sirfile *iter);
 
-sirfile *_sir_fcache_find(sirfcache *sfc, const void *match,
-                          sir_fcache_pred pred);
+sirfile *_log_fcache_find(sirfcache *sfc, const void *match,
+                          log_fcache_pred pred);
 
-bool _sir_fcache_destroy(sirfcache *sfc);
+bool _log_fcache_destroy(sirfcache *sfc);
 
-bool _sir_fcache_dispatch(sirfcache *sfc, sir_level level, siroutput *output,
+bool _log_fcache_dispatch(sirfcache *sfc, log_level level, siroutput *output,
                           size_t *dispatched, size_t *wanted);
 
-FILE *_sir_fopen(const sirchar_t *path);
+FILE *_log_fopen(const sirchar_t *path);
 
-void _sir_fclose(FILE **f);
+void _log_fclose(FILE **f);
 
-void _sir_fflush(FILE *f);
+void _log_fflush(FILE *f);
 
-bool _sir_fflush_all(void);
+bool _log_fflush_all(void);
 
-#endif /* !_SIR_FILECACHE_H_INCLUDED */
+#endif /* !_LOG_FILECACHE_H_INCLUDED */

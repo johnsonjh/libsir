@@ -27,13 +27,13 @@
 #include "sirerrors.h"
 
 bool
-_sir_validfid(int id)
+_log_validfid(int id)
 {
   bool valid = id >= 0;
 
   if (!valid)
     {
-      _sir_seterror(_SIR_E_NOFILE);
+      _log_seterror(_LOG_E_NOFILE);
       assert(valid);
     }
 
@@ -41,13 +41,13 @@ _sir_validfid(int id)
 }
 
 bool
-_sir_validlevels(sir_levels levels)
+_log_validlevels(log_levels levels)
 {
   bool valid = levels <= SIRL_ALL;
 
   if (!valid)
     {
-      _sir_seterror(_SIR_E_LEVELS);
+      _log_seterror(_LOG_E_LEVELS);
       assert(valid);
     }
 
@@ -55,13 +55,13 @@ _sir_validlevels(sir_levels levels)
 }
 
 bool
-_sir_validlevel(sir_level level)
+_log_validlevel(log_level level)
 {
   bool valid = 0 != level && !( level & ( level - 1 ));
 
   if (!valid)
     {
-      _sir_seterror(_SIR_E_LEVELS);
+      _log_seterror(_LOG_E_LEVELS);
       assert(valid);
     }
 
@@ -69,13 +69,13 @@ _sir_validlevel(sir_level level)
 }
 
 bool
-_sir_validopts(sir_options opts)
+_log_validopts(log_options opts)
 {
   bool valid = ( opts & SIRL_ALL ) == 0 && opts <= 0xfff00;
 
   if (!valid)
     {
-      _sir_seterror(_SIR_E_OPTIONS);
+      _log_seterror(_LOG_E_OPTIONS);
       assert(valid);
     }
 
@@ -83,13 +83,13 @@ _sir_validopts(sir_options opts)
 }
 
 bool
-__sir_validstr(const sirchar_t *str, bool fail)
+__log_validstr(const sirchar_t *str, bool fail)
 {
   bool valid = str && ( *str != (sirchar_t)'\0' );
 
   if (!valid && fail)
     {
-      _sir_seterror(_SIR_E_STRING);
+      _log_seterror(_LOG_E_STRING);
       assert(valid);
     }
 

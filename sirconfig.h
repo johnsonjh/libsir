@@ -23,85 +23,85 @@
  * IN THE SOFTWARE.
  */
 
-#ifndef _SIR_CONFIG_H_INCLUDED
-# define _SIR_CONFIG_H_INCLUDED
+#ifndef _LOG_CONFIG_H_INCLUDED
+# define _LOG_CONFIG_H_INCLUDED
 
 /* The time stamp format string at the beginning of log messages. */
 
-# define SIR_TIMEFORMAT "%H:%M:%S"
+# define LOG_TIMEFORMAT "%H:%M:%S"
 
 /* The format for the current millisecond in time stamps. */
 
-# define SIR_MSECFORMAT ".%03lld"
+# define LOG_MSECFORMAT ".%03lld"
 
 /* The format for the human-readable logging level. */
 
-# define SIR_LEVELFORMAT "[%s]"
+# define LOG_LEVELFORMAT "[%s]"
 
 /*
  * The format for the current process/thread ID,
  * if no name is available/desired.
  */
 
-# define SIR_PIDFORMAT "%d"
+# define LOG_PIDFORMAT "%d"
 
 /* The character to place between process and thread IDs. */
 
-# define SIR_PIDSEPARATOR "."
+# define LOG_PIDSEPARATOR "."
 
 /* The string passed to fopen/fopen_s for log files. */
 
-# define SIR_FOPENMODE "a"
+# define LOG_FOPENMODE "a"
 
 /* The size, in bytes, at which a log file will be rolled/archived. */
 
-# define SIR_FROLLSIZE ( 1024L * 1024L * 5L )
+# define LOG_FROLLSIZE ( 1024L * 1024L * 5L )
 
 /*
- * The time format string in file headers (see SIR_FHFORMAT).
+ * The time format string in file headers (see LOG_FHFORMAT).
  */
 
-# define SIR_FHTIMEFORMAT "%H:%M:%S %a %d %b %y (%z)"
+# define LOG_FHTIMEFORMAT "%H:%M:%S %a %d %b %y (%z)"
 
 /*
  * The format string written to a log file when logging begins or the file
  * is rolled/archived.
- * - The first %s format specifier is the message (e.g., SIR_FHBEGIN, SIR_FHROLLED)
- * - The second %s is the current date/time (see SIR_FHTIMEFORMAT).
+ * - The first %s format specifier is the message (e.g., LOG_FHBEGIN, LOG_FHROLLED)
+ * - The second %s is the current date/time (see LOG_FHTIMEFORMAT).
  */
 
-# define SIR_FHFORMAT "\n\n----- %s %s -----\n\n"
+# define LOG_FHFORMAT "\n\n----- %s %s -----\n\n"
 
 /*
- * The string included in SIR_FHFORMAT when a logging session begins.
+ * The string included in LOG_FHFORMAT when a logging session begins.
  */
 
-# define SIR_FHBEGIN "session begin @"
+# define LOG_FHBEGIN "session begin @"
 
 /*
- * The string included in SIR_FHFORMAT when a file is rolled/archived
+ * The string included in LOG_FHFORMAT when a file is rolled/archived
  * due to size.
  * The %s format specifier is the path of the archived file.
  */
 
-# define SIR_FHROLLED "archived as %s due to size @"
+# define LOG_FHROLLED "archived as %s due to size @"
 
 /*
- * The time format string for rolled/archived log files (see SIR_FNAMEFORMAT).
+ * The time format string for rolled/archived log files (see LOG_FNAMEFORMAT).
  */
 
-# define SIR_FNAMETIMEFORMAT "%Y-%m-%d-%H%M%S"
+# define LOG_FNAMETIMEFORMAT "%Y-%m-%d-%H%M%S"
 
 /*
  * The format string for rolled/archived log file names.
  * - The first %s format specifier is the name part (the name up to the
  *   last '.') of the original file name.
- * - The second %s is the time stamp as defined by SIR_ROLLTIMEFORMAT.
+ * - The second %s is the time stamp as defined by LOG_ROLLTIMEFORMAT.
  * - The third %s is the extension part (the name after and including the
  *   last '.') of the original file name if one is present.
  */
 
-# define SIR_FNAMEFORMAT "%s-%s%s"
+# define LOG_FNAMEFORMAT "%s-%s%s"
 
 /* The human-readable form of the SIRL_EMERG level. */
 
@@ -137,103 +137,103 @@
 
 /* The maximum number of log files that may be registered. */
 
-# define SIR_MAXFILES 16
+# define LOG_MAXFILES 16
 
 /*
  * The maximum number of characters that may be included in one message,
  * not including other parts of the output, like the timestamp and level.
  */
 
-# define SIR_MAXMESSAGE 2048
+# define LOG_MAXMESSAGE 2048
 
 /* The size, in characters, of the buffer used to hold time format strings. */
 
-# define SIR_MAXTIME 64
+# define LOG_MAXTIME 64
 
 /* The size, in characters, of the buffer used to hold millisecond strings. */
 
-# define SIR_MAXMSEC 5
+# define LOG_MAXMSEC 5
 
 /* The size, in characters, of the buffer used to hold level format strings. */
 
-# define SIR_MAXLEVEL 7
+# define LOG_MAXLEVEL 7
 
 /*
  * The size, in characters, of the buffer used to hold process/appname
  * format strings.
  */
 
-# define SIR_MAXNAME 32
+# define LOG_MAXNAME 32
 
 /*
  * The size, in characters, of the buffer used to hold process/thread
  * IDs/names.
  */
 
-# define SIR_MAXPID 16
+# define LOG_MAXPID 16
 
 /* The maximum number of whitespace and misc. characters included in output. */
 
-# define SIR_MAXMISC 7
+# define LOG_MAXMISC 7
 
 /* The maximum size, in characters, of final formatted output. */
 
-# define SIR_MAXOUTPUT                                                \
-  SIR_MAXMESSAGE + ( SIR_MAXSTYLE * 2 ) + SIR_MAXTIME + SIR_MAXLEVEL  \
-  + SIR_MAXNAME  + ( SIR_MAXPID   * 2 ) + SIR_MAXMISC + 1
+# define LOG_MAXOUTPUT                                                \
+  LOG_MAXMESSAGE + ( LOG_MAXSTYLE * 2 ) + LOG_MAXTIME + LOG_MAXLEVEL  \
+  + LOG_MAXNAME  + ( LOG_MAXPID   * 2 ) + LOG_MAXMISC + 1
 
 /* The maximum size, in characters, of an error message. */
 
-# define SIR_MAXERROR 256
+# define LOG_MAXERROR 256
 
 /*
- * The format string for error messages returned by _sir_geterror.
+ * The format string for error messages returned by _log_geterror.
  * - The first %s format specifier is the function name.
  * - The second %s is the file name.
  * - The %u is the line number in the file.
  * - The third %s is the error message.
  */
 
-# define SIR_ERRORFORMAT "Error in %s (%s:%u): '%s'"
+# define LOG_ERRORFORMAT "Error in %s (%s:%u): '%s'"
 
 /* The string that represents any unknown. */
 
-# define SIR_UNKNOWN "<unknown>"
+# define LOG_UNKNOWN "<unknown>"
 
 /* The value that represents an invalid file identifier. */
 
-# define SIR_INVALID (int)-1
+# define LOG_INVALID (int)-1
 
 /*
  * Used for level <> text style mapping. Update if adding or removing
  * levels or bad things will happen.
  */
 
-# define SIR_NUMLEVELS 9
+# define LOG_NUMLEVELS 9
 
 # ifndef _WIN32
 
 /* The size, in characters, of the buffer used to hold text styling data. */
 
-#  define SIR_MAXSTYLE 16
+#  define LOG_MAXSTYLE 16
 
 /* The string used to reset any styling applied to text in stdio output. */
 
-#  define SIR_ENDSTYLE "\033[0m"
+#  define LOG_ENDSTYLE "\033[0m"
 
 /*
  * The default clock used to obtain the
  * current millisecond from clock_gettime.
  */
 
-#  define SIR_MSECCLOCK CLOCK_MONOTONIC
+#  define LOG_MSECCLOCK CLOCK_MONOTONIC
 
 # else /* ifndef _WIN32 */
 
-#  define SIR_MAXSTYLE sizeof ( uint16_t )
-#  undef SIR_ENDSTYLE
-#  undef SIR_MSECCLOCK
+#  define LOG_MAXSTYLE sizeof ( uint16_t )
+#  undef LOG_ENDSTYLE
+#  undef LOG_MSECCLOCK
 
 # endif /* ifndef _WIN32 */
 
-#endif /* !_SIR_CONFIG_H_INCLUDED */
+#endif /* !_LOG_CONFIG_H_INCLUDED */

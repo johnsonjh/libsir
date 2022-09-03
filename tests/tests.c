@@ -25,7 +25,7 @@
 
 #include "tests.h"
 
-static const sir_test sir_tests[] = {
+static const log_test log_tests[] = {
   { "performance",             sirtest_perf                  },
   { "multi-thread race",       sirtest_mthread_race          },
   { "exceed max buffer size",  sirtest_exceedmaxsize         },
@@ -71,7 +71,7 @@ main(int argc, char **argv)
     }
 
   bool allpass = true;
-  size_t tests = ( perf ? 1 : sizeof ( sir_tests ) / sizeof ( sir_test ));
+  size_t tests = ( perf ? 1 : sizeof ( log_tests ) / sizeof ( log_test ));
   size_t first = ( perf ? 0 : 1 );
   size_t passed = 0;
   sirtimer_t timer = {
@@ -90,13 +90,13 @@ main(int argc, char **argv)
 
   for (size_t n = first; n < tests; n++)
     {
-      printf(WHITE("\t'%s'...") "\n", sir_tests[n].name);
-      bool thispass = sir_tests[n].fn();
+      printf(WHITE("\t'%s'...") "\n", log_tests[n].name);
+      bool thispass = log_tests[n].fn();
       allpass &= thispass;
       passed += ( thispass ? 1 : 0 );
       printf(
         WHITE("\t'%s' finished; result: ") "%s\n",
-        sir_tests[n].name,
+        log_tests[n].name,
         thispass ? GREEN("PASS") : RED("FAIL"));
     }
 
@@ -124,15 +124,15 @@ sirtest_exceedmaxsize(void)
   INIT(si, SIRL_ALL, 0, 0, 0);
   bool pass = si_init;
 
-  char toobig[SIR_MAXMESSAGE + 100] = {
+  char toobig[LOG_MAXMESSAGE + 100] = {
     0
   };
 
-  (void)memset(toobig, 'a', SIR_MAXMESSAGE - 99);
+  (void)memset(toobig, 'a', LOG_MAXMESSAGE - 99);
 
-  pass &= sir_info(toobig);
+  pass &= log_info(toobig);
 
-  sir_cleanup();
+  log_cleanup();
   return printerror(pass);
 }
 
@@ -142,34 +142,34 @@ sirtest_filecachesanity(void)
   INIT(si, SIRL_ALL, 0, 0, 0);
   bool pass = si_init;
 
-  size_t numfiles = SIR_MAXFILES + 1;
-  sirfileid_t ids[SIR_MAXFILES] = {
+  size_t numfiles = LOG_MAXFILES + 1;
+  sirfileid_t ids[LOG_MAXFILES] = {
     0
   };
 
-  sir_options even = SIRO_MSGONLY;
-  sir_options odd = 0;
+  log_options even = SIRO_MSGONLY;
+  log_options odd = 0;
 
   for (size_t n = 0; n < numfiles - 1; n++)
     {
-      char path[SIR_MAXPATH] = {
+      char path[LOG_MAXPATH] = {
         0
       };
-      (void)snprintf(path, SIR_MAXPATH, "test-%lu.log", n);
+      (void)snprintf(path, LOG_MAXPATH, "test-%lu.log", n);
       rmfile(path);
-      ids[n] = sir_addfile(path, SIRL_ALL, ( n % 2 ) ? odd : even);
-      pass &= NULL != ids[n] && sir_info("test %u", n);
+      ids[n] = log_addfile(path, SIRL_ALL, ( n % 2 ) ? odd : even);
+      pass &= NULL != ids[n] && log_info("test %u", n);
     }
 
-  pass &= sir_info("test test test");
+  pass &= log_info("test test test");
 
   /* This one should fail; max files already added */
-  pass &= NULL == sir_addfile("should-fail.log", SIRL_ALL, SIRO_MSGONLY);
+  pass &= NULL == log_addfile("should-fail.log", SIRL_ALL, SIRO_MSGONLY);
 
-  sir_info("test test test");
+  log_info("test test test");
 
   /* Now remove previously added files in a different order */
-  int removeorder[SIR_MAXFILES];
+  int removeorder[LOG_MAXFILES];
 
   (void)memset(removeorder, -1, sizeof ( removeorder ));
 
@@ -179,10 +179,10 @@ sirtest_filecachesanity(void)
 
   do
     {
-      unsigned int rnd = getrand() % SIR_MAXFILES;
+      unsigned int rnd = getrand() % LOG_MAXFILES;
       bool skip = false;
 
-      for (size_t n = 0; n < SIR_MAXFILES; n++)
+      for (size_t n = 0; n < LOG_MAXFILES; n++)
         {
           if ((long long)removeorder[(long long)n] == (long long)rnd)
             {
@@ -198,7 +198,7 @@ sirtest_filecachesanity(void)
 
       removeorder[processed++] = rnd;
 
-      if (processed == SIR_MAXFILES)
+      if (processed == LOG_MAXFILES)
         {
           break;
         }
@@ -206,27 +206,27 @@ sirtest_filecachesanity(void)
   while (true);
 
   printf("\tremove order: {");
-  for (size_t n = 0; n < SIR_MAXFILES; n++)
+  for (size_t n = 0; n < LOG_MAXFILES; n++)
     {
       printf(" %d", removeorder[n]);
     }
 
   printf(" }...\n");
 
-  for (size_t n = 0; n < SIR_MAXFILES; n++)
+  for (size_t n = 0; n < LOG_MAXFILES; n++)
     {
-      pass &= sir_remfile(ids[removeorder[n]]);
+      pass &= log_remfile(ids[removeorder[n]]);
 
-      char path[SIR_MAXPATH] = {
+      char path[LOG_MAXPATH] = {
         0
       };
-      (void)snprintf(path, SIR_MAXPATH, "test-%lu.log", n);
+      (void)snprintf(path, LOG_MAXPATH, "test-%lu.log", n);
       rmfile(path);
     }
 
-  pass &= sir_info("test test test");
+  pass &= log_info("test test test");
 
-  sir_cleanup();
+  log_cleanup();
   return printerror(pass);
 }
 
@@ -236,15 +236,15 @@ sirtest_failsetinvalidstyle(void)
   INIT(si, SIRL_ALL, 0, 0, 0);
   bool pass = si_init;
 
-  pass &= !sir_settextstyle(SIRL_INFO, 0xfefe);
-  pass &= !sir_settextstyle(SIRL_ALL, SIRS_FG_RED | SIRS_FG_DEFAULT);
+  pass &= !log_settextstyle(SIRL_INFO, 0xfefe);
+  pass &= !log_settextstyle(SIRL_ALL, SIRS_FG_RED | SIRS_FG_DEFAULT);
 
   if (pass)
     {
       printexpectederr();
     }
 
-  sir_cleanup();
+  log_cleanup();
   return printerror(pass);
 }
 
@@ -255,23 +255,23 @@ sirtest_failnooutputdest(void)
   bool pass = si_init;
   const char *logfile = "levels.log";
 
-  pass &= !sir_info("this goes nowhere!");
+  pass &= !log_info("this goes nowhere!");
 
   if (pass)
     {
       printexpectederr();
 
-      pass &= sir_stdoutlevels(SIRL_INFO);
-      pass &= sir_info("this goes to stdout");
-      pass &= sir_stdoutlevels(SIRL_NONE);
+      pass &= log_stdoutlevels(SIRL_INFO);
+      pass &= log_info("this goes to stdout");
+      pass &= log_stdoutlevels(SIRL_NONE);
 
-      pass &= NULL != sir_addfile(logfile, SIRL_INFO, SIRO_DEFAULT);
-      pass &= sir_info("this goes to %s", logfile);
+      pass &= NULL != log_addfile(logfile, SIRL_INFO, SIRO_DEFAULT);
+      pass &= log_info("this goes to %s", logfile);
 
       rmfile(logfile);
     }
 
-  sir_cleanup();
+  log_cleanup();
   return printerror(pass);
 }
 
@@ -281,14 +281,14 @@ sirtest_failinvalidfilename(void)
   INIT(si, SIRL_ALL, 0, 0, 0);
   bool pass = si_init;
 
-  pass &= NULL == sir_addfile("bad file!/name", SIRL_ALL, SIRO_MSGONLY);
+  pass &= NULL == log_addfile("bad file!/name", SIRL_ALL, SIRO_MSGONLY);
 
   if (pass)
     {
       printexpectederr();
     }
 
-  sir_cleanup();
+  log_cleanup();
   return printerror(pass);
 }
 
@@ -298,14 +298,14 @@ sirtest_failfilebadpermission(void)
   INIT(si, SIRL_ALL, 0, 0, 0);
   bool pass = si_init;
 
-  pass &= NULL == sir_addfile("/noperms", SIRL_ALL, SIRO_MSGONLY);
+  pass &= NULL == log_addfile("/noperms", SIRL_ALL, SIRO_MSGONLY);
 
   if (pass)
     {
       printexpectederr();
     }
 
-  sir_cleanup();
+  log_cleanup();
   return printerror(pass);
 }
 
@@ -315,22 +315,22 @@ sirtest_failnulls(void)
   INIT(si, SIRL_ALL, 0, 0, 0);
   bool pass = si_init;
 
-  pass &= !sir_info(NULL);
-  pass &= NULL == sir_addfile(NULL, SIRL_ALL, SIRO_MSGONLY);
+  pass &= !log_info(NULL);
+  pass &= NULL == log_addfile(NULL, SIRL_ALL, SIRO_MSGONLY);
 
   if (pass)
     {
       printexpectederr();
     }
 
-  sir_cleanup();
+  log_cleanup();
   return printerror(pass);
 }
 
 bool
 sirtest_failwithoutinit(void)
 {
-  bool pass = !sir_info("sir isn't initialized; this needs to fail");
+  bool pass = !log_info("sir isn't initialized; this needs to fail");
 
   if (pass)
     {
@@ -354,7 +354,7 @@ sirtest_failinittwice(void)
       printexpectederr();
     }
 
-  sir_cleanup();
+  log_cleanup();
   return printerror(pass);
 }
 
@@ -364,8 +364,8 @@ sirtest_failaftercleanup()
   INIT(si, SIRL_ALL, 0, 0, 0);
   bool pass = si_init;
 
-  sir_cleanup();
-  pass &= !sir_info("already cleaned up; this needs to fail");
+  log_cleanup();
+  pass &= !log_info("already cleaned up; this needs to fail");
 
   if (pass)
     {
@@ -381,14 +381,14 @@ sirtest_initcleanupinit(void)
   INIT(si1, SIRL_ALL, 0, 0, 0);
   bool pass = si1_init;
 
-  pass &= sir_info("init called once; testing output...");
-  sir_cleanup();
+  pass &= log_info("init called once; testing output...");
+  log_cleanup();
 
   INIT(si2, SIRL_ALL, 0, 0, 0);
   pass &= si2_init;
 
-  pass &= sir_info("init called again after re-init; testing output...");
-  sir_cleanup();
+  pass &= log_info("init called again after re-init; testing output...");
+  log_cleanup();
 
   return printerror(pass);
 }
@@ -399,11 +399,11 @@ sirtest_faildupefile(void)
   INIT(si, SIRL_ALL, 0, 0, 0);
   bool pass = si_init;
 
-  pass &= NULL != sir_addfile("foo.log", SIRL_ALL, SIRO_DEFAULT);
-  pass &= NULL == sir_addfile("foo.log", SIRL_ALL, SIRO_DEFAULT);
+  pass &= NULL != log_addfile("foo.log", SIRL_ALL, SIRO_DEFAULT);
+  pass &= NULL == log_addfile("foo.log", SIRL_ALL, SIRO_DEFAULT);
 
   rmfile("foo.log");
-  sir_cleanup();
+  log_cleanup();
   return printerror(pass);
 }
 
@@ -415,9 +415,9 @@ sirtest_failremovebadfile(void)
 
   int invalidid = 9999999;
 
-  pass &= !sir_remfile(&invalidid);
+  pass &= !log_remfile(&invalidid);
 
-  sir_cleanup();
+  log_cleanup();
   return printerror(pass);
 }
 
@@ -426,7 +426,7 @@ sirtest_rollandarchivefile(void)
 {
   /* Roll size minus 1KB so we can write until it maxes. */
   const long deltasize               = 1024;
-  const long fillsize                = SIR_FROLLSIZE - deltasize;
+  const long fillsize                = LOG_FROLLSIZE - deltasize;
   const sirchar_t *const logfilename = "rollandarchive";
   const sirchar_t *const line        = "hello, i am some data. nice to meet you.";
 
@@ -474,7 +474,7 @@ sirtest_rollandarchivefile(void)
   bool pass = si_init;
 
   sirfileid_t fileid
-    = sir_addfile(logfilename, SIRL_DEBUG, SIRO_MSGONLY | SIRO_NOHDR);
+    = log_addfile(logfilename, SIRL_DEBUG, SIRO_MSGONLY | SIRO_NOHDR);
 
   if (pass &= NULL != fileid)
     {
@@ -484,7 +484,7 @@ sirtest_rollandarchivefile(void)
 
       do
         {
-          pass &= sir_debug("%s", line);
+          pass &= log_debug("%s", line);
           if (!pass)
             {
               break;
@@ -508,7 +508,7 @@ sirtest_rollandarchivefile(void)
 
   if (pass)
     {
-      pass &= sir_remfile(fileid);
+      pass &= log_remfile(fileid);
     }
 
   delcount = 0;
@@ -523,7 +523,7 @@ sirtest_rollandarchivefile(void)
       printf("\tfound and removed %u log file(s)\n", delcount);
     }
 
-  sir_cleanup();
+  log_cleanup();
   return printerror(pass);
 }
 
@@ -538,36 +538,36 @@ sirtest_errorsanity(void)
     uint16_t code;
     const char *name;
   } errors[] = {
-    { SIR_E_NOERROR,   "SIR_E_NOERROR"   }, /* = 0    */
-    { SIR_E_NOTREADY,  "SIR_E_NOTREADY"  }, /* = 1    */
-    { SIR_E_ALREADY,   "SIR_E_ALREADY"   }, /* = 2    */
-    { SIR_E_DUPFILE,   "SIR_E_DUPFILE"   }, /* = 3    */
-    { SIR_E_NOFILE,    "SIR_E_NOFILE"    }, /* = 4    */
-    { SIR_E_FCFULL,    "SIR_E_FCFULL"    }, /* = 5    */
-    { SIR_E_OPTIONS,   "SIR_E_OPTIONS"   }, /* = 6    */
-    { SIR_E_LEVELS,    "SIR_E_LEVELS"    }, /* = 7    */
-    { SIR_E_TEXTSTYLE, "SIR_E_TEXTSTYLE" }, /* = 8    */
-    { SIR_E_STRING,    "SIR_E_STRING"    }, /* = 9    */
-    { SIR_E_NODEST,    "SIR_E_NODEST"    }, /* = 10   */
-    { SIR_E_PLATFORM,  "SIR_E_PLATFORM"  }, /* = 11   */
-    { SIR_E_UNKNOWN,   "SIR_E_UNKNOWN"   }, /* = 4095 */
+    { LOG_E_NOERROR,   "LOG_E_NOERROR"   }, /* = 0    */
+    { LOG_E_NOTREADY,  "LOG_E_NOTREADY"  }, /* = 1    */
+    { LOG_E_ALREADY,   "LOG_E_ALREADY"   }, /* = 2    */
+    { LOG_E_DUPFILE,   "LOG_E_DUPFILE"   }, /* = 3    */
+    { LOG_E_NOFILE,    "LOG_E_NOFILE"    }, /* = 4    */
+    { LOG_E_FCFULL,    "LOG_E_FCFULL"    }, /* = 5    */
+    { LOG_E_OPTIONS,   "LOG_E_OPTIONS"   }, /* = 6    */
+    { LOG_E_LEVELS,    "LOG_E_LEVELS"    }, /* = 7    */
+    { LOG_E_TEXTSTYLE, "LOG_E_TEXTSTYLE" }, /* = 8    */
+    { LOG_E_STRING,    "LOG_E_STRING"    }, /* = 9    */
+    { LOG_E_NODEST,    "LOG_E_NODEST"    }, /* = 10   */
+    { LOG_E_PLATFORM,  "LOG_E_PLATFORM"  }, /* = 11   */
+    { LOG_E_UNKNOWN,   "LOG_E_UNKNOWN"   }, /* = 4095 */
   };
 
-  sirchar_t message[SIR_MAXERROR] = {
+  sirchar_t message[LOG_MAXERROR] = {
     0
   };
 
   for (size_t n = 0; n < ( sizeof ( errors ) / sizeof ( errors[0] )); n++)
     {
-      _sir_seterror(_sir_mkerror(errors[n].code));
-      (void)memset(message, 0, SIR_MAXERROR);
-      uint16_t err /* = err */ = sir_geterror(message);
+      _log_seterror(_log_mkerror(errors[n].code));
+      (void)memset(message, 0, LOG_MAXERROR);
+      uint16_t err /* = err */ = log_geterror(message);
       (void)err;
       pass &= errors[n].code == err && *message != '\0';
       printf("\t%s = %s\n", errors[n].name, message);
     }
 
-  sir_cleanup();
+  log_cleanup();
   return printerror(pass);
 }
 
@@ -579,55 +579,55 @@ sirtest_textstylesanity(void)
 
   if (pass)
     {
-      pass &= sir_debug("default style");
-      pass &= sir_settextstyle(SIRL_DEBUG, SIRS_FG_YELLOW | SIRS_BG_DGRAY);
-      pass &= sir_debug("override style");
+      pass &= log_debug("default style");
+      pass &= log_settextstyle(SIRL_DEBUG, SIRS_FG_YELLOW | SIRS_BG_DGRAY);
+      pass &= log_debug("override style");
 
-      pass &= sir_info("default style");
-      pass &= sir_settextstyle(SIRL_INFO, SIRS_FG_GREEN | SIRS_BG_MAGENTA);
-      pass &= sir_info("override style");
+      pass &= log_info("default style");
+      pass &= log_settextstyle(SIRL_INFO, SIRS_FG_GREEN | SIRS_BG_MAGENTA);
+      pass &= log_info("override style");
 
-      pass &= sir_notice("default style");
-      pass &= sir_settextstyle(SIRL_NOTICE, SIRS_FG_BLACK | SIRS_BG_LYELLOW);
-      pass &= sir_notice("override style");
+      pass &= log_notice("default style");
+      pass &= log_settextstyle(SIRL_NOTICE, SIRS_FG_BLACK | SIRS_BG_LYELLOW);
+      pass &= log_notice("override style");
 
-      pass &= sir_warn("default style");
-      pass &= sir_settextstyle(SIRL_WARN, SIRS_FG_BLACK | SIRS_BG_WHITE);
-      pass &= sir_warn("override style");
+      pass &= log_warn("default style");
+      pass &= log_settextstyle(SIRL_WARN, SIRS_FG_BLACK | SIRS_BG_WHITE);
+      pass &= log_warn("override style");
 
-      pass &= sir_error("default style");
-      pass &= sir_settextstyle(SIRL_ERROR, SIRS_FG_WHITE | SIRS_BG_BLUE);
-      pass &= sir_error("override style");
+      pass &= log_error("default style");
+      pass &= log_settextstyle(SIRL_ERROR, SIRS_FG_WHITE | SIRS_BG_BLUE);
+      pass &= log_error("override style");
 
-      pass &= sir_crit("default style");
-      pass &= sir_settextstyle(SIRL_CRIT, SIRS_FG_DGRAY | SIRS_BG_LGREEN);
-      pass &= sir_crit("override style");
+      pass &= log_crit("default style");
+      pass &= log_settextstyle(SIRL_CRIT, SIRS_FG_DGRAY | SIRS_BG_LGREEN);
+      pass &= log_crit("override style");
 
-      pass &= sir_alert("default style");
-      pass &= sir_settextstyle(SIRL_ALERT, SIRS_BRIGHT | SIRS_FG_LBLUE);
-      pass &= sir_alert("override style");
+      pass &= log_alert("default style");
+      pass &= log_settextstyle(SIRL_ALERT, SIRS_BRIGHT | SIRS_FG_LBLUE);
+      pass &= log_alert("override style");
 
-      pass &= sir_emerg("default style");
-      pass &= sir_settextstyle(SIRL_EMERG, SIRS_BRIGHT | SIRS_FG_DGRAY);
-      pass &= sir_emerg("override style");
+      pass &= log_emerg("default style");
+      pass &= log_settextstyle(SIRL_EMERG, SIRS_BRIGHT | SIRS_FG_DGRAY);
+      pass &= log_emerg("override style");
     }
 
   printf("\tcleanup to reset styles...\n");
-  sir_cleanup();
+  log_cleanup();
 
   INIT(si2, SIRL_ALL, 0, 0, 0);
   pass &= si2_init;
 
-  pass &= sir_debug  ("default style");
-  pass &= sir_info   ("default style");
-  pass &= sir_notice ("default style");
-  pass &= sir_warn   ("default style");
-  pass &= sir_error  ("default style");
-  pass &= sir_crit   ("default style");
-  pass &= sir_alert  ("default style");
-  pass &= sir_emerg  ("default style");
+  pass &= log_debug  ("default style");
+  pass &= log_info   ("default style");
+  pass &= log_notice ("default style");
+  pass &= log_warn   ("default style");
+  pass &= log_error  ("default style");
+  pass &= log_crit   ("default style");
+  pass &= log_alert  ("default style");
+  pass &= log_emerg  ("default style");
 
-  sir_cleanup();
+  log_cleanup();
 
   return printerror(pass);
 }
@@ -679,17 +679,17 @@ sirtest_perf(void)
 
       for (size_t n = 0; n < perflines; n++)
         {
-          sir_debug("lorem ipsum foo bar blah");
+          log_debug("lorem ipsum foo bar blah");
         }
 
       stdioelapsed = sirtimerelapsed(&stdiotimer);
 
-      sir_cleanup();
+      log_cleanup();
 
       INIT(si2, 0, 0, 0, 0);
       pass &= si2_init;
 
-      sirfileid_t logid = sir_addfile(logfilename, SIRL_ALL, SIRO_MSGONLY);
+      sirfileid_t logid = log_addfile(logfilename, SIRL_ALL, SIRO_MSGONLY);
       pass &= NULL != logid;
 
       if (pass)
@@ -703,12 +703,12 @@ sirtest_perf(void)
 
           for (size_t n = 0; n < perflines; n++)
             {
-              sir_debug("lorem ipsum foo bar blah");
+              log_debug("lorem ipsum foo bar blah");
             }
 
           fileelapsed = sirtimerelapsed(&filetimer);
 
-          pass &= sir_remfile(logid);
+          pass &= log_remfile(logid);
         }
 
       if (pass)
@@ -736,7 +736,7 @@ sirtest_perf(void)
       printf("\tdeleted %d log file(s)\n", deleted);
     }
 
-  sir_cleanup();
+  log_cleanup();
   return printerror(pass);
 }
 
@@ -748,44 +748,44 @@ sirtest_updatesanity(void)
   const char *logfile = "update.log";
 
   rmfile(logfile);
-  sirfileid_t id1 = sir_addfile(logfile, SIRL_DEFAULT, SIRO_DEFAULT);
+  sirfileid_t id1 = log_addfile(logfile, SIRL_DEFAULT, SIRO_DEFAULT);
 
   pass &= NULL != id1;
 
   if (pass)
     {
-      pass &= sir_debug        ("default config");
-      pass &= sir_info         ("default config");
-      pass &= sir_notice       ("default config");
-      pass &= sir_warn         ("default config");
-      pass &= sir_error        ("default config");
-      pass &= sir_crit         ("default config");
-      pass &= sir_alert        ("default config");
-      pass &= sir_emerg        ("default config");
+      pass &= log_debug        ("default config");
+      pass &= log_info         ("default config");
+      pass &= log_notice       ("default config");
+      pass &= log_warn         ("default config");
+      pass &= log_error        ("default config");
+      pass &= log_crit         ("default config");
+      pass &= log_alert        ("default config");
+      pass &= log_emerg        ("default config");
 
-      pass &= sir_stdoutlevels (SIRL_DEBUG);
-      pass &= sir_stdoutopts   (SIRO_NOTIME);
-      pass &= sir_stderrlevels (SIRL_ALL);
-      pass &= sir_stderropts   (SIRO_NONAME);
+      pass &= log_stdoutlevels (SIRL_DEBUG);
+      pass &= log_stdoutopts   (SIRO_NOTIME);
+      pass &= log_stderrlevels (SIRL_ALL);
+      pass &= log_stderropts   (SIRO_NONAME);
 
-      pass &= sir_filelevels   (id1, SIRL_DEBUG);
-      pass &= sir_fileopts     (id1, SIRO_MSGONLY);
+      pass &= log_filelevels   (id1, SIRL_DEBUG);
+      pass &= log_fileopts     (id1, SIRO_MSGONLY);
 
-      pass &= sir_debug        ("modified config");
-      pass &= sir_info         ("modified config");
-      pass &= sir_notice       ("modified config");
-      pass &= sir_warn         ("modified config");
-      pass &= sir_error        ("modified config");
-      pass &= sir_crit         ("modified config");
-      pass &= sir_alert        ("modified config");
-      pass &= sir_emerg        ("modified config");
-      pass &= sir_remfile      (id1);
+      pass &= log_debug        ("modified config");
+      pass &= log_info         ("modified config");
+      pass &= log_notice       ("modified config");
+      pass &= log_warn         ("modified config");
+      pass &= log_error        ("modified config");
+      pass &= log_crit         ("modified config");
+      pass &= log_alert        ("modified config");
+      pass &= log_emerg        ("modified config");
+      pass &= log_remfile      (id1);
     }
 
   rmfile(logfile);
 
   printerror(pass);
-  sir_cleanup();
+  log_cleanup();
   return pass;
 }
 
@@ -795,7 +795,7 @@ sirtest_updatesanity(void)
  *  INIT(si, SIRL_ALL, 0, 0, 0);
  *  bool pass = si_init;
  *
- *  sir_cleanup();
+ *  log_cleanup();
  *  return printerror(pass);
  * }
  */
@@ -822,8 +822,8 @@ sirtest_mthread_race(void)
 
   for (size_t n = 0; n < NUM_THREADS; n++)
     {
-      char *path = (char *)calloc(SIR_MAXPATH, sizeof ( char ));
-      (void)snprintf(path, SIR_MAXPATH, "%lu.log", n);
+      char *path = (char *)calloc(LOG_MAXPATH, sizeof ( char ));
+      (void)snprintf(path, LOG_MAXPATH, "%lu.log", n);
 
 #ifndef _WIN32
       int create
@@ -841,8 +841,8 @@ sirtest_mthread_race(void)
         }
 
 #if defined(_GNU_SOURCE) && !defined(_AIX)
-      char thrd_name[SIR_MAXPID];
-      (void)snprintf(thrd_name, SIR_MAXPID, "%lu", n);
+      char thrd_name[LOG_MAXPID];
+      (void)snprintf(thrd_name, LOG_MAXPID, "%lu", n);
       create = pthread_setname_np(thrds[n], thrd_name);
       if (0 != create)
         {
@@ -865,7 +865,7 @@ sirtest_mthread_race(void)
         }
     }
 
-  sir_cleanup();
+  log_cleanup();
   return printerror(pass);
 }
 
@@ -878,16 +878,16 @@ unsigned
 sirtest_thread(void *arg)
 {
 #endif /* ifndef _WIN32 */
-  pid_t threadid = _sir_gettid();
+  pid_t threadid = _log_gettid();
 
-  char mypath[SIR_MAXPATH + 16] = {
+  char mypath[LOG_MAXPATH + 16] = {
     0
   };
-  (void)strncpy(mypath, (const char *)arg, SIR_MAXPATH - 1);
+  (void)strncpy(mypath, (const char *)arg, LOG_MAXPATH - 1);
   free(arg);
 
   rmfile(mypath);
-  sirfileid_t id = sir_addfile(mypath, SIRL_ALL, SIRO_MSGONLY);
+  sirfileid_t id = log_addfile(mypath, SIRL_ALL, SIRO_MSGONLY);
 
   if (NULL == id)
     {
@@ -907,7 +907,7 @@ sirtest_thread(void *arg)
     {
       for (size_t i = 0; i < 10; i++)
         {
-          sir_debug(
+          log_debug(
             "thread %lu: hello, how do you do? %d",
             threadid,
             ( n * i ) + i);
@@ -916,26 +916,26 @@ sirtest_thread(void *arg)
 
           if (r % 2 == 0)
             {
-              if (!sir_remfile(id))
+              if (!log_remfile(id))
                 {
                   printerror(false);
                 }
 
-              id = sir_addfile(mypath, SIRL_ALL, SIRO_MSGONLY);
+              id = log_addfile(mypath, SIRL_ALL, SIRO_MSGONLY);
 
               if (NULL == id)
                 {
                   printerror(false);
                 }
 
-              if (!sir_settextstyle(SIRL_DEBUG, SIRS_FG_RED | SIRS_BG_DEFAULT))
+              if (!log_settextstyle(SIRL_DEBUG, SIRS_FG_RED | SIRS_BG_DEFAULT))
                 {
                   printerror(false);
                 }
             }
           else
             {
-              if (!sir_settextstyle(SIRL_DEBUG, SIRS_FG_CYAN | SIRS_BG_YELLOW))
+              if (!log_settextstyle(SIRL_DEBUG, SIRS_FG_CYAN | SIRS_BG_YELLOW))
                 {
                   printerror(false);
                 }
@@ -959,10 +959,10 @@ printerror(bool pass)
 {
   if (!pass)
     {
-      sirchar_t message[SIR_MAXERROR] = {
+      sirchar_t message[LOG_MAXERROR] = {
         0
       };
-      uint16_t code = sir_geterror(message);
+      uint16_t code = log_geterror(message);
       printf("\t" RED("!! Unexpected (%hu, %s)") "\n", code, message);
     }
 
@@ -972,10 +972,10 @@ printerror(bool pass)
 void
 printexpectederr(void)
 {
-  sirchar_t message[SIR_MAXERROR] = {
+  sirchar_t message[LOG_MAXERROR] = {
     0
   };
-  uint16_t code = sir_geterror(message);
+  uint16_t code = log_geterror(message);
 
   printf("\t" GREEN("Expected (%hu, %s") "\n", code, message);
 }

@@ -23,26 +23,26 @@
  * IN THE SOFTWARE.
  */
 
-#ifndef _SIR_HELPERS_H_INCLUDED
-# define _SIR_HELPERS_H_INCLUDED
+#ifndef _LOG_HELPERS_H_INCLUDED
+# define _LOG_HELPERS_H_INCLUDED
 
 # include "sirtypes.h"
 
 /* Computes the size of an array. */
 
-# define _sir_countof(arr) ( sizeof ( arr ) / sizeof ( arr[0] ))
+# define _log_countof(arr) ( sizeof ( arr ) / sizeof ( arr[0] ))
 
 /*
  * Creates an error code that (hopefully) doesn't conflict
  * with any of those defined by the platform.
  */
 
-# define _sir_mkerror(code) (((uint32_t)( code & 0x7fff ) << 16 ) | 0x80000000 )
+# define _log_mkerror(code) (((uint32_t)( code & 0x7fff ) << 16 ) | 0x80000000 )
 
 /* Validates an internal error. */
 
 static inline bool
-_sir_validerror(sirerror_t err)
+_log_validerror(sirerror_t err)
 {
   sirerror_t masked = err & 0x8fffffff;
 
@@ -52,30 +52,30 @@ _sir_validerror(sirerror_t err)
 /* Extracts just the code from an internal error. */
 
 static inline uint16_t
-_sir_geterrcode(sirerror_t err)
+_log_geterrcode(sirerror_t err)
 {
   return ( err >> 16 ) & 0x7fff;
 }
 
-/* Evil macro used for _sir_lv wrappers. */
+/* Evil macro used for _log_lv wrappers. */
 
-# define _SIR_L_START(format)  \
+# define _LOG_L_START(format)  \
   bool r = false;              \
   va_list args;                \
   va_start(args, format);
 
-/* Evil macro used for _sir_lv wrappers. */
+/* Evil macro used for _log_lv wrappers. */
 
-# define _SIR_L_END(args) va_end(args);
+# define _LOG_L_END(args) va_end(args);
 
 /* Validates a pointer. */
 
-# define _sir_validptr(p) ( NULL != p )
+# define _log_validptr(p) ( NULL != p )
 
 /* Checks a bitfield for a specific set of bits. */
 
 static inline bool
-_sir_bittest(uint32_t flags, uint32_t test)
+_log_bittest(uint32_t flags, uint32_t test)
 {
   return ( flags & test ) == test;
 }
@@ -83,7 +83,7 @@ _sir_bittest(uint32_t flags, uint32_t test)
 /* Wraps free. */
 
 static inline void
-__sir_safefree(void **p)
+__log_safefree(void **p)
 {
   if (!p || ( p && !*p ))
     {
@@ -97,27 +97,27 @@ __sir_safefree(void **p)
 /* Wraps free. */
 
 static inline void
-_sir_safefree(void *p)
+_log_safefree(void *p)
 {
-  __sir_safefree(&p);
+  __log_safefree(&p);
 }
 
 /* Validates a log file identifier. */
 
-bool _sir_validfid(int id);
+bool _log_validfid(int id);
 
-/* Validates a set of sir_level flags. */
+/* Validates a set of log_level flags. */
 
-bool _sir_validlevels(sir_levels levels);
+bool _log_validlevels(log_levels levels);
 
-/* Validates a single sir_level. */
+/* Validates a single log_level. */
 
-bool _sir_validlevel(sir_level level);
+bool _log_validlevel(log_level level);
 
-/* Applies default sir_level flags if applicable. */
+/* Applies default log_level flags if applicable. */
 
 static inline void
-_sir_defaultlevels(sir_levels *levels, sir_levels def)
+_log_defaultlevels(log_levels *levels, log_levels def)
 {
   if (levels && SIRL_DEFAULT == *levels)
     {
@@ -125,10 +125,10 @@ _sir_defaultlevels(sir_levels *levels, sir_levels def)
     }
 }
 
-/* Applies default sir_options flags if applicable. */
+/* Applies default log_options flags if applicable. */
 
 static inline void
-_sir_defaultopts(sir_options *opts, sir_options def)
+_log_defaultopts(log_options *opts, log_options def)
 {
   if (opts && SIRO_DEFAULT == *opts)
     {
@@ -136,45 +136,45 @@ _sir_defaultopts(sir_options *opts, sir_options def)
     }
 }
 
-/* Validates a set of sir_option flags. */
+/* Validates a set of log_option flags. */
 
-bool _sir_validopts(sir_options opts);
+bool _log_validopts(log_options opts);
 
 /* Validates a string pointer and optionally fails if it's invalid. */
 
-bool __sir_validstr(const sirchar_t *str, bool fail);
+bool __log_validstr(const sirchar_t *str, bool fail);
 
 /* Validates a string pointer and fails if it's invalid. */
 
 static inline bool
-_sir_validstr(const sirchar_t *str)
+_log_validstr(const sirchar_t *str)
 {
-  return __sir_validstr(str, true);
+  return __log_validstr(str, true);
 }
 
 /* Validates a string pointer but ignores if it's invalid. */
 
 static inline bool
-_sir_validstrnofail(const sirchar_t *str)
+_log_validstrnofail(const sirchar_t *str)
 {
-  return __sir_validstr(str, false);
+  return __log_validstr(str, false);
 }
 
 static inline bool
 
-_sir_validupdatedata(sir_update_data *data)
+_log_validupdatedata(log_update_data *data)
 {
   return NULL != data
-           && ((  NULL == data->levels || _sir_validlevels(*data->levels))
-             && ( NULL == data->opts   || _sir_validopts  (*data->opts)));
+           && ((  NULL == data->levels || _log_validlevels(*data->levels))
+             && ( NULL == data->opts   || _log_validopts  (*data->opts)));
 }
 
 /* Places a null terminator at the first index in a string buffer. */
 
 static inline void
-_sir_resetstr(sirchar_t *str)
+_log_resetstr(sirchar_t *str)
 {
   str[0] = (sirchar_t)'\0';
 }
 
-#endif /* !_SIR_HELPERS_H_INCLUDED */
+#endif /* !_LOG_HELPERS_H_INCLUDED */

@@ -29,22 +29,22 @@
 #include "sirmutex.h"
 
 sirfileid_t
-_sir_addfile(const sirchar_t *path, sir_levels levels, sir_options opts)
+_log_addfile(const sirchar_t *path, log_levels levels, log_options opts)
 {
-  _sir_seterror(_SIR_E_NOERROR);
+  _log_seterror(_LOG_E_NOERROR);
 
-  if (_sir_sanity())
+  if (_log_sanity())
     {
-      sirfcache *sfc = _sir_locksection(_SIRM_FILECACHE);
+      sirfcache *sfc = _log_locksection(_LOGM_FILECACHE);
       assert(sfc);
 
       if (sfc)
         {
-          _sir_defaultlevels (&levels, sir_file_def_lvls);
-          _sir_defaultopts   (&opts,   sir_file_def_opts);
+          _log_defaultlevels (&levels, log_file_def_lvls);
+          _log_defaultopts   (&opts,   log_file_def_opts);
 
-          sirfileid_t r = _sir_fcache_add(sfc, path, levels, opts);
-          (void)_sir_unlocksection(_SIRM_FILECACHE);
+          sirfileid_t r = _log_fcache_add(sfc, path, levels, opts);
+          (void)_log_unlocksection(_LOGM_FILECACHE);
           return r;
         }
     }
@@ -53,20 +53,20 @@ _sir_addfile(const sirchar_t *path, sir_levels levels, sir_options opts)
 }
 
 bool
-_sir_updatefile(sirfileid_t id, sir_update_data *data)
+_log_updatefile(sirfileid_t id, log_update_data *data)
 {
-  _sir_seterror(_SIR_E_NOERROR);
+  _log_seterror(_LOG_E_NOERROR);
 
-  if (_sir_sanity() && _sir_validptr(id) && _sir_validfid(*id)
-      && _sir_validupdatedata(data))
+  if (_log_sanity() && _log_validptr(id) && _log_validfid(*id)
+      && _log_validupdatedata(data))
     {
-      sirfcache *sfc = _sir_locksection(_SIRM_FILECACHE);
+      sirfcache *sfc = _log_locksection(_LOGM_FILECACHE);
       assert(sfc);
 
       if (sfc)
         {
-          bool r = _sir_fcache_update(sfc, id, data);
-          return _sir_unlocksection(_SIRM_FILECACHE) && r;
+          bool r = _log_fcache_update(sfc, id, data);
+          return _log_unlocksection(_LOGM_FILECACHE) && r;
         }
     }
 
@@ -74,19 +74,19 @@ _sir_updatefile(sirfileid_t id, sir_update_data *data)
 }
 
 bool
-_sir_remfile(sirfileid_t id)
+_log_remfile(sirfileid_t id)
 {
-  _sir_seterror(_SIR_E_NOERROR);
+  _log_seterror(_LOG_E_NOERROR);
 
-  if (_sir_sanity() && _sir_validptr(id) && _sir_validfid(*id))
+  if (_log_sanity() && _log_validptr(id) && _log_validfid(*id))
     {
-      sirfcache *sfc = _sir_locksection(_SIRM_FILECACHE);
+      sirfcache *sfc = _log_locksection(_LOGM_FILECACHE);
       assert(sfc);
 
       if (sfc)
         {
-          bool r = _sir_fcache_rem(sfc, id);
-          return _sir_unlocksection(_SIRM_FILECACHE) && r;
+          bool r = _log_fcache_rem(sfc, id);
+          return _log_unlocksection(_LOGM_FILECACHE) && r;
         }
     }
 
@@ -94,30 +94,30 @@ _sir_remfile(sirfileid_t id)
 }
 
 sirfile *
-_sirfile_create(const sirchar_t *path, sir_levels levels, sir_options opts)
+_logfile_create(const sirchar_t *path, log_levels levels, log_options opts)
 {
   sirfile *sf = NULL;
 
-  if (_sir_validstr(path) && _sir_validlevels(levels)
-      && _sir_validopts(opts))
+  if (_log_validstr(path) && _log_validlevels(levels)
+      && _log_validopts(opts))
     {
       sf = (sirfile *)calloc(1, sizeof ( sirfile ));
 
-      if (_sir_validptr(sf))
+      if (_log_validptr(sf))
         {
-          size_t pathLen = strnlen(path, SIR_MAXPATH);
+          size_t pathLen = strnlen(path, LOG_MAXPATH);
           sf->path = (sirchar_t *)calloc(pathLen + 1, sizeof ( sirchar_t ));
 
-          if (_sir_validptr(sf->path))
+          if (_log_validptr(sf->path))
             {
               (void)strncpy(sf->path, path, pathLen);
 
               sf->levels = levels;
               sf->opts   = opts;
 
-              if (!_sirfile_open(sf) || !_sirfile_validate(sf))
+              if (!_logfile_open(sf) || !_logfile_validate(sf))
                 {
-                  _sir_safefree(sf);
+                  _log_safefree(sf);
 				  return NULL;
                 }
             }
@@ -128,23 +128,23 @@ _sirfile_create(const sirchar_t *path, sir_levels levels, sir_options opts)
 }
 
 bool
-_sirfile_open(sirfile *sf)
+_logfile_open(sirfile *sf)
 {
-  if (_sir_validptr(sf) && _sir_validstr(sf->path))
+  if (_log_validptr(sf) && _log_validstr(sf->path))
     {
-      FILE *f = _sir_fopen(sf->path);
+      FILE *f = _log_fopen(sf->path);
 
       if (f)
         {
           int fd = fileno(f);
           if (-1 == fd)
             {
-              _sir_handleerr(errno);
+              _log_handleerr(errno);
             }
 
-          if (_sir_validfid(fd))
+          if (_log_validfid(fd))
             {
-              _sirfile_close(sf);
+              _logfile_close(sf);
 
               sf->f  = f;
               sf->id = fd;
@@ -157,46 +157,46 @@ _sirfile_open(sirfile *sf)
 }
 
 void
-_sirfile_close(sirfile *sf)
+_logfile_close(sirfile *sf)
 {
-  if (_sir_validptr(sf))
+  if (_log_validptr(sf))
     {
-      if (_sir_validptr(sf->f) && _sir_validfid(sf->id))
+      if (_log_validptr(sf->f) && _log_validfid(sf->id))
         {
-          _sir_fflush(sf->f);
-          _sir_fclose(&sf->f);
-          sf->id = SIR_INVALID;
+          _log_fflush(sf->f);
+          _log_fclose(&sf->f);
+          sf->id = LOG_INVALID;
         }
     }
 }
 
 bool
-_sirfile_write(sirfile *sf, const sirchar_t *output)
+_logfile_write(sirfile *sf, const sirchar_t *output)
 {
-  if (_sirfile_validate(sf) && _sir_validstr(output))
+  if (_logfile_validate(sf) && _log_validstr(output))
     {
-      if (_sirfile_needsroll(sf))
+      if (_logfile_needsroll(sf))
         {
           bool rolled        = false;
           sirchar_t *newpath = NULL;
 
-          if (_sirfile_roll(sf, &newpath))
+          if (_logfile_roll(sf, &newpath))
             {
-              sirchar_t header[SIR_MAXMESSAGE] = {
+              sirchar_t header[LOG_MAXMESSAGE] = {
                 0
               };
-              (void)snprintf(header, SIR_MAXMESSAGE, SIR_FHROLLED, newpath);
-              rolled = _sirfile_writeheader(sf, header);
+              (void)snprintf(header, LOG_MAXMESSAGE, LOG_FHROLLED, newpath);
+              rolled = _logfile_writeheader(sf, header);
             }
 
-          _sir_safefree(newpath);
+          _log_safefree(newpath);
           if (!rolled)
             {
               return false;
             }
         }
 
-      size_t writeLen = strnlen(output, SIR_MAXOUTPUT);
+      size_t writeLen = strnlen(output, LOG_MAXOUTPUT);
       size_t write    = fwrite(output, sizeof ( sirchar_t ), writeLen, sf->f);
 
       assert(write == writeLen);
@@ -206,10 +206,10 @@ _sirfile_write(sirfile *sf, const sirchar_t *output)
           int err = ferror(sf->f);
           int eof = feof(sf->f);
 
-          _sir_handleerr(err);
-          _sir_handleerr(eof);
+          _log_handleerr(err);
+          _log_handleerr(eof);
 
-          _sir_selflog(
+          _log_selflog(
             "%s: wrote %lu/%lu bytes to %d; ferror: %d, feof: %d\n",
             __func__,
             write,
@@ -234,35 +234,35 @@ _sirfile_write(sirfile *sf, const sirchar_t *output)
 }
 
 bool
-_sirfile_writeheader(sirfile *sf, const sirchar_t *msg)
+_logfile_writeheader(sirfile *sf, const sirchar_t *msg)
 {
-  if (_sirfile_validate(sf) && _sir_validstr(msg))
+  if (_logfile_validate(sf) && _log_validstr(msg))
     {
       time_t now;
-      bool gettime = _sir_getlocaltime(&now, NULL);
+      bool gettime = _log_getlocaltime(&now, NULL);
       assert(gettime);
 
       if (gettime)
         {
-          sirchar_t timestamp[SIR_MAXTIME] = {
+          sirchar_t timestamp[LOG_MAXTIME] = {
             0
           };
-          bool fmttime = _sir_formattime(now, timestamp, SIR_FHTIMEFORMAT);
+          bool fmttime = _log_formattime(now, timestamp, LOG_FHTIMEFORMAT);
           assert(fmttime);
 
           if (fmttime)
             {
-              sirchar_t header[SIR_MAXOUTPUT] = {
+              sirchar_t header[LOG_MAXOUTPUT] = {
                 0
               };
-              int fmt = snprintf(header, SIR_MAXOUTPUT, SIR_FHFORMAT, msg, timestamp);
+              int fmt = snprintf(header, LOG_MAXOUTPUT, LOG_FHFORMAT, msg, timestamp);
 
               if (fmt < 0)
                 {
-                  _sir_handleerr(errno);
+                  _log_handleerr(errno);
                 }
 
-              return fmt >= 0 && _sirfile_write(sf, header);
+              return fmt >= 0 && _logfile_write(sf, header);
             }
         }
     }
@@ -271,9 +271,9 @@ _sirfile_writeheader(sirfile *sf, const sirchar_t *msg)
 }
 
 bool
-_sirfile_needsroll(sirfile *sf)
+_logfile_needsroll(sirfile *sf)
 {
-  if (_sirfile_validate(sf))
+  if (_logfile_validate(sf))
     {
       struct stat st = {
         0
@@ -282,71 +282,71 @@ _sirfile_needsroll(sirfile *sf)
 
       if (0 != getstat)
         {
-          _sir_handleerr(errno);
+          _log_handleerr(errno);
           return false;
         }
 
-      return st.st_size >= SIR_FROLLSIZE;
+      return st.st_size >= LOG_FROLLSIZE;
     }
 
   return false;
 }
 
 bool
-_sirfile_roll(sirfile *sf, sirchar_t **newpath)
+_logfile_roll(sirfile *sf, sirchar_t **newpath)
 {
-  if (_sirfile_validate(sf) && newpath)
+  if (_logfile_validate(sf) && newpath)
     {
       bool r          = false;
       sirchar_t *name = NULL;
       sirchar_t *ext  = NULL;
 
-      bool split = _sirfile_splitpath(sf, &name, &ext);
+      bool split = _logfile_splitpath(sf, &name, &ext);
       assert(split);
 
       if (split)
         {
           time_t now;
 
-          bool gettime = _sir_getlocaltime(&now, NULL);
+          bool gettime = _log_getlocaltime(&now, NULL);
           assert(gettime);
 
           if (gettime)
             {
-              sirchar_t timestamp[SIR_MAXTIME] = {
+              sirchar_t timestamp[LOG_MAXTIME] = {
                 0
               };
-              bool fmttime = _sir_formattime(now, timestamp, SIR_FNAMETIMEFORMAT);
+              bool fmttime = _log_formattime(now, timestamp, LOG_FNAMETIMEFORMAT);
               assert(fmttime);
 
               if (fmttime)
                 {
-                  *newpath = (sirchar_t *)calloc(SIR_MAXPATH, sizeof ( sirchar_t ));
+                  *newpath = (sirchar_t *)calloc(LOG_MAXPATH, sizeof ( sirchar_t ));
 
-                  if (_sir_validptr(*newpath))
+                  if (_log_validptr(*newpath))
                     {
                       int fmtpath
                         = snprintf(
                             *newpath,
-                            SIR_MAXPATH,
-                            SIR_FNAMEFORMAT,
+                            LOG_MAXPATH,
+                            LOG_FNAMEFORMAT,
                             name,
                             timestamp,
-                            _sir_validstrnofail(ext) ? ext : "");
+                            _log_validstrnofail(ext) ? ext : "");
 
                       if (fmtpath < 0)
                         {
-                          _sir_handleerr(errno);
+                          _log_handleerr(errno);
                         }
 
-                      r = fmtpath >= 0 && _sirfile_archive(sf, *newpath);
+                      r = fmtpath >= 0 && _logfile_archive(sf, *newpath);
                     }
                 }
             }
         }
 
-      _sir_safefree(name);
-      _sir_safefree(ext);
+      _log_safefree(name);
+      _log_safefree(ext);
       return r;
     }
 
@@ -354,23 +354,23 @@ _sirfile_roll(sirfile *sf, sirchar_t **newpath)
 }
 
 bool
-_sirfile_archive(sirfile *sf, const sirchar_t *newpath)
+_logfile_archive(sirfile *sf, const sirchar_t *newpath)
 {
-  if (_sirfile_validate(sf) && _sir_validstr(newpath))
+  if (_logfile_validate(sf) && _log_validstr(newpath))
     {
 #ifdef _WIN32
       /* Need to close the old file first on windows. */
-      _sirfile_close(sf);
+      _logfile_close(sf);
 #endif /* ifdef _WIN32 */
       if (0 != rename(sf->path, newpath))
         {
-          _sir_handleerr(errno);
+          _log_handleerr(errno);
           return false;
         }
 
-      if (_sirfile_open(sf))
+      if (_logfile_open(sf))
         {
-          _sir_selflog(
+          _log_selflog(
             "%s: archived '%s' -> '%s'\n",
             __func__,
             sf->path,
@@ -383,7 +383,7 @@ _sirfile_archive(sirfile *sf, const sirchar_t *newpath)
 }
 
 bool
-_sirfile_splitpath(sirfile *sf, sirchar_t **name, sirchar_t **ext)
+_logfile_splitpath(sirfile *sf, sirchar_t **name, sirchar_t **ext)
 {
   if (name)
     {
@@ -395,16 +395,16 @@ _sirfile_splitpath(sirfile *sf, sirchar_t **name, sirchar_t **ext)
       *ext = NULL;
     }
 
-  if (_sirfile_validate(sf) && _sir_validptr(name) && _sir_validptr(ext))
+  if (_logfile_validate(sf) && _log_validptr(name) && _log_validptr(ext))
     {
       sirchar_t *lastfullstop = strrchr(sf->path, '.');
 
       if (lastfullstop)
         {
           uintptr_t namesize = lastfullstop - sf->path;
-          assert(namesize < SIR_MAXPATH);
+          assert(namesize < LOG_MAXPATH);
 
-          if (namesize < SIR_MAXPATH)
+          if (namesize < LOG_MAXPATH)
             {
               *name = (sirchar_t *)calloc(namesize + 1, sizeof ( sirchar_t ));
               (void)strncpy(*name, sf->path, namesize);
@@ -417,41 +417,41 @@ _sirfile_splitpath(sirfile *sf, sirchar_t **name, sirchar_t **ext)
           *name = strdup(sf->path);
         }
 
-      return _sir_validstr(*name) && ( !lastfullstop || _sir_validstr(*ext));
+      return _log_validstr(*name) && ( !lastfullstop || _log_validstr(*ext));
     }
 
   return false;
 }
 
 void
-_sirfile_destroy(sirfile *sf)
+_logfile_destroy(sirfile *sf)
 {
   if (sf)
     {
-      _sirfile_close (sf);
-      _sir_safefree  (sf->path);
-      _sir_safefree  (sf);
+      _logfile_close (sf);
+      _log_safefree  (sf->path);
+      _log_safefree  (sf);
     }
 }
 
 bool
-_sirfile_validate(sirfile *sf)
+_logfile_validate(sirfile *sf)
 {
-  return _sir_validptr(sf) && _sir_validfid(sf->id) && _sir_validptr(sf->f)
-         && _sir_validstr(sf->path);
+  return _log_validptr(sf) && _log_validfid(sf->id) && _log_validptr(sf->f)
+         && _log_validstr(sf->path);
 }
 
 void
-_sirfile_update(sirfile *sf, sir_update_data *data)
+_logfile_update(sirfile *sf, log_update_data *data)
 {
-  if (_sirfile_validate(sf) && _sir_validupdatedata(data))
+  if (_logfile_validate(sf) && _log_validupdatedata(data))
     {
-      if (data->levels && _sir_validlevels(*data->levels))
+      if (data->levels && _log_validlevels(*data->levels))
         {
           sf->levels = *data->levels;
         }
 
-      if (data->opts && _sir_validopts(*data->opts))
+      if (data->opts && _log_validopts(*data->opts))
         {
           sf->opts = *data->opts;
         }
@@ -459,65 +459,65 @@ _sirfile_update(sirfile *sf, sir_update_data *data)
 }
 
 sirfileid_t
-_sir_fcache_add(sirfcache *sfc, const sirchar_t *path, sir_levels levels,
-                sir_options opts)
+_log_fcache_add(sirfcache *sfc, const sirchar_t *path, log_levels levels,
+                log_options opts)
 {
-  if (_sir_validptr(sfc) && _sir_validstr(path) && _sir_validlevels(levels)
-      && _sir_validopts(opts))
+  if (_log_validptr(sfc) && _log_validstr(path) && _log_validlevels(levels)
+      && _log_validopts(opts))
     {
-      if (sfc->count >= SIR_MAXFILES)
+      if (sfc->count >= LOG_MAXFILES)
         {
-          _sir_seterror(_SIR_E_FCFULL);
+          _log_seterror(_LOG_E_FCFULL);
           return NULL;
         }
 
       sirfile *existing
-        = _sir_fcache_find(sfc, (const void *)path, _sir_fcache_pred_path);
+        = _log_fcache_find(sfc, (const void *)path, _log_fcache_pred_path);
 
       if (NULL != existing)
         {
-          _sir_seterror(_SIR_E_DUPFILE);
-          _sir_selflog(
+          _log_seterror(_LOG_E_DUPFILE);
+          _log_selflog(
             "%s: file with path '%s' already added.\n",
             __func__,
             path);
           return NULL;
         }
 
-      sirfile *sf = _sirfile_create(path, levels, opts);
+      sirfile *sf = _logfile_create(path, levels, opts);
 
-      if (_sirfile_validate(sf))
+      if (_logfile_validate(sf))
         {
           sfc->files[sfc->count++] = sf;
 
-          if (!_sir_bittest(sf->opts, SIRO_NOHDR))
+          if (!_log_bittest(sf->opts, SIRO_NOHDR))
             {
-              (void)_sirfile_writeheader(sf, SIR_FHBEGIN);
+              (void)_logfile_writeheader(sf, LOG_FHBEGIN);
             }
 
           return &sf->id;
         }
-    _sir_safefree(sf);
+    _log_safefree(sf);
     }
 
   return NULL;
 }
 
 bool
-_sir_fcache_update(sirfcache *sfc, sirfileid_t id, sir_update_data *data)
+_log_fcache_update(sirfcache *sfc, sirfileid_t id, log_update_data *data)
 {
-  if (_sir_validptr(sfc) && _sir_validptr(id) && _sir_validfid(*id)
-      && _sir_validupdatedata(data))
+  if (_log_validptr(sfc) && _log_validptr(id) && _log_validfid(*id)
+      && _log_validupdatedata(data))
     {
       sirfile *found
-        = _sir_fcache_find(sfc, (const void *)id, _sir_fcache_pred_id);
+        = _log_fcache_find(sfc, (const void *)id, _log_fcache_pred_id);
       if (!found)
         {
-          _sir_seterror(_SIR_E_NOFILE);
+          _log_seterror(_LOG_E_NOFILE);
           return false;
         }
 
-      _sirfile_update(found, data);
+      _logfile_update(found, data);
       return true;
     }
 
@@ -525,17 +525,17 @@ _sir_fcache_update(sirfcache *sfc, sirfileid_t id, sir_update_data *data)
 }
 
 bool
-_sir_fcache_rem(sirfcache *sfc, sirfileid_t id)
+_log_fcache_rem(sirfcache *sfc, sirfileid_t id)
 {
-  if (_sir_validptr(sfc) && _sir_validptr(id) && _sir_validfid(*id))
+  if (_log_validptr(sfc) && _log_validptr(id) && _log_validfid(*id))
     {
       for (size_t n = 0; n < sfc->count; n++)
         {
-          assert(_sirfile_validate(sfc->files[n]));
+          assert(_logfile_validate(sfc->files[n]));
 
           if (sfc->files[n]->id == *id)
             {
-              _sirfile_destroy(sfc->files[n]);
+              _logfile_destroy(sfc->files[n]);
 
               for (size_t i = n; i < sfc->count - 1; i++)
                 {
@@ -550,29 +550,29 @@ _sir_fcache_rem(sirfcache *sfc, sirfileid_t id)
             }
         }
 
-      _sir_seterror(_SIR_E_NOFILE);
+      _log_seterror(_LOG_E_NOFILE);
     }
 
   return false;
 }
 
 bool
-_sir_fcache_pred_path(const void *match, sirfile *iter)
+_log_fcache_pred_path(const void *match, sirfile *iter)
 {
   const sirchar_t *path = (const sirchar_t *)match;
 
 #ifndef _WIN32
-  return 0 == strncmp(path, iter->path, SIR_MAXPATH);
+  return 0 == strncmp(path, iter->path, LOG_MAXPATH);
 
 #else /* ifndef _WIN32 */
   /* paths/file names are not case sensitive on windows. */
-  return 0 == _strnicmp(path, iter->path, SIR_MAXPATH);
+  return 0 == _strnicmp(path, iter->path, LOG_MAXPATH);
 
 #endif /* ifndef _WIN32 */
 }
 
 bool
-_sir_fcache_pred_id(const void *match, sirfile *iter)
+_log_fcache_pred_id(const void *match, sirfile *iter)
 {
   sirfileid_t id = (sirfileid_t)match;
 
@@ -580,9 +580,9 @@ _sir_fcache_pred_id(const void *match, sirfile *iter)
 }
 
 sirfile *
-_sir_fcache_find(sirfcache *sfc, const void *match, sir_fcache_pred pred)
+_log_fcache_find(sirfcache *sfc, const void *match, log_fcache_pred pred)
 {
-  if (_sir_validptr(sfc) && _sir_validptr(match) && _sir_validptr(pred))
+  if (_log_validptr(sfc) && _log_validptr(match) && _log_validptr(pred))
     {
       for (size_t n = 0; n < sfc->count; n++)
         {
@@ -597,14 +597,14 @@ _sir_fcache_find(sirfcache *sfc, const void *match, sir_fcache_pred pred)
 }
 
 bool
-_sir_fcache_destroy(sirfcache *sfc)
+_log_fcache_destroy(sirfcache *sfc)
 {
-  if (_sir_validptr(sfc))
+  if (_log_validptr(sfc))
     {
       for (size_t n = 0; n < sfc->count; n++)
         {
-          assert(_sirfile_validate(sfc->files[n]));
-          _sirfile_destroy(sfc->files[n]);
+          assert(_logfile_validate(sfc->files[n]));
+          _logfile_destroy(sfc->files[n]);
           sfc->files[n] = NULL;
           assert(sfc->count > 0);
           sfc->count--;
@@ -618,26 +618,26 @@ _sir_fcache_destroy(sirfcache *sfc)
 }
 
 bool
-_sir_fcache_dispatch(sirfcache *sfc, sir_level level, siroutput *output,
+_log_fcache_dispatch(sirfcache *sfc, log_level level, siroutput *output,
                      size_t *dispatched, size_t *wanted)
 {
-  if (_sir_validptr(sfc) && _sir_validlevel(level) && _sir_validptr(output)
-      && _sir_validptr(dispatched) && _sir_validptr(wanted))
+  if (_log_validptr(sfc) && _log_validlevel(level) && _log_validptr(output)
+      && _log_validptr(dispatched) && _log_validptr(wanted))
     {
       bool r                 = true;
       const sirchar_t *write = NULL;
-      sir_options lastopts   = 0;
+      log_options lastopts   = 0;
 
       *dispatched = 0;
       *wanted     = 0;
 
       for (size_t n = 0; n < sfc->count; n++)
         {
-          assert(_sirfile_validate(sfc->files[n]));
+          assert(_logfile_validate(sfc->files[n]));
 
-          if (!_sir_bittest(sfc->files[n]->levels, level))
+          if (!_log_bittest(sfc->files[n]->levels, level))
             {
-              _sir_selflog(
+              _log_selflog(
                 "%s: levels for %d (%04lx) not set for (%04lx); skipping...\n",
                 __func__,
                 sfc->files[n]->id,
@@ -650,19 +650,19 @@ _sir_fcache_dispatch(sirfcache *sfc, sir_level level, siroutput *output,
 
           if (!write || sfc->files[n]->opts != lastopts)
             {
-              write = _sir_format(false, sfc->files[n]->opts, output);
+              write = _log_format(false, sfc->files[n]->opts, output);
               assert(write);
               lastopts = sfc->files[n]->opts;
             }
 
-          if (write && _sirfile_write(sfc->files[n], write))
+          if (write && _logfile_write(sfc->files[n], write))
             {
               r &= true;
               ( *dispatched )++;
             }
           else
             {
-              _sir_selflog(
+              _log_selflog(
                 "%s: write to %d failed!\n",
                 __func__,
                 sfc->files[n]->id);
@@ -671,7 +671,7 @@ _sir_fcache_dispatch(sirfcache *sfc, sir_level level, siroutput *output,
 
       if (*dispatched > 0)
         {
-          (void)_sir_fflush_all();
+          (void)_log_fflush_all();
         }
 
       return r && ( *dispatched == *wanted );
@@ -681,21 +681,21 @@ _sir_fcache_dispatch(sirfcache *sfc, sir_level level, siroutput *output,
 }
 
 FILE *
-_sir_fopen(const sirchar_t *path)
+_log_fopen(const sirchar_t *path)
 {
-  if (_sir_validstr(path))
+  if (_log_validstr(path))
     {
 #ifdef __STDC_SECURE_LIB__
       FILE *tmp    = NULL;
-      errno_t open = fopen_s(&tmp, path, SIR_FOPENMODE);
-      _sir_handleerr(open);
+      errno_t open = fopen_s(&tmp, path, LOG_FOPENMODE);
+      _log_handleerr(open);
       return tmp;
 
 #else /* ifdef __STDC_SECURE_LIB__ */
-      FILE *f = fopen(path, SIR_FOPENMODE);
+      FILE *f = fopen(path, LOG_FOPENMODE);
       if (!f)
         {
-          _sir_handleerr(errno);
+          _log_handleerr(errno);
         }
 
       return f;
@@ -707,13 +707,13 @@ _sir_fopen(const sirchar_t *path)
 }
 
 void
-_sir_fclose(FILE **f)
+_log_fclose(FILE **f)
 {
-  if (_sir_validptr(f) && _sir_validptr(*f))
+  if (_log_validptr(f) && _log_validptr(*f))
     {
       if (0 != fclose(*f))
         {
-          _sir_handleerr(errno);
+          _log_handleerr(errno);
         }
 
       *f = NULL;
@@ -721,23 +721,23 @@ _sir_fclose(FILE **f)
 }
 
 void
-_sir_fflush(FILE *f)
+_log_fflush(FILE *f)
 {
-  if (_sir_validptr(f))
+  if (_log_validptr(f))
     {
       if (0 != fflush(f))
         {
-          _sir_handleerr(errno);
+          _log_handleerr(errno);
         }
     }
 }
 
 bool
-_sir_fflush_all(void)
+_log_fflush_all(void)
 {
   if (0 != fflush(NULL))
     {
-      _sir_handleerr(errno);
+      _log_handleerr(errno);
       return false;
     }
 

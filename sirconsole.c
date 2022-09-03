@@ -29,32 +29,32 @@
 
 #ifndef _WIN32
 
-static bool _sir_write_std(const sirchar_t *message, FILE *stream);
+static bool _log_write_std(const sirchar_t *message, FILE *stream);
 
 bool
-_sir_stderr_write(const sirchar_t *message)
+_log_stderr_write(const sirchar_t *message)
 {
-  return _sir_write_std(message, stderr);
+  return _log_write_std(message, stderr);
 }
 
 bool
-_sir_stdout_write(const sirchar_t *message)
+_log_stdout_write(const sirchar_t *message)
 {
-  return _sir_write_std(message, stdout);
+  return _log_write_std(message, stdout);
 }
 
 static bool
-_sir_write_std(const sirchar_t *message, FILE *stream)
+_log_write_std(const sirchar_t *message, FILE *stream)
 {
-  (void)sir_override_styles;
-  if (!_sir_validstr(message) || !_sir_validptr(stream))
+  (void)log_override_styles;
+  if (!_log_validstr(message) || !_log_validptr(stream))
     {
       return false;
     }
 
   if (EOF == fputs(message, stream))
     {
-      _sir_handleerr(errno);
+      _log_handleerr(errno);
       return false;
     }
 
@@ -64,23 +64,23 @@ _sir_write_std(const sirchar_t *message, FILE *stream)
 #else /* ifndef _WIN32 */
 
 static CRITICAL_SECTION stdout_cs;
-static sironce_t stdout_once = SIR_ONCE_INIT;
+static sironce_t stdout_once = LOG_ONCE_INIT;
 
 static CRITICAL_SECTION stderr_cs;
-static sironce_t stderr_once = SIR_ONCE_INIT;
+static sironce_t stderr_once = LOG_ONCE_INIT;
 
-static bool _sir_write_stdwin32(uint16_t style, const sirchar_t *message,
+static bool _log_write_stdwin32(uint16_t style, const sirchar_t *message,
                                 HANDLE console, CRITICAL_SECTION *cs);
-static BOOL CALLBACK _sir_initcs(PINIT_ONCE ponce, PVOID param, PVOID *ctx);
+static BOOL CALLBACK _log_initcs(PINIT_ONCE ponce, PVOID param, PVOID *ctx);
 
 bool
-_sir_stderr_write(uint16_t style, const sirchar_t *message)
+_log_stderr_write(uint16_t style, const sirchar_t *message)
 {
   BOOL initcs
-    = InitOnceExecuteOnce(&stderr_once, _sir_initcs, &stderr_cs, NULL);
+    = InitOnceExecuteOnce(&stderr_once, _log_initcs, &stderr_cs, NULL);
 
   assert(FALSE != initcs);
-  return _sir_write_stdwin32(
+  return _log_write_stdwin32(
     style,
     message,
     GetStdHandle(STD_ERROR_HANDLE),
@@ -88,13 +88,13 @@ _sir_stderr_write(uint16_t style, const sirchar_t *message)
 }
 
 bool
-_sir_stdout_write(uint16_t style, const sirchar_t *message)
+_log_stdout_write(uint16_t style, const sirchar_t *message)
 {
   BOOL initcs
-    = InitOnceExecuteOnce(&stdout_once, _sir_initcs, &stdout_cs, NULL);
+    = InitOnceExecuteOnce(&stdout_once, _log_initcs, &stdout_cs, NULL);
 
   assert(FALSE != initcs);
-  return _sir_write_stdwin32(
+  return _log_write_stdwin32(
     style,
     message,
     GetStdHandle(STD_OUTPUT_HANDLE),
@@ -102,10 +102,10 @@ _sir_stdout_write(uint16_t style, const sirchar_t *message)
 }
 
 static bool
-_sir_write_stdwin32(uint16_t style, const sirchar_t *message, HANDLE console,
+_log_write_stdwin32(uint16_t style, const sirchar_t *message, HANDLE console,
                     CRITICAL_SECTION *cs)
 {
-  if (!_sir_validstr(message))
+  if (!_log_validstr(message))
     {
       return false;
     }
@@ -113,11 +113,11 @@ _sir_write_stdwin32(uint16_t style, const sirchar_t *message, HANDLE console,
   assert(INVALID_HANDLE_VALUE != console);
   if (INVALID_HANDLE_VALUE == console)
     {
-      _sir_handlewin32err(GetLastError());
+      _log_handlewin32err(GetLastError());
       return false;
     }
 
-  if (!_sir_validptr(cs))
+  if (!_log_validptr(cs))
     {
       return false;
     }
@@ -129,17 +129,17 @@ _sir_write_stdwin32(uint16_t style, const sirchar_t *message, HANDLE console,
   EnterCriticalSection(cs);
   if (!GetConsoleScreenBufferInfo(console, &csbfi))
     {
-      _sir_handlewin32err(GetLastError());
+      _log_handlewin32err(GetLastError());
       return false;
     }
 
   if (!SetConsoleTextAttribute(console, style))
     {
-      _sir_handlewin32err(GetLastError());
+      _log_handlewin32err(GetLastError());
       return false;
     }
 
-  size_t chars = strnlen(message, SIR_MAXOUTPUT) - 1;
+  size_t chars = strnlen(message, LOG_MAXOUTPUT) - 1;
   DWORD written = 0;
 
   do
@@ -153,7 +153,7 @@ _sir_write_stdwin32(uint16_t style, const sirchar_t *message, HANDLE console,
             &pass,
             NULL))
         {
-          _sir_handlewin32err(GetLastError());
+          _log_handlewin32err(GetLastError());
           break;
         }
 
@@ -176,7 +176,7 @@ _sir_write_stdwin32(uint16_t style, const sirchar_t *message, HANDLE console,
 }
 
 static BOOL CALLBACK
-_sir_initcs(PINIT_ONCE ponce, PVOID param, PVOID *ctx)
+_log_initcs(PINIT_ONCE ponce, PVOID param, PVOID *ctx)
 {
   InitializeCriticalSection((LPCRITICAL_SECTION)param);
   return TRUE;

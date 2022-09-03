@@ -30,110 +30,110 @@
 #include "sirmutex.h"
 #include "sirtextstyle.h"
 
-static sirinit _sir_si = {
+static sirinit _log_si = {
   0
 };
-static sirfcache _sir_fc = {
+static sirfcache _log_fc = {
   0
 };
 
 static sirmutex_t si_mutex;
-static sironce_t  si_once = SIR_ONCE_INIT;
+static sironce_t  si_once = LOG_ONCE_INIT;
 
 static sirmutex_t fc_mutex;
-static sironce_t  fc_once = SIR_ONCE_INIT;
+static sironce_t  fc_once = LOG_ONCE_INIT;
 
 static sirmutex_t ts_mutex;
-static sironce_t  ts_once = SIR_ONCE_INIT;
+static sironce_t  ts_once = LOG_ONCE_INIT;
 
-static volatile uint32_t _sir_magic;
+static volatile uint32_t _log_magic;
 
 bool
-_sir_sanity(void)
+_log_sanity(void)
 {
-  if (_SIR_MAGIC == _sir_magic)
+  if (_LOG_MAGIC == _log_magic)
     {
       return true;
     }
 
-  _sir_seterror(_SIR_E_NOTREADY);
+  _log_seterror(_LOG_E_NOTREADY);
   return false;
 }
 
 bool
-_sir_options_sanity(const sirinit *si)
+_log_options_sanity(const sirinit *si)
 {
-  if (!_sir_validptr(si))
+  if (!_log_validptr(si))
     {
       return false;
     }
 
   bool levelcheck = true;
 
-  levelcheck &= _sir_validlevels(si->d_stdout.levels);
-  levelcheck &= _sir_validlevels(si->d_stderr.levels);
+  levelcheck &= _log_validlevels(si->d_stdout.levels);
+  levelcheck &= _log_validlevels(si->d_stderr.levels);
 
-#ifndef SIR_NO_SYSLOG
-  levelcheck &= _sir_validlevels(si->d_syslog.levels);
-#endif /* ifndef SIR_NO_SYSLOG */
+#ifndef LOG_NO_SYSLOG
+  levelcheck &= _log_validlevels(si->d_syslog.levels);
+#endif /* ifndef LOG_NO_SYSLOG */
 
   bool optscheck = true;
-  optscheck &= _sir_validopts(si->d_stdout.opts);
-  optscheck &= _sir_validopts(si->d_stderr.opts);
+  optscheck &= _log_validopts(si->d_stdout.opts);
+  optscheck &= _log_validopts(si->d_stderr.opts);
 
   char *nullterm = strrchr(si->processName, '\0');
-  return levelcheck && optscheck && _sir_validptr(nullterm);
+  return levelcheck && optscheck && _log_validptr(nullterm);
 }
 
 bool
-_sir_init(sirinit *si)
+_log_init(sirinit *si)
 {
-  _sir_seterror(_SIR_E_NOERROR);
+  _log_seterror(_LOG_E_NOERROR);
 
-  if (!_sir_validptr(si))
+  if (!_log_validptr(si))
     {
       return false;
     }
 
-  if (_sir_magic == _SIR_MAGIC)
+  if (_log_magic == _LOG_MAGIC)
     {
-      _sir_seterror(_SIR_E_ALREADY);
+      _log_seterror(_LOG_E_ALREADY);
       return false;
     }
 
-  _sir_defaultlevels (&si->d_stdout.levels, sir_stdout_def_lvls);
-  _sir_defaultopts   (&si->d_stdout.opts,   sir_stdout_def_opts);
+  _log_defaultlevels (&si->d_stdout.levels, log_stdout_def_lvls);
+  _log_defaultopts   (&si->d_stdout.opts,   log_stdout_def_opts);
 
-  _sir_defaultlevels (&si->d_stderr.levels, sir_stderr_def_lvls);
-  _sir_defaultopts   (&si->d_stderr.opts,   sir_stderr_def_opts);
+  _log_defaultlevels (&si->d_stderr.levels, log_stderr_def_lvls);
+  _log_defaultopts   (&si->d_stderr.opts,   log_stderr_def_opts);
 
-#ifndef SIR_NO_SYSLOG
-  _sir_defaultlevels (&si->d_syslog.levels, sir_syslog_def_lvls);
-#endif /* ifndef SIR_NO_SYSLOG */
+#ifndef LOG_NO_SYSLOG
+  _log_defaultlevels (&si->d_syslog.levels, log_syslog_def_lvls);
+#endif /* ifndef LOG_NO_SYSLOG */
 
-  if (!_sir_options_sanity(si))
+  if (!_log_options_sanity(si))
     {
       return false;
     }
 
-  sirinit *_si = _sir_locksection(_SIRM_INIT);
+  sirinit *_si = _log_locksection(_LOGM_INIT);
   assert(_si);
 
   if (_si)
     {
       (void)memcpy(_si, si, sizeof ( sirinit ));
 
-#ifndef SIR_NO_SYSLOG
+#ifndef LOG_NO_SYSLOG
       if (0 != _si->d_syslog.levels)
         {
           openlog(
-            _sir_validstrnofail(_si->processName) ? _si->processName : "",
+            _log_validstrnofail(_si->processName) ? _si->processName : "",
             ( _si->d_syslog.includePID ? LOG_PID : 0 ) | LOG_ODELAY, LOG_USER);
         }
-#endif /* ifndef SIR_NO_SYSLOG */
+#endif /* ifndef LOG_NO_SYSLOG */
 
-      _sir_magic = _SIR_MAGIC;
-      (void)_sir_unlocksection(_SIRM_INIT);
+      _log_magic = _LOG_MAGIC;
+      (void)_log_unlocksection(_LOGM_INIT);
       return true;
     }
 
@@ -141,48 +141,48 @@ _sir_init(sirinit *si)
 }
 
 void
-_sir_stdoutlevels(sirinit *si, sir_update_data *data)
+_log_stdoutlevels(sirinit *si, log_update_data *data)
 {
   si->d_stdout.levels = *data->levels;
 }
 
 void
-_sir_stdoutopts(sirinit *si, sir_update_data *data)
+_log_stdoutopts(sirinit *si, log_update_data *data)
 {
   si->d_stdout.opts = *data->opts;
 }
 
 void
-_sir_stderrlevels(sirinit *si, sir_update_data *data)
+_log_stderrlevels(sirinit *si, log_update_data *data)
 {
   si->d_stderr.levels = *data->levels;
 }
 
 void
-_sir_stderropts(sirinit *si, sir_update_data *data)
+_log_stderropts(sirinit *si, log_update_data *data)
 {
   si->d_stderr.opts = *data->opts;
 }
 
 void
-_sir_sysloglevels(sirinit *si, sir_update_data *data)
+_log_sysloglevels(sirinit *si, log_update_data *data)
 {
   si->d_syslog.levels = *data->levels;
 }
 
 bool
-_sir_writeinit(sir_update_data *data, sirinit_update update)
+_log_writeinit(log_update_data *data, sirinit_update update)
 {
-  _sir_seterror(_SIR_E_NOERROR);
+  _log_seterror(_LOG_E_NOERROR);
 
-  if (_sir_sanity() && _sir_validupdatedata(data) && _sir_validptr(update))
+  if (_log_sanity() && _log_validupdatedata(data) && _log_validptr(update))
     {
-      sirinit *si = _sir_locksection(_SIRM_INIT);
+      sirinit *si = _log_locksection(_LOGM_INIT);
       assert(si);
       if (si)
         {
           update(si, data);
-          return _sir_unlocksection(_SIRM_INIT);
+          return _log_unlocksection(_LOGM_INIT);
         }
     }
 
@@ -190,14 +190,14 @@ _sir_writeinit(sir_update_data *data, sirinit_update update)
 }
 
 void *
-_sir_locksection(sir_mutex_id mid)
+_log_locksection(log_mutex_id mid)
 {
   sirmutex_t *m = NULL;
   void *sec     = NULL;
 
-  if (_sir_mapmutexid(mid, &m, &sec))
+  if (_log_mapmutexid(mid, &m, &sec))
     {
-      bool enter = _sirmutex_lock(m);
+      bool enter = _logmutex_lock(m);
       assert(enter);
       return enter ? sec : NULL;
     }
@@ -206,14 +206,14 @@ _sir_locksection(sir_mutex_id mid)
 }
 
 bool
-_sir_unlocksection(sir_mutex_id mid)
+_log_unlocksection(log_mutex_id mid)
 {
   sirmutex_t *m = NULL;
   void *sec     = NULL;
 
-  if (_sir_mapmutexid(mid, &m, &sec))
+  if (_log_mapmutexid(mid, &m, &sec))
     {
-      bool leave = _sirmutex_unlock(m);
+      bool leave = _logmutex_unlock(m);
       assert(leave);
       return leave;
     }
@@ -222,9 +222,9 @@ _sir_unlocksection(sir_mutex_id mid)
 }
 
 bool
-_sir_mapmutexid(sir_mutex_id mid, sirmutex_t **m, void **section)
+_log_mapmutexid(log_mutex_id mid, sirmutex_t **m, void **section)
 {
-  if (!_sir_validptr(m))
+  if (!_log_validptr(m))
     {
       return false;
     }
@@ -234,22 +234,22 @@ _sir_mapmutexid(sir_mutex_id mid, sirmutex_t **m, void **section)
 
   switch (mid)
     {
-    case _SIRM_INIT:
-      _sir_once(&si_once, _sir_initmutex_si_once);
+    case _LOGM_INIT:
+      _log_once(&si_once, _log_initmutex_si_once);
       tmpm   = &si_mutex;
-      tmpsec = &_sir_si;
+      tmpsec = &_log_si;
       break;
 
-    case _SIRM_FILECACHE:
-      _sir_once(&fc_once, _sir_initmutex_fc_once);
+    case _LOGM_FILECACHE:
+      _log_once(&fc_once, _log_initmutex_fc_once);
       tmpm   = &fc_mutex;
-      tmpsec = &_sir_fc;
+      tmpsec = &_log_fc;
       break;
 
-    case _SIRM_TEXTSTYLE:
-      _sir_once(&ts_once, _sir_initmutex_ts_once);
+    case _LOGM_TEXTSTYLE:
+      _log_once(&ts_once, _log_initmutex_ts_once);
       tmpm   = &ts_mutex;
-      tmpsec = sir_override_styles;
+      tmpsec = log_override_styles;
       break;
 
     default:
@@ -267,93 +267,93 @@ _sir_mapmutexid(sir_mutex_id mid, sirmutex_t **m, void **section)
 }
 
 bool
-_sir_cleanup(void)
+_log_cleanup(void)
 {
-  if (!_sir_sanity())
+  if (!_log_sanity())
     {
       return false;
     }
 
   bool cleanup   = true;
-  sirfcache *sfc = _sir_locksection(_SIRM_FILECACHE);
+  sirfcache *sfc = _log_locksection(_LOGM_FILECACHE);
 
   assert(sfc);
 
   if (cleanup &= NULL != sfc)
     {
-      bool destroyfc = _sir_fcache_destroy(sfc);
+      bool destroyfc = _log_fcache_destroy(sfc);
       assert(destroyfc);
-      cleanup &= _sir_unlocksection(_SIRM_FILECACHE) && destroyfc;
+      cleanup &= _log_unlocksection(_LOGM_FILECACHE) && destroyfc;
     }
 
-  sirinit *si = _sir_locksection(_SIRM_INIT);
+  sirinit *si = _log_locksection(_LOGM_INIT);
 
   assert(si);
 
   if (cleanup &= NULL != si)
     {
       (void)memset(si, 0, sizeof ( sirinit ));
-      cleanup &= _sir_unlocksection(_SIRM_INIT);
+      cleanup &= _log_unlocksection(_LOGM_INIT);
     }
 
-  (void)_sir_resettextstyles();
-  _sir_magic = 0;
-  _sir_selflog("%s: libsir is cleaned up\n", __func__);
+  (void)_log_resettextstyles();
+  _log_magic = 0;
+  _log_selflog("%s: libsir is cleaned up\n", __func__);
   return cleanup;
 }
 
 #ifndef _WIN32
 void
-_sir_initmutex_si_once(void)
+_log_initmutex_si_once(void)
 {
-  _sir_initmutex(&si_mutex);
+  _log_initmutex(&si_mutex);
 }
 
 void
-_sir_initmutex_fc_once(void)
+_log_initmutex_fc_once(void)
 {
-  _sir_initmutex(&fc_mutex);
+  _log_initmutex(&fc_mutex);
 }
 
 void
-_sir_initmutex_ts_once(void)
+_log_initmutex_ts_once(void)
 {
-  _sir_initmutex(&ts_mutex);
+  _log_initmutex(&ts_mutex);
 }
 #else  /* ifndef _WIN32 */
 BOOL CALLBACK
-_sir_initmutex_si_once(PINIT_ONCE ponce, PVOID param, PVOID *ctx)
+_log_initmutex_si_once(PINIT_ONCE ponce, PVOID param, PVOID *ctx)
 {
-  _sir_initmutex(&si_mutex);
+  _log_initmutex(&si_mutex);
   return TRUE;
 }
 
 BOOL CALLBACK
-_sir_initmutex_fc_once(PINIT_ONCE ponce, PVOID param, PVOID *ctx)
+_log_initmutex_fc_once(PINIT_ONCE ponce, PVOID param, PVOID *ctx)
 {
-  _sir_initmutex(&fc_mutex);
+  _log_initmutex(&fc_mutex);
   return TRUE;
 }
 
 BOOL CALLBACK
-_sir_initmutex_ts_once(PINIT_ONCE ponce, PVOID param, PVOID *ctx)
+_log_initmutex_ts_once(PINIT_ONCE ponce, PVOID param, PVOID *ctx)
 {
-  _sir_initmutex(&ts_mutex);
+  _log_initmutex(&ts_mutex);
   return TRUE;
 }
 #endif /* ifndef _WIN32 */
 
 void
-_sir_initmutex(sirmutex_t *mutex)
+_log_initmutex(sirmutex_t *mutex)
 {
-  bool init = _sirmutex_create(mutex);
+  bool init = _logmutex_create(mutex);
 
   (void)init;
   assert(init);
 }
 
 void
-_sir_once(sironce_t *once, sir_once_fn func)
+_log_once(sironce_t *once, log_once_fn func)
 {
 #ifndef _WIN32
   (void)pthread_once(once, func);
@@ -364,16 +364,16 @@ _sir_once(sironce_t *once, sir_once_fn func)
 }
 
 bool
-_sir_logv(sir_level level, const sirchar_t *format, va_list args)
+_log_logv(log_level level, const sirchar_t *format, va_list args)
 {
-  _sir_seterror(_SIR_E_NOERROR);
+  _log_seterror(_LOG_E_NOERROR);
 
-  if (!_sir_sanity() || !_sir_validlevel(level) || !_sir_validstr(format))
+  if (!_log_sanity() || !_log_validlevel(level) || !_log_validstr(format))
     {
       return false;
     }
 
-  sirinit *si = _sir_locksection(_SIRM_INIT);
+  sirinit *si = _log_locksection(_LOGM_INIT);
 
   if (!si)
     {
@@ -385,162 +385,162 @@ _sir_logv(sir_level level, const sirchar_t *format, va_list args)
   };
 
   (void)memcpy(&tmpsi, si, sizeof ( sirinit ));
-  (void)_sir_unlocksection(_SIRM_INIT);
+  (void)_log_unlocksection(_LOGM_INIT);
 
   sirbuf buf;
   siroutput output = {
     0
   };
 
-  output.style = _sirbuf_get(&buf, _SIRBUF_STYLE);
+  output.style = _logbuf_get(&buf, _SIRBUF_STYLE);
   assert(output.style);
 
   bool appliedstyle = false;
-  sir_textstyle style = _sir_gettextstyle(level);
+  log_textstyle style = _log_gettextstyle(level);
 
   assert(SIRS_INVALID != style);
 
   if (SIRS_INVALID != style)
     {
-      bool fmtstyle = _sir_formatstyle(style, output.style, SIR_MAXSTYLE);
+      bool fmtstyle = _log_formatstyle(style, output.style, LOG_MAXSTYLE);
       assert(fmtstyle);
       appliedstyle = fmtstyle;
     }
 
   if (!appliedstyle)
     {
-      _sir_resetstr(output.style);
+      _log_resetstr(output.style);
     }
 
-  output.timestamp = _sirbuf_get(&buf, _SIRBUF_TIME);
+  output.timestamp = _logbuf_get(&buf, _SIRBUF_TIME);
   assert(output.timestamp);
 
   time_t now;
   long long nowmsec;
-  bool gettime = _sir_getlocaltime(&now, &nowmsec);
+  bool gettime = _log_getlocaltime(&now, &nowmsec);
 
   assert(gettime);
 
   if (gettime)
     {
-      bool fmttime = _sir_formattime(now, output.timestamp, SIR_TIMEFORMAT);
+      bool fmttime = _log_formattime(now, output.timestamp, LOG_TIMEFORMAT);
       assert(fmttime);
 
       if (!fmttime)
         {
-          _sir_resetstr(output.timestamp);
+          _log_resetstr(output.timestamp);
         }
 
-      output.msec = _sirbuf_get(&buf, _SIRBUF_MSEC);
+      output.msec = _logbuf_get(&buf, _SIRBUF_MSEC);
       assert(output.msec);
 
-      int fmtmsec = snprintf(output.msec, SIR_MAXMSEC, SIR_MSECFORMAT, nowmsec);
+      int fmtmsec = snprintf(output.msec, LOG_MAXMSEC, LOG_MSECFORMAT, nowmsec);
       assert(fmtmsec >= 0);
 
       if (fmtmsec < 0)
         {
-          _sir_resetstr(output.msec);
+          _log_resetstr(output.msec);
         }
     }
   else
     {
-      _sir_resetstr(output.msec);
+      _log_resetstr(output.msec);
     }
 
-  output.level = _sirbuf_get(&buf, _SIRBUF_LEVEL);
+  output.level = _logbuf_get(&buf, _SIRBUF_LEVEL);
   assert(output.level);
   (void)snprintf(
     output.level,
-    SIR_MAXLEVEL,
-    SIR_LEVELFORMAT,
-    _sir_levelstr(level));
+    LOG_MAXLEVEL,
+    LOG_LEVELFORMAT,
+    _log_levelstr(level));
 
-  output.name = _sirbuf_get(&buf, _SIRBUF_NAME);
+  output.name = _logbuf_get(&buf, _SIRBUF_NAME);
   assert(output.name);
 
-  if (_sir_validstrnofail(tmpsi.processName))
+  if (_log_validstrnofail(tmpsi.processName))
     {
-      (void)strncpy(output.name, tmpsi.processName, SIR_MAXNAME);
+      (void)strncpy(output.name, tmpsi.processName, LOG_MAXNAME);
     }
   else
     {
-      _sir_resetstr(output.name);
+      _log_resetstr(output.name);
     }
 
-  output.pid = _sirbuf_get(&buf, _SIRBUF_PID);
+  output.pid = _logbuf_get(&buf, _SIRBUF_PID);
   assert(output.pid);
 
-  pid_t pid  = _sir_getpid();
-  int pidfmt = snprintf(output.pid, SIR_MAXPID, SIR_PIDFORMAT, pid);
+  pid_t pid  = _log_getpid();
+  int pidfmt = snprintf(output.pid, LOG_MAXPID, LOG_PIDFORMAT, pid);
 
   assert(pidfmt >= 0);
 
   if (pidfmt < 0)
     {
-      _sir_resetstr(output.pid);
+      _log_resetstr(output.pid);
     }
 
-  pid_t tid = _sir_gettid();
+  pid_t tid = _log_gettid();
 
-  output.tid = _sirbuf_get(&buf, _SIRBUF_TID);
+  output.tid = _logbuf_get(&buf, _SIRBUF_TID);
   assert(output.tid);
 
   if (tid != pid)
     {
-      if (!_sir_getthreadname(output.tid))
+      if (!_log_getthreadname(output.tid))
         {
-          pidfmt = snprintf(output.tid, SIR_MAXPID, SIR_PIDFORMAT, tid);
+          pidfmt = snprintf(output.tid, LOG_MAXPID, LOG_PIDFORMAT, tid);
           assert(pidfmt >= 0);
 
           if (pidfmt < 0)
             {
-              _sir_resetstr(output.tid);
+              _log_resetstr(output.tid);
             }
         }
     }
   else
     {
-      _sir_resetstr(output.tid);
+      _log_resetstr(output.tid);
     }
 
   /* TODO: Add support for glibc's %m? */
-  output.message = _sirbuf_get(&buf, _SIRBUF_MSG);
+  output.message = _logbuf_get(&buf, _SIRBUF_MSG);
   assert(output.message);
-  int msgfmt = vsnprintf(output.message, SIR_MAXMESSAGE, format, args);
+  int msgfmt = vsnprintf(output.message, LOG_MAXMESSAGE, format, args);
 
   assert(msgfmt >= 0);
 
   if (msgfmt < 0)
     {
-      _sir_resetstr(output.message);
+      _log_resetstr(output.message);
     }
 
-  output.output = _sirbuf_get(&buf, _SIRBUF_OUTPUT);
+  output.output = _logbuf_get(&buf, _SIRBUF_OUTPUT);
   assert(output.output);
 
-  return _sir_dispatch(&tmpsi, level, &output);
+  return _log_dispatch(&tmpsi, level, &output);
 }
 
 bool
-_sir_dispatch(sirinit *si, sir_level level, siroutput *output)
+_log_dispatch(sirinit *si, log_level level, siroutput *output)
 {
-  if (_sir_validptr(output))
+  if (_log_validptr(output))
     {
       bool r            = true;
       size_t dispatched = 0;
       size_t wanted     = 0;
 
-      if (_sir_bittest(si->d_stdout.levels, level))
+      if (_log_bittest(si->d_stdout.levels, level))
         {
-          const sirchar_t *write /* = write */ = _sir_format(true, si->d_stdout.opts, output);
+          const sirchar_t *write /* = write */ = _log_format(true, si->d_stdout.opts, output);
           (void)write;
           assert(write);
 #ifndef _WIN32
-          bool wrote  = _sir_stdout_write(write);
+          bool wrote  = _log_stdout_write(write);
           r          &= NULL != write && wrote;
 #else  /* ifndef _WIN32 */
           uint16_t *style  = (uint16_t *)output->style;
-          bool wrote       = _sir_stdout_write(*style, write);
+          bool wrote       = _log_stdout_write(*style, write);
           r               &= NULL != write && NULL != style && wrote;
 #endif /* ifndef _WIN32 */
           if (wrote)
@@ -551,17 +551,17 @@ _sir_dispatch(sirinit *si, sir_level level, siroutput *output)
           wanted++;
         }
 
-      if (_sir_bittest(si->d_stderr.levels, level))
+      if (_log_bittest(si->d_stderr.levels, level))
         {
-          const sirchar_t *write /* = write */ = _sir_format(true, si->d_stderr.opts, output);
+          const sirchar_t *write /* = write */ = _log_format(true, si->d_stderr.opts, output);
           (void)write;
           assert(write);
 #ifndef _WIN32
-          bool wrote  = _sir_stderr_write(write);
+          bool wrote  = _log_stderr_write(write);
           r          &= NULL != write && wrote;
 #else  /* ifndef _WIN32 */
           uint16_t *style  = (uint16_t *)output->style;
-          bool wrote       = _sir_stderr_write(*style, write);
+          bool wrote       = _log_stderr_write(*style, write);
           r               &= NULL != write && NULL != style && wrote;
 #endif /* ifndef _WIN32 */
           if (wrote)
@@ -572,30 +572,30 @@ _sir_dispatch(sirinit *si, sir_level level, siroutput *output)
           wanted++;
         }
 
-#ifndef SIR_NO_SYSLOG
-      if (_sir_bittest(si->d_syslog.levels, level))
+#ifndef LOG_NO_SYSLOG
+      if (_log_bittest(si->d_syslog.levels, level))
         {
-          syslog(_sir_syslog_maplevel(level), "%s", output->message);
+          syslog(_log_syslog_maplevel(level), "%s", output->message);
           dispatched++;
           wanted++;
         }
 
-#endif /* ifndef SIR_NO_SYSLOG */
-      sirfcache *sfc = _sir_locksection(_SIRM_FILECACHE);
+#endif /* ifndef LOG_NO_SYSLOG */
+      sirfcache *sfc = _log_locksection(_LOGM_FILECACHE);
 
       if (sfc)
         {
           size_t fdispatched  = 0;
           size_t fwanted      = 0;
-          r                  &= _sir_fcache_dispatch(sfc, level, output, &fdispatched, &fwanted);
-          r                  &= _sir_unlocksection(_SIRM_FILECACHE);
+          r                  &= _log_fcache_dispatch(sfc, level, output, &fdispatched, &fwanted);
+          r                  &= _log_unlocksection(_LOGM_FILECACHE);
           dispatched         += fdispatched;
           wanted             += fwanted;
         }
 
       if (0 == wanted)
         {
-          _sir_seterror(_SIR_E_NODEST);
+          _log_seterror(_LOG_E_NODEST);
           return false;
         }
 
@@ -606,62 +606,62 @@ _sir_dispatch(sirinit *si, sir_level level, siroutput *output)
 }
 
 const sirchar_t *
-_sir_format(bool styling, sir_options opts, siroutput *output)
+_log_format(bool styling, log_options opts, siroutput *output)
 {
-  if (_sir_validopts(opts) && _sir_validptr(output)
-      && _sir_validptr(output->output))
+  if (_log_validopts(opts) && _log_validptr(output)
+      && _log_validptr(output->output))
     {
       bool first = true;
 
-      _sir_resetstr(output->output);
+      _log_resetstr(output->output);
 
 #ifndef _WIN32
       if (styling)
         {
-          (void)strncat(output->output, output->style, SIR_MAXSTYLE);
+          (void)strncat(output->output, output->style, LOG_MAXSTYLE);
         }
 #endif /* ifndef _WIN32 */
 
-      if (!_sir_bittest(opts, SIRO_NOTIME))
+      if (!_log_bittest(opts, SIRO_NOTIME))
         {
-          (void)strncat(output->output, output->timestamp, SIR_MAXTIME);
+          (void)strncat(output->output, output->timestamp, LOG_MAXTIME);
           first = false;
 
-#ifdef SIR_MSEC_TIMER
-          if (!_sir_bittest(opts, SIRO_NOMSEC))
+#ifdef LOG_MSEC_TIMER
+          if (!_log_bittest(opts, SIRO_NOMSEC))
             {
-              (void)strncat(output->output, output->msec, SIR_MAXMSEC);
+              (void)strncat(output->output, output->msec, LOG_MAXMSEC);
             }
-#endif /* ifdef SIR_MSEC_TIMER */
+#endif /* ifdef LOG_MSEC_TIMER */
         }
 
-      if (!_sir_bittest(opts, SIRO_NOLEVEL))
+      if (!_log_bittest(opts, SIRO_NOLEVEL))
         {
           if (!first)
             {
               (void)strcat(output->output, " ");
             }
 
-          (void)strncat(output->output, output->level, SIR_MAXLEVEL);
+          (void)strncat(output->output, output->level, LOG_MAXLEVEL);
           first = false;
         }
 
       bool name = false;
-      if (!_sir_bittest(opts, SIRO_NONAME)
-          && _sir_validstrnofail(output->name))
+      if (!_log_bittest(opts, SIRO_NONAME)
+          && _log_validstrnofail(output->name))
         {
           if (!first)
             {
               (void)strcat(output->output, " ");
             }
 
-          (void)strncat(output->output, output->name, SIR_MAXNAME);
+          (void)strncat(output->output, output->name, LOG_MAXNAME);
           first = false;
           name  = true;
         }
 
-      bool wantpid = !_sir_bittest(opts, SIRO_NOPID) && _sir_validstrnofail(output->pid);
-      bool wanttid = !_sir_bittest(opts, SIRO_NOTID) && _sir_validstrnofail(output->tid);
+      bool wantpid = !_log_bittest(opts, SIRO_NOPID) && _log_validstrnofail(output->pid);
+      bool wanttid = !_log_bittest(opts, SIRO_NOTID) && _log_validstrnofail(output->tid);
 
       if (wantpid || wanttid)
         {
@@ -676,17 +676,17 @@ _sir_format(bool styling, sir_options opts, siroutput *output)
 
           if (wantpid)
             {
-              (void)strncat(output->output, output->pid, SIR_MAXPID);
+              (void)strncat(output->output, output->pid, LOG_MAXPID);
             }
 
           if (wanttid)
             {
               if (wantpid)
                 {
-                  (void)strcat(output->output, SIR_PIDSEPARATOR);
+                  (void)strcat(output->output, LOG_PIDSEPARATOR);
                 }
 
-              (void)strncat(output->output, output->tid, SIR_MAXPID);
+              (void)strncat(output->output, output->tid, LOG_MAXPID);
             }
 
           if (name)
@@ -700,12 +700,12 @@ _sir_format(bool styling, sir_options opts, siroutput *output)
           (void)strcat(output->output, ": ");
         }
 
-      (void)strncat(output->output, output->message, SIR_MAXMESSAGE);
+      (void)strncat(output->output, output->message, LOG_MAXMESSAGE);
 
 #ifndef _WIN32
       if (styling)
         {
-          (void)strncat(output->output, SIR_ENDSTYLE, SIR_MAXSTYLE);
+          (void)strncat(output->output, LOG_ENDSTYLE, LOG_MAXSTYLE);
         }
 #endif /* ifndef _WIN32 */
 
@@ -716,11 +716,11 @@ _sir_format(bool styling, sir_options opts, siroutput *output)
   return NULL;
 }
 
-#ifndef SIR_NO_SYSLOG
+#ifndef LOG_NO_SYSLOG
 int
-_sir_syslog_maplevel(sir_level level)
+_log_syslog_maplevel(log_level level)
 {
-  assert(_sir_validlevel(level));
+  assert(_log_validlevel(level));
 
   switch (level)
     {
@@ -753,11 +753,11 @@ _sir_syslog_maplevel(sir_level level)
       return LOG_INFO;
     }
 }
-#endif /* ifndef SIR_NO_SYSLOG */
+#endif /* ifndef LOG_NO_SYSLOG */
 
 /* In case there's a better way to implement this, abstract it away. */
 sirchar_t *
-_sirbuf_get(sirbuf *buf, size_t idx)
+_logbuf_get(sirbuf *buf, size_t idx)
 {
   assert(idx <= _SIRBUF_MAX);
 
@@ -799,9 +799,9 @@ _sirbuf_get(sirbuf *buf, size_t idx)
 }
 
 const sirchar_t *
-_sir_levelstr(sir_level level)
+_log_levelstr(log_level level)
 {
-  assert(_sir_validlevel(level));
+  assert(_log_validlevel(level));
 
   switch (level)
     {
@@ -833,16 +833,16 @@ _sir_levelstr(sir_level level)
 }
 
 bool
-_sir_formattime(time_t now, sirchar_t *buffer, const sirchar_t *format)
+_log_formattime(time_t now, sirchar_t *buffer, const sirchar_t *format)
 {
-  if (0 != now && _sir_validptr(buffer) && _sir_validstr(format))
+  if (0 != now && _log_validptr(buffer) && _log_validstr(format))
     {
-      size_t fmttime = strftime(buffer, SIR_MAXTIME, format, localtime(&now));
+      size_t fmttime = strftime(buffer, LOG_MAXTIME, format, localtime(&now));
       assert(0 != fmttime);
 
       if (0 == fmttime)
         {
-          _sir_selflog(
+          _log_selflog(
             "%s: strftime returned 0; format string: '%s'",
             __func__,
             format);
@@ -855,16 +855,16 @@ _sir_formattime(time_t now, sirchar_t *buffer, const sirchar_t *format)
 }
 
 bool
-_sir_getlocaltime(time_t *tbuf, long long *nsecbuf)
+_log_getlocaltime(time_t *tbuf, long long *nsecbuf)
 {
   if (tbuf)
     {
       (void)time(tbuf);
-#ifdef SIR_MSEC_POSIX
+#ifdef LOG_MSEC_POSIX
       struct timespec ts = {
         0
       };
-      int clock = clock_gettime(SIR_MSECCLOCK, &ts);
+      int clock = clock_gettime(LOG_MSECCLOCK, &ts);
       assert(0 == clock);
 
       if (0 == clock)
@@ -878,10 +878,10 @@ _sir_getlocaltime(time_t *tbuf, long long *nsecbuf)
       else
         {
           *nsecbuf = 0;
-          _sir_selflog("%s: clock_gettime failed; errno: %d\n", __func__, errno);
+          _log_selflog("%s: clock_gettime failed; errno: %d\n", __func__, errno);
         }
 
-#elif defined( SIR_MSEC_WIN32 )
+#elif defined( LOG_MSEC_WIN32 )
       static const ULONGLONG uepoch = 116444736e9;
 
       FILETIME ftutc = {
@@ -905,14 +905,14 @@ _sir_getlocaltime(time_t *tbuf, long long *nsecbuf)
           *nsecbuf = st.wMilliseconds;
         }
 
-#else /* ifdef SIR_MSEC_POSIX */
+#else /* ifdef LOG_MSEC_POSIX */
       (void)time(tbuf);
       if (nsecbuf)
         {
           *nsecbuf = 0;
         }
 
-#endif /* ifdef SIR_MSEC_POSIX */
+#endif /* ifdef LOG_MSEC_POSIX */
       return true;
     }
 
@@ -920,7 +920,7 @@ _sir_getlocaltime(time_t *tbuf, long long *nsecbuf)
 }
 
 pid_t
-_sir_getpid(void)
+_log_getpid(void)
 {
 #ifndef _WIN32
   return getpid();
@@ -930,7 +930,7 @@ _sir_getpid(void)
 }
 
 pid_t
-_sir_gettid(void)
+_log_gettid(void)
 {
   pid_t tid = 0;
 
@@ -939,7 +939,7 @@ _sir_gettid(void)
   int gettid     = pthread_threadid_np(NULL, &tid64);
   if (0 != gettid)
     {
-      _sir_handleerr(gettid);
+      _log_handleerr(gettid);
     }
 
   tid = (pid_t)tid64;
@@ -954,11 +954,11 @@ _sir_gettid(void)
 }
 
 bool
-_sir_getthreadname(char name[SIR_MAXPID])
+_log_getthreadname(char name[LOG_MAXPID])
 {
   (void)name;
 #if defined(_GNU_SOURCE) && !defined(_AIX)
-  return 0 == pthread_getname_np(pthread_self(), name, SIR_MAXPID);
+  return 0 == pthread_getname_np(pthread_self(), name, LOG_MAXPID);
 #else /* if defined(_GNU_SOURCE) && !defined(_AIX) */
   return false;
 #endif /* if defined(_GNU_SOURCE) && !defined(_AIX) */

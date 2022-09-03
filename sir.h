@@ -23,8 +23,8 @@
  * IN THE SOFTWARE.
  */
 
-#ifndef _SIR_H_INCLUDED
-# define _SIR_H_INCLUDED
+#ifndef _LOG_H_INCLUDED
+# define _LOG_H_INCLUDED
 
 # include "sirplatform.h"
 # include "sirtypes.h"
@@ -38,7 +38,7 @@
  *
  * Any thread may initialize SIR, but any calls to other
  * libsir functions will fail until this call has completed.
- * Call sir_cleanup when you're through.
+ * Call log_cleanup when you're through.
  *
  * si  = Initialization options.
  *
@@ -46,12 +46,12 @@
  * retval false = Initialization failed.
  */
 
-bool sir_init(sirinit *si);
+bool log_init(sirinit *si);
 
 /*
  * Sets levels sent to stdout.
  *
- * Sets the sir_level registration mask for this destination.
+ * Sets the log_level registration mask for this destination.
  *
  * Value          | Behavior
  * -----          | --------
@@ -64,12 +64,12 @@ bool sir_init(sirinit *si);
  * retval false = An error occurred while trying to update levels.
  */
 
-bool sir_stdoutlevels(sir_levels levels);
+bool log_stdoutlevels(log_levels levels);
 
 /*
  * Sets formatting options for stdout.
  *
- * Sets the sir_option mask that controls the content of messages
+ * Sets the log_option mask that controls the content of messages
  * sent to this destination.
  *
  * Value          | Behavior
@@ -82,12 +82,12 @@ bool sir_stdoutlevels(sir_levels levels);
  * retval false = An error occurred while trying to update options.
  */
 
-bool sir_stdoutopts(sir_options opts);
+bool log_stdoutopts(log_options opts);
 
 /*
  * Sets levels sent to stderr.
  *
- * Sets the sir_level registration mask for this destination.
+ * Sets the log_level registration mask for this destination.
  *
  * Value          | Behavior
  * -----          | --------
@@ -100,12 +100,12 @@ bool sir_stdoutopts(sir_options opts);
  * retval false = An error occurred while trying to update levels.
  */
 
-bool sir_stderrlevels(sir_levels levels);
+bool log_stderrlevels(log_levels levels);
 
 /*
  * Sets formatting options for stderr.
  *
- * Sets the sir_option mask that controls the content of messages
+ * Sets the log_option mask that controls the content of messages
  * sent to this destination.
  *
  * Value          | Behavior
@@ -118,14 +118,14 @@ bool sir_stderrlevels(sir_levels levels);
  * retval false = An error occurred while trying to update options.
  */
 
-bool sir_stderropts(sir_options opts);
+bool log_stderropts(log_options opts);
 
 /*
  * Sets levels sent to syslog (if available).
  *
- * Sets the sir_level registration mask for this destination.
+ * Sets the log_level registration mask for this destination.
  *
- * If `SIR_NOSYSLOG` is defined upon compilation, returns
+ * If `LOG_NOSYSLOG` is defined upon compilation, returns
  * `false` and has no effect.
  *
  * Value          | Behavior
@@ -139,12 +139,12 @@ bool sir_stderropts(sir_options opts);
  * retval false = An error occurred while trying to update levels.
  */
 
-bool sir_sysloglevels(sir_levels levels);
+bool log_sysloglevels(log_levels levels);
 
 /*
  * Sets levels sent to a log file.
  *
- * Sets the sir_level registration mask for this destination.
+ * Sets the log_level registration mask for this destination.
  *
  * Value          | Behavior
  * -----          | --------
@@ -157,12 +157,12 @@ bool sir_sysloglevels(sir_levels levels);
  * retval false An error occurred while trying to update levels.
  */
 
-bool sir_filelevels(sirfileid_t id, sir_levels levels);
+bool log_filelevels(sirfileid_t id, log_levels levels);
 
 /*
  * Sets formatting options for a log file.
  *
- * Sets the sir_option mask that controls the content of messages
+ * Sets the log_option mask that controls the content of messages
  * sent to this destination.
  *
  * Value          | Behavior
@@ -175,22 +175,22 @@ bool sir_filelevels(sirfileid_t id, sir_levels levels);
  * retval false = An error occurred while trying to update options.
  */
 
-bool sir_fileopts(sirfileid_t id, sir_options opts);
+bool log_fileopts(sirfileid_t id, log_options opts);
 
 /*
  * Frees allocated resources and resets internal state.
  *
- * Call sir_init to initialize libsir.
+ * Call log_init to initialize libsir.
  *
  * It is not necessary to call this function from the same thread that
- * called sir_init. Any calls made after this to functions other than
- * to sir_init (in order to re-initialize) will fail.
+ * called log_init. Any calls made after this to functions other than
+ * to log_init (in order to re-initialize) will fail.
  *
  * retval true  = libsir is cleaned up.
  * retval false = An error occurred.
  */
 
-bool sir_cleanup(void);
+bool log_cleanup(void);
 
 /*
  * Retrieves information about the last error that occurred within
@@ -198,97 +198,97 @@ bool sir_cleanup(void);
  *
  * Most C library and OS calls made by libsir are evaluated for failure.
  * If a failure of this type is encountered, this function returns
- * SIR_E_PLATFORM, and message will contain a string identifying the
+ * LOG_E_PLATFORM, and message will contain a string identifying the
  * underlying error code and the message as reported by the platform.
  *
- * retval SIR_E_NOERROR   = The operation completed successfully
- * retval SIR_E_NOTREADY  = libsir has not been initialized
- * retval SIR_E_ALREADY   = libsir is already initialized
- * retval SIR_E_DUPFILE   = File already managed by SIR
- * retval SIR_E_NOFILE    = File not managed by SIR
- * retval SIR_E_FCFULL    = Maximum number of files already managed
- * retval SIR_E_OPTIONS   = Option flags are invalid
- * retval SIR_E_LEVELS    = Level flags are invalid
- * retval SIR_E_TEXTSTYLE = Text style is invalid
- * retval SIR_E_STRING    = Invalid string argument
- * retval SIR_E_NODEST    = No destinations registered for level
- * retval SIR_E_PLATFORM  = Platform error code %d: %s%
- * retval SIR_E_UNKNOWN   = Error is not known
+ * retval LOG_E_NOERROR   = The operation completed successfully
+ * retval LOG_E_NOTREADY  = libsir has not been initialized
+ * retval LOG_E_ALREADY   = libsir is already initialized
+ * retval LOG_E_DUPFILE   = File already managed by SIR
+ * retval LOG_E_NOFILE    = File not managed by SIR
+ * retval LOG_E_FCFULL    = Maximum number of files already managed
+ * retval LOG_E_OPTIONS   = Option flags are invalid
+ * retval LOG_E_LEVELS    = Level flags are invalid
+ * retval LOG_E_TEXTSTYLE = Text style is invalid
+ * retval LOG_E_STRING    = Invalid string argument
+ * retval LOG_E_NODEST    = No destinations registered for level
+ * retval LOG_E_PLATFORM  = Platform error code %d: %s%
+ * retval LOG_E_UNKNOWN   = Error is not known
  */
 
-uint16_t sir_geterror(sirchar_t message[SIR_MAXERROR - 1]);
+uint16_t log_geterror(sirchar_t message[LOG_MAXERROR - 1]);
 
 /*
  * Log a formatted debug-level message.
  */
 
-bool sir_debug(const sirchar_t *format, ...);
+bool log_debug(const sirchar_t *format, ...);
 
 /*
  * Log a formatted informational message.
  */
 
-bool sir_info(const sirchar_t *format, ...);
+bool log_info(const sirchar_t *format, ...);
 
 /*
  * Log a formatted notice message.
  */
 
-bool sir_notice(const sirchar_t *format, ...);
+bool log_notice(const sirchar_t *format, ...);
 
 /*
  * Log a formatted warning message.
  */
 
-bool sir_warn(const sirchar_t *format, ...);
+bool log_warn(const sirchar_t *format, ...);
 
 /*
  * Log a formatted error message.
  */
 
-bool sir_error(const sirchar_t *format, ...);
+bool log_error(const sirchar_t *format, ...);
 
 /*
  * Log a formatted critical error message.
  */
 
-bool sir_crit(const sirchar_t *format, ...);
+bool log_crit(const sirchar_t *format, ...);
 
 /*
  * Log a formatted alert message.
  */
 
-bool sir_alert(const sirchar_t *format, ...);
+bool log_alert(const sirchar_t *format, ...);
 
 /*
  * Log a formatted emergency message.
  */
 
-bool sir_emerg(const sirchar_t *format, ...);
+bool log_emerg(const sirchar_t *format, ...);
 
 /*
- * Add a log file to receive formatted output for one or more sir_level.
+ * Add a log file to receive formatted output for one or more log_level.
  */
 
-sirfileid_t sir_addfile(const sirchar_t *path, sir_levels levels,
-                        sir_options opts);
+sirfileid_t log_addfile(const sirchar_t *path, log_levels levels,
+                        log_options opts);
 
 /*
  * Remove a previously added log file.
  */
 
-bool sir_remfile(sirfileid_t id);
+bool log_remfile(sirfileid_t id);
 
 /*
- * Sets the text style in stdio output for a sir_level of output.
+ * Sets the text style in stdio output for a log_level of output.
  */
 
-bool sir_settextstyle(sir_level level, sir_textstyle style);
+bool log_settextstyle(log_level level, log_textstyle style);
 
 /*
- * Resets all stdio text styles to their default values (sir_default_styles).
+ * Resets all stdio text styles to their default values (log_default_styles).
  */
 
-bool sir_resettextstyles(void);
+bool log_resettextstyles(void);
 
-#endif /* !_SIR_H_INCLUDED */
+#endif /* !_LOG_H_INCLUDED */

@@ -30,196 +30,196 @@
 #include "sirtextstyle.h"
 
 bool
-sir_init(sirinit *si)
+log_init(sirinit *si)
 {
-  return _sir_init(si);
+  return _log_init(si);
 }
 
 bool
-sir_stdoutlevels(sir_levels levels)
+log_stdoutlevels(log_levels levels)
 {
-  _sir_defaultlevels(&levels, sir_stdout_def_lvls);
-  sir_update_data data = {
+  _log_defaultlevels(&levels, log_stdout_def_lvls);
+  log_update_data data = {
     &levels, NULL
   };
 
-  return _sir_writeinit(&data, _sir_stdoutlevels);
+  return _log_writeinit(&data, _log_stdoutlevels);
 }
 
 bool
-sir_stdoutopts(sir_options opts)
+log_stdoutopts(log_options opts)
 {
-  _sir_defaultopts(&opts, sir_stdout_def_opts);
-  sir_update_data data = {
+  _log_defaultopts(&opts, log_stdout_def_opts);
+  log_update_data data = {
     NULL, &opts
   };
 
-  return _sir_writeinit(&data, _sir_stdoutopts);
+  return _log_writeinit(&data, _log_stdoutopts);
 }
 
 bool
-sir_stderrlevels(sir_levels levels)
+log_stderrlevels(log_levels levels)
 {
-  _sir_defaultlevels(&levels, sir_stderr_def_lvls);
-  sir_update_data data = {
+  _log_defaultlevels(&levels, log_stderr_def_lvls);
+  log_update_data data = {
     &levels, NULL
   };
 
-  return _sir_writeinit(&data, _sir_stderrlevels);
+  return _log_writeinit(&data, _log_stderrlevels);
 }
 
 bool
-sir_stderropts(sir_options opts)
+log_stderropts(log_options opts)
 {
-  _sir_defaultopts(&opts, sir_stderr_def_opts);
-  sir_update_data data = {
+  _log_defaultopts(&opts, log_stderr_def_opts);
+  log_update_data data = {
     NULL, &opts
   };
 
-  return _sir_writeinit(&data, _sir_stderropts);
+  return _log_writeinit(&data, _log_stderropts);
 }
 
 bool
-sir_sysloglevels(sir_levels levels)
+log_sysloglevels(log_levels levels)
 {
-#ifndef SIR_NO_SYSLOG
-  _sir_defaultlevels(&levels, sir_syslog_def_lvls);
-  sir_update_data data = {
+#ifndef LOG_NO_SYSLOG
+  _log_defaultlevels(&levels, log_syslog_def_lvls);
+  log_update_data data = {
     &levels, NULL
   };
-  return _sir_writeinit(&data, _sir_sysloglevels);
-#else /* ifndef SIR_NO_SYSLOG */
+  return _log_writeinit(&data, _log_sysloglevels);
+#else /* ifndef LOG_NO_SYSLOG */
   return false;
-#endif /* ifndef SIR_NO_SYSLOG */
+#endif /* ifndef LOG_NO_SYSLOG */
 }
 
 bool
-sir_filelevels(sirfileid_t id, sir_levels levels)
+log_filelevels(sirfileid_t id, log_levels levels)
 {
-  _sir_defaultlevels(&levels, sir_file_def_lvls);
-  sir_update_data data = {
+  _log_defaultlevels(&levels, log_file_def_lvls);
+  log_update_data data = {
     &levels, NULL
   };
 
-  return _sir_updatefile(id, &data);
+  return _log_updatefile(id, &data);
 }
 
 bool
-sir_fileopts(sirfileid_t id, sir_options opts)
+log_fileopts(sirfileid_t id, log_options opts)
 {
-  _sir_defaultopts(&opts, sir_file_def_opts);
-  sir_update_data data = {
+  _log_defaultopts(&opts, log_file_def_opts);
+  log_update_data data = {
     NULL, &opts
   };
 
-  return _sir_updatefile(id, &data);
+  return _log_updatefile(id, &data);
 }
 
 bool
-sir_cleanup(void)
+log_cleanup(void)
 {
-  return _sir_cleanup();
+  return _log_cleanup();
 }
 
 uint16_t
-sir_geterror(sirchar_t message[SIR_MAXERROR - 1])
+log_geterror(sirchar_t message[LOG_MAXERROR - 1])
 {
-  return _sir_geterrcode(_sir_geterror(message));
+  return _log_geterrcode(_log_geterror(message));
 }
 
 bool
-sir_debug(const sirchar_t *format, ...)
+log_debug(const sirchar_t *format, ...)
 {
-  _SIR_L_START(format);
-  r = _sir_logv(SIRL_DEBUG, format, args);
-  _SIR_L_END(args);
+  _LOG_L_START(format);
+  r = _log_logv(SIRL_DEBUG, format, args);
+  _LOG_L_END(args);
   return r;
 }
 
 bool
-sir_info(const sirchar_t *format, ...)
+log_info(const sirchar_t *format, ...)
 {
-  _SIR_L_START(format);
-  r = _sir_logv(SIRL_INFO, format, args);
-  _SIR_L_END(args);
+  _LOG_L_START(format);
+  r = _log_logv(SIRL_INFO, format, args);
+  _LOG_L_END(args);
   return r;
 }
 
 bool
-sir_notice(const sirchar_t *format, ...)
+log_notice(const sirchar_t *format, ...)
 {
-  _SIR_L_START(format);
-  r = _sir_logv(SIRL_NOTICE, format, args);
-  _SIR_L_END(args);
+  _LOG_L_START(format);
+  r = _log_logv(SIRL_NOTICE, format, args);
+  _LOG_L_END(args);
   return r;
 }
 
 bool
-sir_warn(const sirchar_t *format, ...)
+log_warn(const sirchar_t *format, ...)
 {
-  _SIR_L_START(format);
-  r = _sir_logv(SIRL_WARN, format, args);
-  _SIR_L_END(args);
+  _LOG_L_START(format);
+  r = _log_logv(SIRL_WARN, format, args);
+  _LOG_L_END(args);
   return r;
 }
 
 bool
-sir_error(const sirchar_t *format, ...)
+log_error(const sirchar_t *format, ...)
 {
-  _SIR_L_START(format);
-  r = _sir_logv(SIRL_ERROR, format, args);
-  _SIR_L_END(args);
+  _LOG_L_START(format);
+  r = _log_logv(SIRL_ERROR, format, args);
+  _LOG_L_END(args);
   return r;
 }
 
 bool
-sir_crit(const sirchar_t *format, ...)
+log_crit(const sirchar_t *format, ...)
 {
-  _SIR_L_START(format);
-  r = _sir_logv(SIRL_CRIT, format, args);
-  _SIR_L_END(args);
+  _LOG_L_START(format);
+  r = _log_logv(SIRL_CRIT, format, args);
+  _LOG_L_END(args);
   return r;
 }
 
 bool
-sir_alert(const sirchar_t *format, ...)
+log_alert(const sirchar_t *format, ...)
 {
-  _SIR_L_START(format);
-  r = _sir_logv(SIRL_ALERT, format, args);
-  _SIR_L_END(args);
+  _LOG_L_START(format);
+  r = _log_logv(SIRL_ALERT, format, args);
+  _LOG_L_END(args);
   return r;
 }
 
 bool
-sir_emerg(const sirchar_t *format, ...)
+log_emerg(const sirchar_t *format, ...)
 {
-  _SIR_L_START(format);
-  r = _sir_logv(SIRL_EMERG, format, args);
-  _SIR_L_END(args);
+  _LOG_L_START(format);
+  r = _log_logv(SIRL_EMERG, format, args);
+  _LOG_L_END(args);
   return r;
 }
 
 sirfileid_t
-sir_addfile(const sirchar_t *path, sir_levels levels, sir_options opts)
+log_addfile(const sirchar_t *path, log_levels levels, log_options opts)
 {
-  return _sir_addfile(path, levels, opts);
+  return _log_addfile(path, levels, opts);
 }
 
 bool
-sir_remfile(sirfileid_t id)
+log_remfile(sirfileid_t id)
 {
-  return _sir_remfile(id);
+  return _log_remfile(id);
 }
 
 bool
-sir_settextstyle(sir_level level, sir_textstyle style)
+log_settextstyle(log_level level, log_textstyle style)
 {
-  (void)sir_override_styles;
-  return _sir_settextstyle(level, style);
+  (void)log_override_styles;
+  return _log_settextstyle(level, style);
 }
 
 bool
-sir_resettextstyles(void)
+log_resettextstyles(void)
 {
-  return _sir_resettextstyles();
+  return _log_resettextstyles();
 }

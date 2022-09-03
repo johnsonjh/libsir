@@ -23,8 +23,8 @@
  * IN THE SOFTWARE.
  */
 
-#ifndef _SIR_PLATFORM_H_INCLUDED
-# define _SIR_PLATFORM_H_INCLUDED
+#ifndef _LOG_PLATFORM_H_INCLUDED
+# define _LOG_PLATFORM_H_INCLUDED
 
 # if defined( __APPLE__ ) && defined( __MACH__ )
 #  define __MACOS__
@@ -72,14 +72,14 @@
 #  endif /* ifdef __linux__ */
 
 #  ifdef PATH_MAX
-#   define SIR_MAXPATH PATH_MAX
+#   define LOG_MAXPATH PATH_MAX
 #  endif /* ifdef PATH_MAX */
 
 #  if _POSIX_TIMERS > 0
-#   define SIR_MSEC_TIMER
-#   define SIR_MSEC_POSIX
+#   define LOG_MSEC_TIMER
+#   define LOG_MSEC_POSIX
 #  else /* if _POSIX_TIMERS > 0 */
-#   undef SIR_MSEC_TIMER
+#   undef LOG_MSEC_TIMER
 #  endif /* if _POSIX_TIMERS > 0 */
 
 /* The mutex type. */
@@ -92,11 +92,11 @@ typedef pthread_once_t sironce_t;
 
 /* The one-time execution function type. */
 
-typedef void (*sir_once_fn) (void);
+typedef void (*log_once_fn) (void);
 
 /* The one-time initializer. */
 
-#  define SIR_ONCE_INIT PTHREAD_ONCE_INIT
+#  define LOG_ONCE_INIT PTHREAD_ONCE_INIT
 # else /* ifndef _WIN32 */
 #  define WIN32_LEAN_AND_MEAN
 
@@ -104,10 +104,10 @@ typedef void (*sir_once_fn) (void);
 #  include <synchapi.h>
 #  include <windows.h>
 
-#  define SIR_MAXPATH MAX_PATH
-#  define SIR_NO_SYSLOG
-#  define SIR_MSEC_TIMER
-#  define SIR_MSEC_WIN32
+#  define LOG_MAXPATH MAX_PATH
+#  define LOG_NO_SYSLOG
+#  define LOG_MSEC_TIMER
+#  define LOG_MSEC_WIN32
 
 /* The mutex type. */
 
@@ -123,11 +123,11 @@ typedef int pid_t;
 
 /* The one-time execution function type. */
 
-typedef BOOL ( CALLBACK *sir_once_fn ) (PINIT_ONCE, PVOID, PVOID *);
+typedef BOOL ( CALLBACK *log_once_fn ) (PINIT_ONCE, PVOID, PVOID *);
 
 /* The one-time initializer. */
 
-#  define SIR_ONCE_INIT INIT_ONCE_STATIC_INIT
+#  define LOG_ONCE_INIT INIT_ONCE_STATIC_INIT
 # endif /* ifndef _WIN32 */
 
 # ifndef thread_local
@@ -148,8 +148,8 @@ typedef BOOL ( CALLBACK *sir_once_fn ) (PINIT_ONCE, PVOID, PVOID *);
  * value is only used in the absence of PATH_MAX (or MAX_PATH on windows).
  */
 
-# ifndef SIR_MAXPATH
-#  define SIR_MAXPATH 65535
-# endif /* ifndef SIR_MAXPATH */
+# ifndef LOG_MAXPATH
+#  define LOG_MAXPATH 65535
+# endif /* ifndef LOG_MAXPATH */
 
-#endif /* !_SIR_PLATFORM_H_INCLUDED */
+#endif /* !_LOG_PLATFORM_H_INCLUDED */

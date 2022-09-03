@@ -28,7 +28,7 @@
 #include "sirinternal.h"
 
 bool
-_sir_validstyle(sir_textstyle style, uint32_t *pattr, uint32_t *pfg,
+_log_validstyle(log_textstyle style, uint32_t *pattr, uint32_t *pfg,
                 uint32_t *pbg)
 {
   uint32_t attr = ( style & _SIRS_ATTR_MASK );
@@ -39,7 +39,7 @@ _sir_validstyle(sir_textstyle style, uint32_t *pattr, uint32_t *pfg,
   bool fgvalid   = fg   <= SIRS_FG_DEFAULT;
   bool bgvalid   = bg   <= SIRS_BG_DEFAULT;
 
-  (void)sir_override_styles;
+  (void)log_override_styles;
 
   if (pattr && pfg && pbg)
     {
@@ -50,7 +50,7 @@ _sir_validstyle(sir_textstyle style, uint32_t *pattr, uint32_t *pfg,
 
   if (!attrvalid || !fgvalid || !bgvalid)
     {
-      _sir_seterror(_SIR_E_TEXTSTYLE);
+      _log_seterror(_LOG_E_TEXTSTYLE);
 
       assert(attrvalid);
       assert(fgvalid);
@@ -61,20 +61,20 @@ _sir_validstyle(sir_textstyle style, uint32_t *pattr, uint32_t *pfg,
   return true;
 }
 
-sir_textstyle
-_sir_gettextstyle(sir_level level)
+log_textstyle
+_log_gettextstyle(log_level level)
 {
-  if (_sir_validlevel(level))
+  if (_log_validlevel(level))
     {
-      sir_style_map *map = _sir_locksection(_SIRM_TEXTSTYLE);
+      log_style_map *map = _log_locksection(_LOGM_TEXTSTYLE);
       assert(map);
 
       if (map)
         {
-          sir_textstyle found = SIRS_INVALID;
+          log_textstyle found = SIRS_INVALID;
           bool override = false;
 
-          for (size_t n = 0; n < SIR_NUMLEVELS; n++)
+          for (size_t n = 0; n < LOG_NUMLEVELS; n++)
             {
               if (map[n].level == level && map[n].style != SIRS_INVALID)
                 {
@@ -86,10 +86,10 @@ _sir_gettextstyle(sir_level level)
 
           if (!override)
             {
-              found = _sir_getdefstyle(sir_default_styles, level);
+              found = _log_getdefstyle(log_default_styles, level);
             }
 
-          (void)_sir_unlocksection(_SIRM_TEXTSTYLE);
+          (void)_log_unlocksection(_LOGM_TEXTSTYLE);
           return found;
         }
     }
@@ -97,15 +97,15 @@ _sir_gettextstyle(sir_level level)
   return SIRS_INVALID;
 }
 
-sir_textstyle
-_sir_getdefstyle(const sir_style_map *map, sir_level level)
+log_textstyle
+_log_getdefstyle(const log_style_map *map, log_level level)
 {
-  if (_sir_validlevel(level))
+  if (_log_validlevel(level))
     {
       if (map)
         {
-          sir_textstyle found = SIRS_INVALID;
-          for (size_t n = 0; n < SIR_NUMLEVELS; n++)
+          log_textstyle found = SIRS_INVALID;
+          for (size_t n = 0; n < LOG_NUMLEVELS; n++)
             {
               if (map[n].level == level)
                 {
@@ -122,20 +122,20 @@ _sir_getdefstyle(const sir_style_map *map, sir_level level)
 }
 
 bool
-_sir_settextstyle(sir_level level, sir_textstyle style)
+_log_settextstyle(log_level level, log_textstyle style)
 {
-  _sir_seterror(_SIR_E_NOERROR);
+  _log_seterror(_LOG_E_NOERROR);
 
-  if (_sir_sanity() && _sir_validlevel(level)
-      && _sir_validstyle(style, NULL, NULL, NULL))
+  if (_log_sanity() && _log_validlevel(level)
+      && _log_validstyle(style, NULL, NULL, NULL))
     {
-      sir_style_map *map = _sir_locksection(_SIRM_TEXTSTYLE);
+      log_style_map *map = _log_locksection(_LOGM_TEXTSTYLE);
       assert(map);
 
       if (map)
         {
           bool updated = false;
-          for (size_t n = 0; n < SIR_NUMLEVELS; n++)
+          for (size_t n = 0; n < LOG_NUMLEVELS; n++)
             {
               if (map[n].level == level)
                 {
@@ -145,7 +145,7 @@ _sir_settextstyle(sir_level level, sir_textstyle style)
                 }
             }
 
-          return _sir_unlocksection(_SIRM_TEXTSTYLE) && updated;
+          return _log_unlocksection(_LOGM_TEXTSTYLE) && updated;
         }
     }
 
@@ -153,20 +153,20 @@ _sir_settextstyle(sir_level level, sir_textstyle style)
 }
 
 bool
-_sir_resettextstyles(void)
+_log_resettextstyles(void)
 {
-  sir_style_map *map = _sir_locksection(_SIRM_TEXTSTYLE);
+  log_style_map *map = _log_locksection(_LOGM_TEXTSTYLE);
 
   assert(map);
 
   if (map)
     {
-      for (size_t n = 0; n < SIR_NUMLEVELS; n++)
+      for (size_t n = 0; n < LOG_NUMLEVELS; n++)
         {
           map[n].style = SIRS_INVALID;
         }
 
-      (void)_sir_unlocksection(_SIRM_TEXTSTYLE);
+      (void)_log_unlocksection(_LOGM_TEXTSTYLE);
       return true;
     }
 
@@ -174,33 +174,33 @@ _sir_resettextstyles(void)
 }
 
 uint16_t
-_sir_getprivstyle(uint32_t cat)
+_log_getprivstyle(uint32_t cat)
 {
-  for (size_t n = 0; n < _sir_countof(sir_priv_map); n++)
+  for (size_t n = 0; n < _log_countof(log_priv_map); n++)
     {
-      if (sir_priv_map[n].from == cat)
+      if (log_priv_map[n].from == cat)
         {
-          return sir_priv_map[n].to;
+          return log_priv_map[n].to;
         }
     }
 
-  return _sir_getprivstyle(SIRS_NONE);
+  return _log_getprivstyle(SIRS_NONE);
 }
 
 bool
-_sir_formatstyle(sir_textstyle style, sirchar_t *buf, size_t size)
+_log_formatstyle(log_textstyle style, sirchar_t *buf, size_t size)
 {
-  if (_sir_validptr(buf))
+  if (_log_validptr(buf))
     {
       uint32_t attr;
       uint32_t fg;
       uint32_t bg;
 
-      if (_sir_validstyle(style, &attr, &fg, &bg))
+      if (_log_validstyle(style, &attr, &fg, &bg))
         {
-          uint16_t privattr = _sir_getprivstyle(attr);
-          uint16_t privfg   = _sir_getprivstyle(fg);
-          uint16_t privbg   = _sir_getprivstyle(bg);
+          uint16_t privattr = _log_getprivstyle(attr);
+          uint16_t privfg   = _log_getprivstyle(fg);
+          uint16_t privbg   = _log_getprivstyle(bg);
 
 #ifndef _WIN32
           sirchar_t fgfmt[5] = {
@@ -223,7 +223,7 @@ _sir_formatstyle(sir_textstyle style, sirchar_t *buf, size_t size)
           /* '\033[n;nnn;nnnm' */
           (void)snprintf(buf, size, "\033[%.1hu%s%sm", privattr, fgfmt, bgfmt);
 
-          return _sir_validstr(buf);
+          return _log_validstr(buf);
 
 #else /* ifndef _WIN32 */
           uint16_t final = privattr | privfg | privbg;

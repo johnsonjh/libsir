@@ -23,8 +23,8 @@
  * IN THE SOFTWARE.
  */
 
-#ifndef _SIR_TYPES_H_INCLUDED
-# define _SIR_TYPES_H_INCLUDED
+#ifndef _LOG_TYPES_H_INCLUDED
+# define _LOG_TYPES_H_INCLUDED
 
 # include "sirconfig.h"
 # include "sirplatform.h"
@@ -52,14 +52,14 @@ typedef enum
   SIRL_DEBUG   = 0x80, /* Debugging/diagnostic output.                         */
   SIRL_ALL     = 0xff, /* Includes all logging levels.                         */
   SIRL_DEFAULT = 0x100 /* Use the default levels for this type of destination. */
-} sir_level;
+} log_level;
 
 /*
- * Used to differentiate between a single sir_level and one or more
+ * Used to differentiate between a single log_level and one or more
  * bitwise OR'd together.
  */
 
-typedef uint16_t sir_levels;
+typedef uint16_t log_levels;
 
 /* Formatting options for a destination. */
 
@@ -115,14 +115,14 @@ typedef enum
    */
 
   SIRO_DEFAULT  = 0x100000,
-} sir_option;
+} log_option;
 
 /*
- * Used to differentiate between a single sir_option and one or more
+ * Used to differentiate between a single log_option and one or more
  * bitwise OR'd together.
  */
 
-typedef uint32_t sir_options;
+typedef uint32_t log_options;
 
 /* Available styles (colors, brightness) for console output. */
 
@@ -166,54 +166,54 @@ typedef enum
   SIRS_BG_LCYAN     = 0xf1000, /* Light cyan background.                         */
   SIRS_BG_DEFAULT   = 0xf2000, /* Use the default background color.              */
   SIRS_INVALID      = 0xf3000  /* Represents the invalid text style.             */
-} sir_textstyle;
+} log_textstyle;
 
 /* The underlying type used for characters in output. */
 
 typedef char sirchar_t;
 
 /*
- * sir_stdio_dest
+ * log_stdio_dest
  * Configuration for stdio destinations (stdout and stderr).
  */
 
 typedef struct
 {
-  sir_levels levels;
-  sir_options opts;
-} sir_stdio_dest;
+  log_levels levels;
+  log_options opts;
+} log_stdio_dest;
 
 /*
- * sir_syslog_dest
+ * log_syslog_dest
  * Configuration for the syslog destination.
  */
 
 typedef struct
 {
-  sir_levels levels;
+  log_levels levels;
   bool includePID;
-} sir_syslog_dest;
+} log_syslog_dest;
 
 /*
  * sirinit
  * Initialization data for libsir.
  *
- * Allocate an instance of this struct and pass it to sir_init
+ * Allocate an instance of this struct and pass it to log_init
  * in order to begin using libsir.
  */
 
 typedef struct
 {
-  sir_stdio_dest d_stdout;  /* stdout configuration.                */
-  sir_stdio_dest d_stderr;  /* stderr configuration.                */
-  sir_syslog_dest d_syslog; /* syslog configuration (if available). */
+  log_stdio_dest d_stdout;  /* stdout configuration.                */
+  log_stdio_dest d_stderr;  /* stderr configuration.                */
+  log_syslog_dest d_syslog; /* syslog configuration (if available). */
 
   /*
    * If set, defines the name that will appear in formatted output.
    * Set SIRO_NONAME for a destination to supppress it.
    */
 
-  sirchar_t processName[SIR_MAXNAME];
+  sirchar_t processName[LOG_MAXNAME];
 } sirinit;
 
 /* Library error type. */
@@ -238,15 +238,15 @@ typedef struct
 
 /* Magic number used to determine if libsir has been initialized. */
 
-# define _SIR_MAGIC 0x60906090
+# define _LOG_MAGIC 0x60906090
 
 /* Log file data. */
 
 typedef struct
 {
   sirchar_t *path;
-  sir_levels levels;
-  sir_options opts;
+  log_levels levels;
+  log_options opts;
   FILE *f;
   int id;
 } sirfile;
@@ -255,7 +255,7 @@ typedef struct
 
 typedef struct
 {
-  sirfile *files[SIR_MAXFILES];
+  sirfile *files[LOG_MAXFILES];
   size_t count;
 } sirfcache;
 
@@ -294,41 +294,41 @@ typedef enum
 
 typedef struct
 {
-  sirchar_t style     [SIR_MAXSTYLE];
-  sirchar_t timestamp [SIR_MAXTIME];
-  sirchar_t msec      [SIR_MAXMSEC];
-  sirchar_t level     [SIR_MAXLEVEL];
-  sirchar_t name      [SIR_MAXNAME];
-  sirchar_t pid       [SIR_MAXPID];
-  sirchar_t tid       [SIR_MAXPID];
-  sirchar_t message   [SIR_MAXMESSAGE];
-  sirchar_t output    [SIR_MAXOUTPUT];
+  sirchar_t style     [LOG_MAXSTYLE];
+  sirchar_t timestamp [LOG_MAXTIME];
+  sirchar_t msec      [LOG_MAXMSEC];
+  sirchar_t level     [LOG_MAXLEVEL];
+  sirchar_t name      [LOG_MAXNAME];
+  sirchar_t pid       [LOG_MAXPID];
+  sirchar_t tid       [LOG_MAXPID];
+  sirchar_t message   [LOG_MAXMESSAGE];
+  sirchar_t output    [LOG_MAXOUTPUT];
 } sirbuf;
 
-/* sir_level <> sir_textstyle mapping. */
+/* log_level <> log_textstyle mapping. */
 
 typedef struct
 {
-  const sir_level level; /* The level for which the style applies. */
+  const log_level level; /* The level for which the style applies. */
   uint32_t style;        /* The default value.                     */
-} sir_style_map;
+} log_style_map;
 
-/* Public (sir_textstyle) <> platform text style mapping. */
+/* Public (log_textstyle) <> platform text style mapping. */
 
 typedef struct
 {
   uint32_t from; /* The public text style flag(s). */
   uint16_t to;   /* The internal value.            */
-} sir_style_priv_map;
+} log_style_priv_map;
 
 /* Mutex <> protected section mapping. */
 
 typedef enum
 {
-  _SIRM_INIT = 0,  /* The sirinit section.       */
-  _SIRM_FILECACHE, /* The sirfcache section.     */
-  _SIRM_TEXTSTYLE, /* The sir_style_map section. */
-} sir_mutex_id;
+  _LOGM_INIT = 0,  /* The sirinit section.       */
+  _LOGM_FILECACHE, /* The sirfcache section.     */
+  _LOGM_TEXTSTYLE, /* The log_style_map section. */
+} log_mutex_id;
 
 /* Error type. */
 
@@ -336,7 +336,7 @@ typedef struct
 {
   sirerror_t lasterror;
   int os_error;
-  sirchar_t os_errmsg[SIR_MAXERROR - 1];
+  sirchar_t os_errmsg[LOG_MAXERROR - 1];
 
   struct
   {
@@ -344,7 +344,7 @@ typedef struct
     const sirchar_t *file;
     uint32_t line;
   } loc;
-} sir_thread_err;
+} log_thread_err;
 
 /*
  * Used to encapsulate dynamic updating of
@@ -353,8 +353,8 @@ typedef struct
 
 typedef struct
 {
-  sir_levels *levels;
-  sir_options *opts;
-} sir_update_data;
+  log_levels *levels;
+  log_options *opts;
+} log_update_data;
 
-#endif /* !_SIR_TYPES_H_INCLUDED */
+#endif /* !_LOG_TYPES_H_INCLUDED */
