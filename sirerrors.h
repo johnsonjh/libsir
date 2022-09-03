@@ -72,10 +72,10 @@ static const struct
   const sirchar_t *msg;
 } sir_errors[] = {
   { _SIR_E_NOERROR,   "The operation completed successfully"    },
-  { _SIR_E_NOTREADY,  "libsir has not been initialized"         },
-  { _SIR_E_ALREADY,   "libsir is already initialized"           },
-  { _SIR_E_DUPFILE,   "File already managed by SIR"             },
-  { _SIR_E_NOFILE,    "File not managed by SIR"                 },
+  { _SIR_E_NOTREADY,  "Logging has not been initialized"        },
+  { _SIR_E_ALREADY,   "Logging is already initialized"          },
+  { _SIR_E_DUPFILE,   "File already managed"                    },
+  { _SIR_E_NOFILE,    "File not managed"                        },
   { _SIR_E_FCFULL,    "Maximum number of files already managed" },
   { _SIR_E_OPTIONS,   "Option flags are invalid"                },
   { _SIR_E_LEVELS,    "Level flags are invalid"                 },
@@ -105,10 +105,10 @@ void __sir_handleerr(int code, const sirchar_t *func, const sirchar_t *file,
 # ifdef _WIN32
 
 /*
- * Some Win32 API error codes overlap C library error codes, so they
- * need to be handled separately. Mapping them sounds great, but in
- * practice valuable information about what went wrong is totally
- * lost in translation.
+ * Some Win32 API error codes overlap C library error codes,
+ * so they need to be handled separately. Mapping them sounds
+ * great, but in practice valuable information about what went
+ * wrong is totally lost in translation.
  */
 
 void __sir_handlewin32err(DWORD code, const sirchar_t *func,
