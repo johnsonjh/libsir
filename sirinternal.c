@@ -619,20 +619,20 @@ _log_format(bool styling, log_options opts, logoutput *output)
         }
 #endif /* ifndef _WIN32 */
 
-      if (!_log_bittest(opts, SIRO_NOTIME))
+      if (!_log_bittest(opts, LOGO_NOTIME))
         {
           (void)strncat(output->output, output->timestamp, LOG_MAXTIME);
           first = false;
 
 #ifdef LOG_MSEC_TIMER
-          if (!_log_bittest(opts, SIRO_NOMSEC))
+          if (!_log_bittest(opts, LOGO_NOMSEC))
             {
               (void)strncat(output->output, output->msec, LOG_MAXMSEC);
             }
 #endif /* ifdef LOG_MSEC_TIMER */
         }
 
-      if (!_log_bittest(opts, SIRO_NOLEVEL))
+      if (!_log_bittest(opts, LOGO_NOLEVEL))
         {
           if (!first)
             {
@@ -644,7 +644,7 @@ _log_format(bool styling, log_options opts, logoutput *output)
         }
 
       bool name = false;
-      if (!_log_bittest(opts, SIRO_NONAME)
+      if (!_log_bittest(opts, LOGO_NONAME)
           && _log_validstrnofail(output->name))
         {
           if (!first)
@@ -657,8 +657,8 @@ _log_format(bool styling, log_options opts, logoutput *output)
           name  = true;
         }
 
-      bool wantpid = !_log_bittest(opts, SIRO_NOPID) && _log_validstrnofail(output->pid);
-      bool wanttid = !_log_bittest(opts, SIRO_NOTID) && _log_validstrnofail(output->tid);
+      bool wantpid = !_log_bittest(opts, LOGO_NOPID) && _log_validstrnofail(output->pid);
+      bool wanttid = !_log_bittest(opts, LOGO_NOTID) && _log_validstrnofail(output->tid);
 
       if (wantpid || wanttid)
         {

@@ -68,54 +68,54 @@ typedef enum
 {
   /* Don't include time stamps in output. */
 
-  SIRO_NOTIME   = 0x200,
+  LOGO_NOTIME   = 0x200,
 
   /* Don't include the human-readable logging level in output. */
 
-  SIRO_NOLEVEL  = 0x400,
+  LOGO_NOLEVEL  = 0x400,
 
   /* Don't include the process/app name in output. */
 
-  SIRO_NONAME   = 0x800,
+  LOGO_NONAME   = 0x800,
 
   /*
    * Don't include milliseconds in time stamps. If not set, time stamps
    * in output to this destination will be appended with the current
-   * millisecond in addition to the hour, minute, and second. If SIRO_NOTIME
+   * millisecond in addition to the hour, minute, and second. If LOGO_NOTIME
    * is set, this has no effect.
    */
 
-  SIRO_NOMSEC   = 0x1000,
+  LOGO_NOMSEC   = 0x1000,
 
   /* Don't include the process ID in output. */
 
-  SIRO_NOPID    = 0x2000,
+  LOGO_NOPID    = 0x2000,
 
   /* Don't include the thread ID/name in output. */
 
-  SIRO_NOTID    = 0x4000,
+  LOGO_NOTID    = 0x4000,
 
   /*
    * Don't write header messages when logging begins, or the file is rolled.
    * Only applicable to log files.
    */
 
-  SIRO_NOHDR    = 0x10000,
+  LOGO_NOHDR    = 0x10000,
 
   /*
    * Includes all other options; effectively disables all output formatting
-   * except the original formatted message (does not include SIRO_NOHDR; set
+   * except the original formatted message (does not include LOGO_NOHDR; set
    * that flag in addition to remove header messages).
    */
 
-  SIRO_MSGONLY  = 0xeff00,
+  LOGO_MSGONLY  = 0xeff00,
 
   /*
    * Use the default for this type of destination. See
    * logdefaults.h for specifics.
    */
 
-  SIRO_DEFAULT  = 0x100000,
+  LOGO_DEFAULT  = 0x100000,
 } log_option;
 
 /*
@@ -211,7 +211,7 @@ typedef struct
 
   /*
    * If set, defines the name that will appear in formatted output.
-   * Set SIRO_NONAME for a destination to supppress it.
+   * Set LOGO_NONAME for a destination to supppress it.
    */
 
   logchar_t processName[LOG_MAXNAME];

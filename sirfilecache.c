@@ -503,7 +503,7 @@ _log_fcache_add(logfcache *sfc, const logchar_t *path, log_levels levels,
         {
           sfc->files[sfc->count++] = sf;
 
-          if (!_log_bittest(sf->opts, SIRO_NOHDR))
+          if (!_log_bittest(sf->opts, LOGO_NOHDR))
             {
               (void)_logfile_writeheader(sf, LOG_FHBEGIN);
             }

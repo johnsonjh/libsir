@@ -148,7 +148,7 @@ logtest_filecachesanity(void)
     0
   };
 
-  log_options even = SIRO_MSGONLY;
+  log_options even = LOGO_MSGONLY;
   log_options odd = 0;
 
   for (size_t n = 0; n < numfiles - 1; n++)
@@ -165,7 +165,7 @@ logtest_filecachesanity(void)
   pass &= log_info("test test test");
 
   /* This one should fail; max files already added */
-  pass &= NULL == log_addfile("should-fail.log", LOGL_ALL, SIRO_MSGONLY);
+  pass &= NULL == log_addfile("should-fail.log", LOGL_ALL, LOGO_MSGONLY);
 
   log_info("test test test");
 
@@ -266,7 +266,7 @@ logtest_failnooutputdest(void)
       pass &= log_info("this goes to stdout");
       pass &= log_stdoutlevels(LOGL_NONE);
 
-      pass &= NULL != log_addfile(logfile, LOGL_INFO, SIRO_DEFAULT);
+      pass &= NULL != log_addfile(logfile, LOGL_INFO, LOGO_DEFAULT);
       pass &= log_info("this goes to %s", logfile);
 
       rmfile(logfile);
@@ -282,7 +282,7 @@ logtest_failinvalidfilename(void)
   INIT(si, LOGL_ALL, 0, 0, 0);
   bool pass = si_init;
 
-  pass &= NULL == log_addfile("bad file!/name", LOGL_ALL, SIRO_MSGONLY);
+  pass &= NULL == log_addfile("bad file!/name", LOGL_ALL, LOGO_MSGONLY);
 
   if (pass)
     {
@@ -299,7 +299,7 @@ logtest_failfilebadpermission(void)
   INIT(si, LOGL_ALL, 0, 0, 0);
   bool pass = si_init;
 
-  pass &= NULL == log_addfile("/noperms", LOGL_ALL, SIRO_MSGONLY);
+  pass &= NULL == log_addfile("/noperms", LOGL_ALL, LOGO_MSGONLY);
 
   if (pass)
     {
@@ -317,7 +317,7 @@ logtest_failnulls(void)
   bool pass = si_init;
 
   pass &= !log_info(NULL);
-  pass &= NULL == log_addfile(NULL, LOGL_ALL, SIRO_MSGONLY);
+  pass &= NULL == log_addfile(NULL, LOGL_ALL, LOGO_MSGONLY);
 
   if (pass)
     {
@@ -400,8 +400,8 @@ logtest_faildupefile(void)
   INIT(si, LOGL_ALL, 0, 0, 0);
   bool pass = si_init;
 
-  pass &= NULL != log_addfile("foo.log", LOGL_ALL, SIRO_DEFAULT);
-  pass &= NULL == log_addfile("foo.log", LOGL_ALL, SIRO_DEFAULT);
+  pass &= NULL != log_addfile("foo.log", LOGL_ALL, LOGO_DEFAULT);
+  pass &= NULL == log_addfile("foo.log", LOGL_ALL, LOGO_DEFAULT);
 
   rmfile("foo.log");
   log_cleanup();
@@ -475,7 +475,7 @@ logtest_rollandarchivefile(void)
   bool pass = si_init;
 
   logfileid_t fileid
-    = log_addfile(logfilename, LOGL_DEBUG, SIRO_MSGONLY | SIRO_NOHDR);
+    = log_addfile(logfilename, LOGL_DEBUG, LOGO_MSGONLY | LOGO_NOHDR);
 
   if (pass &= NULL != fileid)
     {
@@ -636,7 +636,7 @@ logtest_textstylesanity(void)
 bool
 logtest_perf(void)
 {
-  const logchar_t *logfilename = "logperf";
+  const logchar_t *logfilename = "logperf.log";
 
   const size_t perflines = 1e6;
   INIT(si, LOGL_ALL, 0, 0, 0);
@@ -681,7 +681,7 @@ logtest_perf(void)
       INIT(si2, 0, 0, 0, 0);
       pass &= si2_init;
 
-      logfileid_t logid  = log_addfile(logfilename, LOGL_ALL, SIRO_MSGONLY);
+      logfileid_t logid  = log_addfile(logfilename, LOGL_ALL, LOGO_MSGONLY);
       pass              &= NULL != logid;
 
       if (pass)
@@ -738,7 +738,7 @@ logtest_updatesanity(void)
   const char *logfile = "update.log";
 
   rmfile(logfile);
-  logfileid_t id1 = log_addfile(logfile, LOGL_DEFAULT, SIRO_DEFAULT);
+  logfileid_t id1 = log_addfile(logfile, LOGL_DEFAULT, LOGO_DEFAULT);
 
   pass &= NULL != id1;
 
@@ -754,12 +754,12 @@ logtest_updatesanity(void)
       pass &= log_emerg        ("default config");
 
       pass &= log_stdoutlevels (LOGL_DEBUG);
-      pass &= log_stdoutopts   (SIRO_NOTIME);
+      pass &= log_stdoutopts   (LOGO_NOTIME);
       pass &= log_stderrlevels (LOGL_ALL);
-      pass &= log_stderropts   (SIRO_NONAME);
+      pass &= log_stderropts   (LOGO_NONAME);
 
       pass &= log_filelevels   (id1, LOGL_DEBUG);
-      pass &= log_fileopts     (id1, SIRO_MSGONLY);
+      pass &= log_fileopts     (id1, LOGO_MSGONLY);
 
       pass &= log_debug        ("modified config");
       pass &= log_info         ("modified config");
@@ -807,7 +807,7 @@ logtest_mthread_race(void)
   uintptr_t thrds[NUM_THREADS];
 #endif /* ifndef _WIN32 */
 
-  INIT_N(si, LOGL_ALL, SIRO_NOPID, 0, 0, "multi-thread race");
+  INIT_N(si, LOGL_ALL, LOGO_NOPID, 0, 0, "multi-thread race");
   bool pass = si_init;
 
   for (size_t n = 0; n < NUM_THREADS; n++)
@@ -875,7 +875,7 @@ logtest_thread(void *arg)
   free(arg);
 
   rmfile(mypath);
-  logfileid_t id = log_addfile(mypath, LOGL_ALL, SIRO_MSGONLY);
+  logfileid_t id = log_addfile(mypath, LOGL_ALL, LOGO_MSGONLY);
 
   if (NULL == id)
     {
@@ -909,7 +909,7 @@ logtest_thread(void *arg)
                   printerror(false);
                 }
 
-              id = log_addfile(mypath, LOGL_ALL, SIRO_MSGONLY);
+              id = log_addfile(mypath, LOGL_ALL, LOGO_MSGONLY);
 
               if (NULL == id)
                 {

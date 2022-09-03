@@ -76,8 +76,8 @@ bool log_stdoutlevels(log_levels levels);
  * Value          | Behavior
  * -----          | --------
  * `0`            | Include all available data.
- * `SIRO_DEFAULT` | Revert to the default.
- * `SIRO_*`       | Apply each option set.
+ * `LOGO_DEFAULT` | Revert to the default.
+ * `LOGO_*`       | Apply each option set.
  *
  * retval true  = Options were updated successfully.
  * retval false = An error occurred while trying to update options.
@@ -112,8 +112,8 @@ bool log_stderrlevels(log_levels levels);
  * Value          | Behavior
  * -----          | --------
  * `0`            | Include all available data.
- * `SIRO_DEFAULT` | Revert to the default.
- * `SIRO_*`       | Apply each option set.
+ * `LOGO_DEFAULT` | Revert to the default.
+ * `LOGO_*`       | Apply each option set.
  *
  * retval true  = Options were updated successfully.
  * retval false = An error occurred while trying to update options.
@@ -169,8 +169,8 @@ bool log_filelevels(logfileid_t id, log_levels levels);
  * Value          | Behavior
  * -----          | --------
  * `0`            | Include all available data.
- * `SIRO_DEFAULT` | Revert to the default.
- * `SIRO_*`       | Apply each option set.
+ * `LOGO_DEFAULT` | Revert to the default.
+ * `LOGO_*`       | Apply each option set.
  *
  * retval true  = Options were updated successfully.
  * retval false = An error occurred while trying to update options.

@@ -131,7 +131,7 @@ _log_defaultlevels(log_levels *levels, log_levels def)
 static inline void
 _log_defaultopts(log_options *opts, log_options def)
 {
-  if (opts && SIRO_DEFAULT == *opts)
+  if (opts && LOGO_DEFAULT == *opts)
     {
       *opts = def;
     }

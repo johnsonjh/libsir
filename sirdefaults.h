@@ -37,7 +37,7 @@ static const log_levels log_stdout_def_lvls
 /* Default options for stdout. */
 
 static const log_options log_stdout_def_opts
-  = SIRO_NOTIME | SIRO_NOPID | SIRO_NOTID;
+  = LOGO_NOTIME | LOGO_NOPID | LOGO_NOTID;
 
 /* Default levels for stderr. */
 
@@ -47,7 +47,7 @@ static const log_levels log_stderr_def_lvls
 /* Default options for stderr. */
 
 static const log_options log_stderr_def_opts
-  = SIRO_NOTIME | SIRO_NOPID | SIRO_NOTID;
+  = LOGO_NOTIME | LOGO_NOPID | LOGO_NOTID;
 
 /* Default levels for syslog (if enabled). */
 

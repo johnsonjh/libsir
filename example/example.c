@@ -60,7 +60,7 @@ main(int argc, char **argv)
    * Don't show the time stamp or process ID.
    */
 
-  si.d_stdout.opts = SIRO_NOTIME | SIRO_NOPID;
+  si.d_stdout.opts = LOGO_NOTIME | LOGO_NOPID;
 
   /*
    * Configure levels for stderr.
@@ -74,7 +74,7 @@ main(int argc, char **argv)
    * Don't show the time stamp or process ID.
    */
 
-  si.d_stderr.opts = SIRO_NOTIME | SIRO_NOPID;
+  si.d_stderr.opts = LOGO_NOTIME | LOGO_NOPID;
 
   /*
    * Configure options for syslog.
@@ -87,7 +87,7 @@ main(int argc, char **argv)
 
   strcpy(si.processName, "example");
 
-  /* Initialize SIR. */
+  /* Initialize logging. */
 
   if (!log_init(&si))
     {
@@ -100,7 +100,7 @@ main(int argc, char **argv)
    * Send all severity levels there.
    */
 
-  logfileid_t fileid1 = log_addfile("log-example.log", LOGL_ALL, SIRO_NONAME);
+  logfileid_t fileid1 = log_addfile("log-example.log", LOGL_ALL, LOGO_NONAME);
 
   if (NULL == fileid1)
     {
@@ -118,17 +118,17 @@ main(int argc, char **argv)
    * Notice that it is not necessary to add a newline at the end.
    */
 
-  log_debug("debug-level message: {n=%d, somestr='%s', f=%.04f}", n, somestr, f);
+  log_debug  ("debug message:      { n=%d, somestr='%s', f=%.04f }", n, somestr, f);
 
   /* Do the same for the rest of available severity levels. */
 
-  log_info("info-level message: {n=%d, somestr='%s', f=%.04f}", n, somestr, f);
-  log_notice("notice-level message: {n=%d, somestr='%s', f=%.04f}", n, somestr, f);
-  log_warn("warning-level message: {n=%d, somestr='%s', f=%.04f}", n, somestr, f);
-  log_error("error-level message: {n=%d, somestr='%s', f=%.04f}", n, somestr, f);
-  log_crit("critical error-level message: {n=%d, somestr='%s', f=%.04f}", n, somestr, f);
-  log_alert("alert-level message: {n=%d, somestr='%s', f=%.04f}", n, somestr, f);
-  log_emerg("emergency-level message: {n=%d, somestr='%s', f=%.04f}", n, somestr, f);
+  log_info   ("info message:       { n=%d, somestr='%s', f=%.04f }", n, somestr, f);
+  log_notice ("notice message:     { n=%d, somestr='%s', f=%.04f }", n, somestr, f);
+  log_warn   ("warning message:    { n=%d, somestr='%s', f=%.04f }", n, somestr, f);
+  log_error  ("error message:      { n=%d, somestr='%s', f=%.04f }", n, somestr, f);
+  log_crit   ("critical message:   { n=%d, somestr='%s', f=%.04f }", n, somestr, f);
+  log_alert  ("alert message:      { n=%d, somestr='%s', f=%.04f }", n, somestr, f);
+  log_emerg  ("emergency message:  { n=%d, somestr='%s', f=%.04f }", n, somestr, f);
 
   /* Clean up. */
 
