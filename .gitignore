@@ -25,3 +25,7 @@ docs/xml/
 
 # test artifacts
 *.log
+log.txt
+
+# clang
+compile_commands.json
