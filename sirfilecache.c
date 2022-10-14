@@ -29,7 +29,7 @@
 #include "sirinternal.h"
 #include "sirmutex.h"
 
-volatile unsigned long long int sir_sequence_counter = 0;
+volatile unsigned long long int log_sequence_counter = 0;
 
 logfileid_t
 _log_addfile(const logchar_t *path, log_levels levels, log_options opts)
@@ -121,7 +121,7 @@ _logfile_create(const logchar_t *path, log_levels levels, log_options opts)
               if (!_logfile_open(sf) || !_logfile_validate(sf))
                 {
                   _log_safefree(sf);
-				  return NULL;
+                  return NULL;
                 }
             }
         }
@@ -327,7 +327,7 @@ _logfile_roll(logfile *sf, logchar_t **newpath)
                             LOG_FNAMEFORMAT,
                             name,
                             timestamp,
-							sir_sequence_counter++,
+                            log_sequence_counter++,
                             _log_validstrnofail(ext) ? ext : "");
 
                       if (fmtpath < 0)
@@ -367,12 +367,12 @@ _logfile_archive(logfile *sf, const logchar_t *newpath)
 #endif /* ifdef _WIN32 */
 
       if (access(newpath, F_OK) == 0)
-	    {
+        {
           _log_selflog(
             "%s: '%s' exists!\n",
             __func__,
-			newpath);
-		  return false;
+            newpath);
+          return false;
         }
 
       if (0 != rename(sf->path, newpath))
@@ -420,6 +420,10 @@ _logfile_splitpath(logfile *sf, logchar_t **name, logchar_t **ext)
           if (namesize < LOG_MAXPATH)
             {
               *name = (logchar_t *)calloc(namesize + 1, sizeof ( logchar_t ));
+              if (*name == NULL)
+                {
+                  return false;
+                }
               (void)strncpy(*name, sf->path, namesize);
             }
 
@@ -502,6 +506,11 @@ _log_fcache_add(logfcache *sfc, const logchar_t *path, log_levels levels,
       if (_logfile_validate(sf))
         {
           sfc->files[sfc->count++] = sf;
+
+          if (sf == NULL)
+            {
+              return NULL;
+            }
 
           if (!_log_bittest(sf->opts, LOGO_NOHDR))
             {

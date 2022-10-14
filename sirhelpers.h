@@ -38,7 +38,7 @@
  * with any of those defined by the platform.
  */
 
-# define _log_mkerror(code) (((uint32_t)( code & 0x7fff ) << 16 ) | 0x80000000 )
+# define _log_mkerror(code) (((uint32_t)( (code) & 0x7fff ) << 16 ) | 0x80000000 )
 
 /* Validates an internal error. */
 
@@ -71,7 +71,7 @@ _log_geterrcode(logerror_t err)
 
 /* Validates a pointer. */
 
-# define _log_validptr(p) ( NULL != p )
+# define _log_validptr(p) ( NULL != (p) )
 
 /* Checks a bitfield for a specific set of bits. */
 
@@ -86,7 +86,7 @@ _log_bittest(uint32_t flags, uint32_t test)
 static inline void
 __log_safefree(void **p)
 {
-  if (!p || ( p && !*p ))
+  if (!p || ( p && !*p )) //-V728
     {
       return;
     }

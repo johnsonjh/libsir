@@ -109,8 +109,8 @@ main(int argc, char **argv)
 
   /* Now we're ready to start generating output. */
 
-  int n = 12345;
-  const char *somestr = "my string contents";
+  int n = 123456789;
+  const char *somestr = "This is a test string";
   float f = 0.0009f;
 
   /*
@@ -118,21 +118,21 @@ main(int argc, char **argv)
    * Notice that it is not necessary to add a newline at the end.
    */
 
-  log_debug  ("debug message:      { n=%d, somestr='%s', f=%.04f }", n, somestr, f);
+  (void)log_debug  ("debug message:      { n=%d, somestr='%s', f=%.04f }", n, somestr, f);
 
   /* Do the same for the rest of available severity levels. */
 
-  log_info   ("info message:       { n=%d, somestr='%s', f=%.04f }", n, somestr, f);
-  log_notice ("notice message:     { n=%d, somestr='%s', f=%.04f }", n, somestr, f);
-  log_warn   ("warning message:    { n=%d, somestr='%s', f=%.04f }", n, somestr, f);
-  log_error  ("error message:      { n=%d, somestr='%s', f=%.04f }", n, somestr, f);
-  log_crit   ("critical message:   { n=%d, somestr='%s', f=%.04f }", n, somestr, f);
-  log_alert  ("alert message:      { n=%d, somestr='%s', f=%.04f }", n, somestr, f);
-  log_emerg  ("emergency message:  { n=%d, somestr='%s', f=%.04f }", n, somestr, f);
+  (void)log_info   ("info message:       { n=%d, somestr='%s', f=%.04f }", n, somestr, f);
+  (void)log_notice ("notice message:     { n=%d, somestr='%s', f=%.04f }", n, somestr, f);
+  (void)log_warn   ("warning message:    { n=%d, somestr='%s', f=%.04f }", n, somestr, f);
+  (void)log_error  ("error message:      { n=%d, somestr='%s', f=%.04f }", n, somestr, f);
+  (void)log_crit   ("critical message:   { n=%d, somestr='%s', f=%.04f }", n, somestr, f);
+  (void)log_alert  ("alert message:      { n=%d, somestr='%s', f=%.04f }", n, somestr, f);
+  (void)log_emerg  ("emergency message:  { n=%d, somestr='%s', f=%.04f }", n, somestr, f);
 
   /* Clean up. */
 
-  log_cleanup();
+  (void)log_cleanup();
 
   return 0;
 }

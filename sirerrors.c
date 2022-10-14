@@ -89,7 +89,7 @@ __log_handleerr(int code, const logchar_t *func, const logchar_t *file,
 #else  /* ifndef _WIN32 */
       errno_t finderr = strerror_s(message, LOG_MAXERROR - 1, code);
 #endif /* ifndef _WIN32 */
-      if (0 == finderr && _log_validstrnofail(message))
+      if (0 == finderr && _log_validstrnofail(message)) //-V560
         {
           __log_setoserror(code, message, func, file, line);
         }
@@ -183,21 +183,24 @@ _log_geterror(logchar_t message[LOG_MAXERROR - 1])
               final = (logchar_t *)log_errors[n].msg;
             }
 
-          int fmtmsg
-            = snprintf(
-                message,
-                LOG_MAXERROR - 1,
-                LOG_ERRORFORMAT,
-                log_te.loc.func,
-                log_te.loc.file,
-                log_te.loc.line,
-                final);
-          (void)fmtmsg;
-          assert(fmtmsg >= 0);
-
-          if (alloc)
+          if (final != NULL)
             {
-              _log_safefree(final);
+              int fmtmsg
+                = snprintf(
+                    message,
+                    LOG_MAXERROR - 1,
+                    LOG_ERRORFORMAT,
+                    log_te.loc.func,
+                    log_te.loc.file,
+                    log_te.loc.line,
+                    final);
+              (void)fmtmsg;
+              assert(fmtmsg >= 0);
+
+              if (alloc)
+                {
+                  _log_safefree(final);
+                }
             }
 
           return log_errors[n].e;
@@ -227,7 +230,7 @@ _log_selflog(const logchar_t *format, ...)
   if (print > 0)
     {
       int put = fputs(output, stderr);
-	  (void)put;
+      (void)put;
       assert(put != EOF);
     }
 }

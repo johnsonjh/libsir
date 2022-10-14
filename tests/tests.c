@@ -129,7 +129,7 @@ logtest_exceedmaxsize(void)
     0
   };
 
-  (void)memset(toobig, 'a', LOG_MAXMESSAGE - 99);
+  (void)memset(toobig, 'a', LOG_MAXMESSAGE + 100);
 
   pass &= log_info(toobig);
 
@@ -167,7 +167,7 @@ logtest_filecachesanity(void)
   /* This one should fail; max files already added */
   pass &= NULL == log_addfile("should-fail.log", LOGL_ALL, LOGO_MSGONLY);
 
-  log_info("test test test");
+  (void)log_info("test test test");
 
   /* Now remove previously added files in a different order */
   int removeorder[LOG_MAXFILES];
@@ -477,7 +477,7 @@ logtest_rollandarchivefile(void)
   logfileid_t fileid
     = log_addfile(logfilename, LOGL_DEBUG, LOGO_MSGONLY | LOGO_NOHDR);
 
-  if (pass &= NULL != fileid)
+  if (pass &= NULL != fileid) //-V1019
     {
       /* Write an (approximately) known quantity until we should have rolled */
       size_t written  = 0;
@@ -723,7 +723,8 @@ logtest_perf(void)
 
   if (deleted > 0)
     {
-      printf("\tdeleted %d log file(s)\n", deleted);
+      printf("\tdeleted %llu log file(s)\n",
+              (long long unsigned)deleted);
     }
 
   log_cleanup();

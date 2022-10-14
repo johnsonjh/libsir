@@ -276,7 +276,7 @@ _log_cleanup(void)
 
   assert(sfc);
 
-  if (cleanup &= NULL != sfc)
+  if (cleanup &= NULL != sfc) //-V1019
     {
       bool destroyfc = _log_fcache_destroy(sfc);
       assert(destroyfc);
@@ -287,9 +287,9 @@ _log_cleanup(void)
 
   assert(si);
 
-  if (cleanup &= NULL != si)
+  if (cleanup &= NULL != si) //-V1019
     {
-      (void)memset(si, 0, sizeof ( loginit ));
+      (void)memset(si, 0, sizeof ( loginit )); //-V575
       cleanup &= _log_unlocksection(_LOGM_INIT);
     }
 
@@ -389,7 +389,7 @@ _log_logv(log_level level, const logchar_t *format, va_list args)
     0
   };
 
-  output.style = _logbuf_get(&buf, _SIRBUF_STYLE);
+  output.style = _logbuf_get(&buf, _LOGBUF_STYLE);
   assert(output.style);
 
   bool appliedstyle = false;
@@ -409,7 +409,7 @@ _log_logv(log_level level, const logchar_t *format, va_list args)
       _log_resetstr(output.style);
     }
 
-  output.timestamp = _logbuf_get(&buf, _SIRBUF_TIME);
+  output.timestamp = _logbuf_get(&buf, _LOGBUF_TIME);
   assert(output.timestamp);
 
   time_t now;
@@ -428,7 +428,7 @@ _log_logv(log_level level, const logchar_t *format, va_list args)
           _log_resetstr(output.timestamp);
         }
 
-      output.msec = _logbuf_get(&buf, _SIRBUF_MSEC);
+      output.msec = _logbuf_get(&buf, _LOGBUF_MSEC);
       assert(output.msec);
 
       int fmtmsec = snprintf(output.msec, LOG_MAXMSEC, LOG_MSECFORMAT, nowmsec);
@@ -444,7 +444,7 @@ _log_logv(log_level level, const logchar_t *format, va_list args)
       _log_resetstr(output.msec);
     }
 
-  output.level = _logbuf_get(&buf, _SIRBUF_LEVEL);
+  output.level = _logbuf_get(&buf, _LOGBUF_LEVEL);
   assert(output.level);
   (void)snprintf(
     output.level,
@@ -452,7 +452,7 @@ _log_logv(log_level level, const logchar_t *format, va_list args)
     LOG_LEVELFORMAT,
     _log_levelstr(level));
 
-  output.name = _logbuf_get(&buf, _SIRBUF_NAME);
+  output.name = _logbuf_get(&buf, _LOGBUF_NAME);
   assert(output.name);
 
   if (_log_validstrnofail(tmpsi.processName))
@@ -464,7 +464,7 @@ _log_logv(log_level level, const logchar_t *format, va_list args)
       _log_resetstr(output.name);
     }
 
-  output.pid = _logbuf_get(&buf, _SIRBUF_PID);
+  output.pid = _logbuf_get(&buf, _LOGBUF_PID);
   assert(output.pid);
 
   pid_t pid  = _log_getpid();
@@ -479,7 +479,7 @@ _log_logv(log_level level, const logchar_t *format, va_list args)
 
   pid_t tid = _log_gettid();
 
-  output.tid = _logbuf_get(&buf, _SIRBUF_TID);
+  output.tid = _logbuf_get(&buf, _LOGBUF_TID);
   assert(output.tid);
 
   if (tid != pid)
@@ -501,7 +501,7 @@ _log_logv(log_level level, const logchar_t *format, va_list args)
     }
 
   /* TODO: Add support for glibc's %m? */
-  output.message = _logbuf_get(&buf, _SIRBUF_MSG);
+  output.message = _logbuf_get(&buf, _LOGBUF_MSG);
   assert(output.message);
   int msgfmt = vsnprintf(output.message, LOG_MAXMESSAGE, format, args);
 
@@ -512,7 +512,7 @@ _log_logv(log_level level, const logchar_t *format, va_list args)
       _log_resetstr(output.message);
     }
 
-  output.output = _logbuf_get(&buf, _SIRBUF_OUTPUT);
+  output.output = _logbuf_get(&buf, _LOGBUF_OUTPUT);
   assert(output.output);
 
   return _log_dispatch(&tmpsi, level, &output);
@@ -756,39 +756,39 @@ _log_syslog_maplevel(log_level level)
 logchar_t *
 _logbuf_get(logbuf *buf, size_t idx)
 {
-  assert(idx <= _SIRBUF_MAX);
+  assert(idx <= _LOGBUF_MAX);
 
   switch (idx)
     {
-    case _SIRBUF_STYLE:
+    case _LOGBUF_STYLE:
       return buf->style;
 
-    case _SIRBUF_TIME:
+    case _LOGBUF_TIME:
       return buf->timestamp;
 
-    case _SIRBUF_MSEC:
+    case _LOGBUF_MSEC:
       return buf->msec;
 
-    case _SIRBUF_LEVEL:
+    case _LOGBUF_LEVEL:
       return buf->level;
 
-    case _SIRBUF_NAME:
+    case _LOGBUF_NAME:
       return buf->name;
 
-    case _SIRBUF_PID:
+    case _LOGBUF_PID:
       return buf->pid;
 
-    case _SIRBUF_TID:
+    case _LOGBUF_TID:
       return buf->tid;
 
-    case _SIRBUF_MSG:
+    case _LOGBUF_MSG:
       return buf->message;
 
-    case _SIRBUF_OUTPUT:
+    case _LOGBUF_OUTPUT:
       return buf->output;
 
     default:
-	  ; /* assert(false); */
+      ; /* assert(false); */
     }
 
   return NULL;
@@ -823,7 +823,7 @@ _log_levelstr(log_level level)
       return LOGL_S_EMERG;
 
     case LOGL_DEBUG:
-	  /*FALLTHROUGH*/
+      /*FALLTHROUGH*/
     default:
       return LOGL_S_DEBUG;
     }

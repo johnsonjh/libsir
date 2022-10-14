@@ -279,16 +279,16 @@ typedef struct
 
 typedef enum
 {
-  _SIRBUF_STYLE = 0,
-  _SIRBUF_TIME,
-  _SIRBUF_MSEC,
-  _SIRBUF_LEVEL,
-  _SIRBUF_NAME,
-  _SIRBUF_PID,
-  _SIRBUF_TID,
-  _SIRBUF_MSG,
-  _SIRBUF_OUTPUT,
-  _SIRBUF_MAX
+  _LOGBUF_STYLE = 0,
+  _LOGBUF_TIME,
+  _LOGBUF_MSEC,
+  _LOGBUF_LEVEL,
+  _LOGBUF_NAME,
+  _LOGBUF_PID,
+  _LOGBUF_TID,
+  _LOGBUF_MSG,
+  _LOGBUF_OUTPUT,
+  _LOGBUF_MAX
 } logbuf_idx;
 
 /* Buffers for output formatting. */

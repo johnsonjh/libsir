@@ -172,9 +172,9 @@
 
 /* The maximum size, in characters, of final formatted output. */
 
-# define LOG_MAXOUTPUT                                                \
-  LOG_MAXMESSAGE + ( LOG_MAXSTYLE * 2 ) + LOG_MAXTIME + LOG_MAXLEVEL  \
-  + LOG_MAXNAME  + ( LOG_MAXPID   * 2 ) + LOG_MAXMISC + 1
+# define LOG_MAXOUTPUT                                                  \
+  ( LOG_MAXMESSAGE + ( LOG_MAXSTYLE * 2 ) + LOG_MAXTIME + LOG_MAXLEVEL  \
+    + LOG_MAXNAME  + ( LOG_MAXPID   * 2 ) + LOG_MAXMISC + 1 )
 
 /* The maximum size, in characters, of an error message. */
 
