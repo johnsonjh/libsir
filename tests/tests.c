@@ -636,7 +636,7 @@ logtest_textstylesanity(void)
 bool
 logtest_perf(void)
 {
-  const logchar_t *logfilename = "logperf.log";
+  const logchar_t *logfilename = "logperf";
 
   const size_t perflines = 1e6;
   INIT(si, LOGL_ALL, 0, 0, 0);
